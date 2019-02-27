@@ -1,0 +1,493 @@
+<html lang="en">
+    <head>
+        <%@page language="java" %>
+        <%@page import="java.sql.*" %> 
+        <%@include file="site.jsp" %>
+        <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+        <meta charset="UTF-8">
+        <meta http-equiv="content-type" content="text/html" charset="utf-8">
+
+        <%!
+            String FOLLOWED_TOPIC = "";
+            String QUESTION = "";
+            String POSTED_BY = "";
+            String ANSWER = "";
+            String BE_THE_FIRST_PERSON = "";
+            String SUBMIT = "";
+            String RELATED_QUESTION = "";
+            String COMPLETE_YOUR_PROFILE = "";
+            String TRENDING_QUESTION = "";
+            String TOPIC_YOU_MAY_LIKE = "";
+            String ANSWERED_BY = "";
+            String NO_RELATED_QUESTION_FOUND = "";
+            String CLICK_HERE_TO_MORE_TOPIC = "";
+        %>
+        <%
+            String sl = request.getParameter("sl");
+            if (sl == null) {
+                sl = "en";
+            }
+            if (sl.equalsIgnoreCase("hi")) {
+                TOPIC_YOU_MAY_LIKE = "विषय आपको पसंद आ सकता है";
+                POSTED_BY = "द्वारा प्रकाशित";
+                TRENDING_QUESTION = "सक्रिय प्रश्न";
+                FOLLOWED_TOPIC = "विषय जो आपको पसंद है";
+                RELATED_QUESTION = "संबंधित सवाल";
+                QUESTION = "प्रशन";
+                ANSWER = "उत्तर";
+                BE_THE_FIRST_PERSON = "इस प्रश्न का उत्तर देने वाले पहले व्यक्ति बनें";
+                SUBMIT = "जमा करें";
+                COMPLETE_YOUR_PROFILE = "अपनी प्रोफाइल पूरी कीजिए";
+                ANSWERED_BY = "द्वारा उत्तर दिया गया";
+                NO_RELATED_QUESTION_FOUND = "कोई संबंधित प्रश्न नहीं मिला";
+                CLICK_HERE_TO_MORE_TOPIC = "अधिक विषय के लिए यहां क्लिक करें";
+            } else {
+
+                TOPIC_YOU_MAY_LIKE = "Topic You May Like";
+                POSTED_BY = "Posted By";
+                TRENDING_QUESTION = "Tranding Question";
+                FOLLOWED_TOPIC = "Followed Topic";
+                RELATED_QUESTION = "Related Question";
+                QUESTION = "Ques";
+                ANSWER = "Answer";
+                BE_THE_FIRST_PERSON = "Be the first person to answer this question";
+                SUBMIT = "Submit";
+                COMPLETE_YOUR_PROFILE = "Complete your profile";
+                ANSWERED_BY = "Answer By";
+                NO_RELATED_QUESTION_FOUND = "No Related Question Found ";
+                CLICK_HERE_TO_MORE_TOPIC = "Click here to more topic";
+            }
+        %>
+        <%
+            request.setCharacterEncoding("UTF-8");
+            response.setCharacterEncoding("UTF-8");
+            int Question = 0;
+            if (request.getParameter("Id") != null) {
+                Question = Integer.valueOf(request.getParameter("Id"));
+            } else {
+                response.sendRedirect("index.jsp");
+            }
+
+
+        %>
+        <%            
+            Connection connection = null;
+            ResultSet resultSet = null;
+            PreparedStatement preparedStatement = null;
+            try {
+                if (connection == null || connection.isClosed()) {
+                    try {
+                        Class.forName("com.mysql.jdbc.Driver");
+                    } catch (ClassNotFoundException ex) {
+                        out.println("Exception in loading the class forname Driver" + ex);
+                    }
+                    connection = DriverManager.getConnection(DB_URL_, DB_USERNAME_, DB_PASSWORD_);
+                }
+        %>
+        <script src="ckeditor/ckeditor.js"></script>
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({
+                google_ad_client: "ca-pub-8778688755733551",
+                enable_page_level_ads: true
+            });
+        </script>
+
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-128307055-1"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+            gtag('js', new Date());
+            gtag('config', 'UA-128307055-1');
+        </script> 
+        <meta charset="UTF-8">
+        <!-- For IE -->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+        <!-- For Resposive Device -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+        <!-- responsive style sheet -->
+        <link rel="stylesheet" type="text/css" href="css/responsive.css">
+        <script type="text/javascript">
+            function take_value(el, question_answer_id, action, section) {
+            <% if (session.getAttribute("email") == null) { %>
+                alert("Please login first");<%
+                } else {%>
+                el.onclick = function (event) {
+                    event.preventDefault();
+                };
+                if (action === "upvote" && section === "answer") {
+                    var http = new XMLHttpRequest();
+                    http.open("POST", "<%=DB_AJAX_PATH%>/submit_answer_vote.jsp?question_answer_id=" + question_answer_id + "&action=upvote&section=answer", true);
+                    http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                    http.send();
+                }
+                if (action === "downvote" && section === "answer") {
+                    var http = new XMLHttpRequest();
+                    http.open("POST", "<%=DB_AJAX_PATH%>/submit_answer_vote.jsp?question_answer_id=" + question_answer_id + "&action=downvote&section=answer", true);
+                    http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                    http.send();
+                }
+                if (action === "upvote" && section === "question") {
+                    var http = new XMLHttpRequest();
+                    http.open("POST", "<%=DB_AJAX_PATH%>/submit_answer_vote.jsp?question_answer_id=" + question_answer_id + "&action=upvote&section=question", true);
+                    http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                    http.send();
+                }
+                if (action === "downvote" && section === "question") {
+                    var http = new XMLHttpRequest();
+                    http.open("POST", "<%=DB_AJAX_PATH%>/submit_answer_vote.jsp?question_answer_id=" + question_answer_id + "&action=downvote&section=question", true);
+                    http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                    http.send();
+                }
+            <% }%>
+            }
+        </script>
+        
+        <%
+            String StoredQuestion = "";
+            String StoredAnswer = "";
+            int StoredQuestionId;
+            try {
+                String sql = "SELECT q_id,question FROM question WHERE q_id = (?)";
+                //String sql = "SELECT q.q_id,q.question,SUBSTRING(a.answer,1,500) FROM question q RIGHT JOIN answer a on q.q_id = a.q_id WHERE q.q_id = (?)";
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setInt(1, Question);
+                resultSet = preparedStatement.executeQuery();
+                while (resultSet.next()) {
+                    StoredQuestion = resultSet.getString("question");
+                    StoredQuestionId = resultSet.getInt("q_id");
+                    //StoredAnswer = resultSet.getString("SUBSTRING(a.answer,1,500)");
+                }
+            } catch (Exception e) {
+                out.println("Unable to retrieve!!" + e);
+            }
+        %>
+        <title><%=StoredQuestion%></title>
+        <meta property="og:title" content="<%=StoredQuestion%>" />
+        <meta property="og:description" content="<%=StoredAnswer%>"/>
+        <meta property="og:url" content="https://www.inquiryhere.com/">
+        <meta property="og:site_name" content="https://www.inquiryhere.com/" />
+        <meta property="og:image" content="https://www.inquiryhere.com/images/logo/inquiryhere_Logo.PNG" />
+        <meta property="og:type" content="website">
+        <meta property="og:locale" content="en_US">
+
+
+    </head>
+
+    <body>
+        <div class="main-page-wrapper">
+            <!-- Header _________________________________ -->
+            <%--@include file="header.jsp" --%>
+            <jsp:include page="header.jsp">
+                <jsp:param name="sl" value="<%=sl%>"/>
+            </jsp:include>
+            <%
+                String name = null; // initilazing
+                int id_of_user = 0;// initilazing
+                int topic_id = 0;// initilazing
+                int q_id = 0;// initilazing
+                int q_asked_by_user = 0;// initilazing
+                String firstname_of_user_who_asked_the_question = null;
+                if (session.getAttribute("email") != null) {
+                    String email = (String) session.getAttribute("email");
+                    try {
+                        String sql = "SELECT * FROM newuser WHERE email = '" + email + "'";
+                        preparedStatement = connection.prepareCall(sql);
+                        resultSet = preparedStatement.executeQuery();
+                        while (resultSet.next()) {
+                            id_of_user = resultSet.getInt("id");
+                            name = resultSet.getString("firstname");
+                        }
+                    } catch (Exception e) {
+                        out.println("Unable to retrieve!!" + e);
+                    }
+                }
+            %>
+            <div class="clear-fix"></div>
+            <div class="bodydata">
+                <div class="container clear-fix">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+
+                            <div class="themeBox" style="height:auto;">
+                                <div class="boxHeading">
+                                    <%  if (session.getAttribute("email") != null) {%>
+                                    <%=FOLLOWED_TOPIC%>
+                                    <% } else {%>
+                                    <%=TOPIC_YOU_MAY_LIKE%>
+                                    <% } %>
+                                </div>
+                                <div>
+                                    <ul>
+
+                                        <%
+                                            String topic_name;
+                                            try {
+                                                String p_fetch_topic;
+                                                if (session.getAttribute("email") != null) {
+                                                    p_fetch_topic = "select t.unique_id,t.topic_name from topic t "
+                                                            + "right join topic_followers_detail de "
+                                                            + "on t.unique_id = de.topic_id "
+                                                            + "where user_or_followers_id= '" + id_of_user + "'";
+                                                } else {
+                                                    p_fetch_topic = "select * from topic LIMIT 50,20";
+                                                }
+
+                                                preparedStatement = connection.prepareStatement(p_fetch_topic);
+                                                resultSet = preparedStatement.executeQuery();
+                                                while (resultSet.next()) {
+                                                    topic_name = resultSet.getString("topic_name");
+                                                    topic_id = resultSet.getInt("unique_id");
+                                                    if (topic_id != 0) {%>
+                                        <li><a href="topic.jsp?id=<%=topic_id%>&sl=<%=sl%>"><%=topic_name%></a></li>
+                                            <% }
+                                                    }
+                                                } catch (Exception e) {
+                                                    out.println("Unable to retrieve!!" + e);
+                                                }
+                                            %>
+                                        <a href="FollowMoreTopic.jsp?sl=<%=sl%>"><%=CLICK_HERE_TO_MORE_TOPIC%></a>
+                                    </ul>
+                                </div>
+                            </div> 
+                            <div class="clear-fix"></div>
+                            <div class="clear-fix"></div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+
+                            <div class="row">
+
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+
+                                    <div class="themeBox" style="height:auto;">
+
+                                        <div class="boxHeading marginbot10">
+
+                                            <%=QUESTION%> : <%=StoredQuestion%> ?
+                                        </div>
+
+                                        <%
+                                            try {
+                                                String sql_p = "SELECT user.firstname,q.q_id,q.id FROM newuser user RIGHT JOIN question q on user.id=q.id where q_id= (?)";
+                                                preparedStatement = connection.prepareStatement(sql_p);
+                                                preparedStatement.setInt(1, Question);
+                                                resultSet = preparedStatement.executeQuery();
+                                                while (resultSet.next()) {
+                                                    q_id = resultSet.getInt("q_id");
+                                                    q_asked_by_user = resultSet.getInt("id");
+                                                    firstname_of_user_who_asked_the_question = resultSet.getString("firstname");
+                                                }
+                                            } catch (Exception e) {
+                                                out.println("Unable to retrieve!!" + e);
+                                            }
+                                        %>
+                                        <div class="questionArea">
+
+                                            <div class="postedBy"><%=POSTED_BY%> :<a href="profile.jsp?ID=<%=q_asked_by_user%>&sl=<%=sl%>"><%=firstname_of_user_who_asked_the_question%></a> </div>
+
+                                        </div>
+                                        <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=q_id%>', 'upvote', 'question');" >Upvote</a> &nbsp;&nbsp; 
+                                        <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=q_id%>', 'downvote', 'question');" >Downvote</a>
+
+                                    </div>
+                                    <div class="boxHeading marginbot10"><%=ANSWER%>:</div>
+
+                                    <%
+                                        try {
+                                            String sql_p = "SELECT user.firstname,ans.answer,ans.a_id,ans.Answer_by_id FROM newuser user RIGHT JOIN answer ans on user.id = ans.Answer_by_id where q_id = '" + q_id + "' order by vote desc";
+                                            preparedStatement = connection.prepareStatement(sql_p);
+                                            resultSet = preparedStatement.executeQuery();
+                                            int count = 0;
+
+                                            while (resultSet.next()) {
+                                                count++;
+                                                String answer = resultSet.getString("answer");
+                                                int who_gave_answer = resultSet.getInt("Answer_by_id");
+                                                String firstname = resultSet.getString("firstname");
+                                                int answer_id = resultSet.getInt("ans.a_id");
+                                    %>
+                                    <div class="themeBox" style="height:auto;">
+                                        <div class="boxHeading marginbot10" style="font-size: 15px;font-family: Arial, Helvetica, sans-serif;">
+                                            <%=answer%> 
+                                        </div>
+                                        <div class="questionArea">
+                                            <div class="postedBy"><%=ANSWERED_BY%> :<a href="profile.jsp?ID=<%=who_gave_answer%>&sl=<%=sl%>"><%=firstname%></a> 
+                                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                                <%  if (session.getAttribute("Session_id_of_user") != null) {
+                                                        int Session_id_of_user = (Integer) session.getAttribute("Session_id_of_user");
+                                                        if (who_gave_answer == Session_id_of_user) {%>
+
+                                                <a href="edit_a.jsp?q_id=<%=Question%>&ans_id=<%=answer_id%>&ans_by_id=<%=who_gave_answer%>">Edit</a>
+                                                <% }
+                                                    }%> </div>
+                                        </div>
+                                        <a href="javascript:void(0)" onclick="this.style.color = 'red'; return take_value(this, '<%=answer_id%>', 'upvote', 'answer');" >Upvote</a>&nbsp;&nbsp; 
+                                        <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=answer_id%>', 'downvote', 'answer');" >Downvote</a>
+
+                                    </div>
+                                    <%
+                                        }
+                                        if (count == 0) {
+                                    %>
+                                    <div class="themeBox" style="height:auto;">
+                                        <div class="boxHeading marginbot10">
+                                            <%=BE_THE_FIRST_PERSON%>
+                                        </div>
+                                    </div>
+                                    <%
+                                            }
+                                        } catch (Exception e) {
+                                            out.println("Unable to retrieve!!" + e);
+                                        }
+                                    %>
+                                    <form name="submitquestion" method="post" action="SubmitAnswer.jsp?_id_of_user=<%=id_of_user%>&q_id=<%=q_id%>&URL=<%=request.getRequestURL() + "?" + request.getQueryString()%>&sl=<%=sl%>">
+                                        <textarea class="ckeditor" name="answer" required=""></textarea>
+                                        <input type="submit" name="Post" value="<%=SUBMIT%>"> 
+                                    </form>
+
+
+                                    <div class="clear-fix"></div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+
+                            <div class="themeBox" style="height:500px;overflow-y: auto;">
+                                <div class="boxHeading">
+                                    <%=RELATED_QUESTION%>
+                                </div>
+                                <div>
+                                    <%
+                                        Statement stmt_detail = null;
+                                        ResultSet rs_detail = null;
+                                        int RelatedTag;
+                                        String question_detail;
+                                        try {
+                                            stmt_detail = connection.createStatement();
+                                            String sql_R = "SELECT * FROM question_topic_tag WHERE question_id = '" + q_id + "'";
+                                            preparedStatement = connection.prepareStatement(sql_R);
+                                            resultSet = preparedStatement.executeQuery();
+                                            int count = 0;
+                                            while (resultSet.next()) {
+                                                RelatedTag = resultSet.getInt("tag_id");
+                                                String q_detail = "select DISTINCT q.id,q.question,q.q_id from question q "
+                                                        + "right join question_topic_tag qtt on qtt.question_id=q.q_id where tag_id='" + RelatedTag + "'";
+                                                rs_detail = stmt_detail.executeQuery(q_detail);
+                                                try {
+                                                    while (rs_detail.next()) {
+                                                        question_detail = rs_detail.getString("question");
+                                                        int questionID = rs_detail.getInt("q_id");
+                                                        if (questionID != q_id) {
+                                                            if (question_detail != null) {
+                                                                count++;
+                                    %>
+                                    <a href="Answer.jsp?Id=<%=questionID%>&sl=<%=sl%>" ><%=question_detail%></a><br><br>
+                                    <%
+                                                            }
+
+                                                        }
+                                                    }
+                                                } catch (Exception error) {
+                                                    out.println("Error in inside blok" + error);
+                                                }
+                                            }
+                                            if (count == 0) {
+                                                if (request.getParameter("lang") != "hindi") {
+                                                    out.println(NO_RELATED_QUESTION_FOUND + " !!!");
+                                                } else {
+                                                    out.println(NO_RELATED_QUESTION_FOUND + "!!!");
+                                                }
+                                            }
+                                            rs_detail.close();
+                                            stmt_detail.close();
+                                        } catch (Exception e) {
+                                            out.println("Exception in Related question :" + e);
+                                        }
+                                    %>
+                                </div>
+                                <%
+                                    } catch (Exception e) {
+                                        out.println("Error in main try block:-" + e);
+                                    } finally {
+
+                                        if (connection != null || !connection.isClosed()) {
+                                            try {
+                                                connection.close();
+                                            } catch (Exception e) {
+                                                out.println("Exception in closing connection " + e);
+                                            }
+                                        }
+                                        if (resultSet != null || !resultSet.isClosed()) {
+                                            try {
+                                                resultSet.close();
+                                            } catch (Exception e) {
+                                                out.println("Exception in closing resulatset " + e);
+                                            }
+                                        }
+                                        if (preparedStatement != null || !preparedStatement.isClosed()) {
+                                            try {
+                                                preparedStatement.close();
+                                            } catch (Exception e) {
+                                                out.println("Exception in closing preparedStatement " + e);
+                                            }
+                                        }
+                                    }
+                                %>
+                            </div>
+                            <%
+                                if (session.getAttribute("email") != null) {
+                            %>
+                            <div class="themeBox" style="height:auto;">
+                                <div class="boxHeading">
+                                    <%=COMPLETE_YOUR_PROFILE%>
+                                </div>
+                                <div>
+                                    <jsp:include page="CompleteUserProfile.jsp" >
+                                        <jsp:param name="sl" value="<%=sl%>"></jsp:param>
+                                    </jsp:include>
+                                </div>
+
+                            </div><% }%>
+                            <div class="clear-fix"></div>
+                            <%
+                                if (session.getAttribute("email") != null) {
+                            %>
+                            <div class="themeBox" style="height:auto;">
+                                <div class="boxHeading">
+                                    <%=TRENDING_QUESTION%>
+                                </div>
+                                <div>
+                                    <jsp:include page="TrendingQuestion.jsp" />
+                                </div>
+                            </div><% }%>
+                            <div class="clear-fix"></div>
+
+                            <div class="clear-fix"></div>
+                        </div>
+                        <div class="clear-fix"></div>
+                    </div>
+                    <div class="clear-fix"></div>
+                </div>
+                <div class="clear-fix"></div>
+            </div>
+            <div class="clear-fix"></div>
+
+            <div class="modal fade" id="myModal" role="dialog">
+                <div class="modal-dialog">
+                </div>
+            </div>
+
+            <script type="text/javascript" src="vendor/jquery-2.1.4.js"></script>
+            <!-- Bootstrap JS -->
+            <script type="text/javascript" src="vendor/bootstrap/bootstrap.min.js"></script>
+            <!-- Bootstrap Select JS -->
+            <script type="text/javascript" src="vendor/bootstrap-select/dist/js/bootstrap-select.js"></script>
+        </div> <!-- /.main-page-wrapper -->
+
+    </body></html>
