@@ -80,6 +80,7 @@
             Connection connection = null;
             ResultSet resultSet = null;
             PreparedStatement preparedStatement = null;
+            int Session_id_of_user = 0;
             try {
                 if (connection == null || connection.isClosed()) {
                     try {
@@ -89,7 +90,7 @@
                     }
                     connection = DriverManager.getConnection(DB_URL_, DB_USERNAME_, DB_PASSWORD_);
                 }
-                String v_check = "SELECT email FROM newuser WHERE email = '" + Email + "'";
+                String v_check = "SELECT id,email FROM newuser WHERE email = '" + Email + "'";
                 preparedStatement = connection.prepareStatement(v_check);
                 resultSet = preparedStatement.executeQuery();
                 int i = 0;
@@ -105,12 +106,20 @@
                     try {
 
                         Statement statement = connection.createStatement();
-                        String p = "insert into newuser(firstname,lastname,email,password) values('" + firstname + "','" + lastname + "','" + email + "','" + password + "')";
+                        String p = "insert into newuser(firstname,lastname,email,email_s,password,imagepath) values('" + firstname + "','" + lastname + "','" + email + "','0','" + password + "','inquiryhere_Logo.PNG')";
                         statement.execute(p);
                         if (statement != null) {
                             statement.close();
                         }
+                        String fetch_user_id = "SELECT id FROM newuser WHERE email = '" + Email + "'";
+                        preparedStatement = connection.prepareStatement(fetch_user_id);
+                        resultSet = preparedStatement.executeQuery();
+                        while (resultSet.next()) {
+                            //String Stored_email = resultSet.getString("email");
+                            Session_id_of_user = resultSet.getInt("id");
+                        }
                         session.setAttribute("email", email);
+                        session.setAttribute("Session_id_of_user", Session_id_of_user);
                         response.sendRedirect("CompleteProfilefFollowTopic.jsp?sl=" + sl);
                     } catch (Exception e1) {
                         out.print("Error:-" + e1);

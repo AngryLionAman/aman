@@ -6,7 +6,8 @@
         <%@page import="java.sql.*"%>
         <%@include file="site.jsp" %>
         <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-        <%!            String TOPIC_MAY_YOU_LIKE = "";
+        <%!            
+            String TOPIC_MAY_YOU_LIKE = "";
             String FOLLOW = "";
             String FOLLOWED = "";
         %>
@@ -117,19 +118,21 @@
 
                                         <%
                                             try {
-                                                Connection con_topic = null;
+                                                //Connection con_topic = null;
                                                 String name_topic = null;
-                                                String p_topic = "SELECT * FROM topic";
+                                                String p_topic = "select t.unique_id,t.topic_name,(select count(topic_id) from topic_followers_detail "
+                                                        + "where topic_id = t.unique_id)as count from topic t";
                                                 preparedStatement = connection.prepareStatement(p_topic);
                                                 resultSet = preparedStatement.executeQuery();
                                                 int i = 1;
                                                 String Status = null;
                                                 while (resultSet.next()) {
-                                                    int _topic_id = resultSet.getInt("unique_id");
-                                                    name_topic = resultSet.getString("topic_name").substring(0, 1).toUpperCase()+resultSet.getString("topic_name").substring(1);
+                                                    int _topic_id = resultSet.getInt("t.unique_id");
+                                                    int count = resultSet.getInt("count");
+                                                    name_topic = resultSet.getString("t.topic_name").substring(0, 1).toUpperCase()+resultSet.getString("topic_name").substring(1).toLowerCase();
                                         %>   
                                         <div style="width:auto;height:52px;border:1px solid #000;float: left; margin-right: 5px; margin-bottom: 5px;" class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                                            <a href=topic.jsp?id=<%=_topic_id%>&sl=<%=sl%>><%=name_topic%></a>
+                                            <span title="Totoal followers of <%=name_topic%> is <%=count%>"><a href=topic.jsp?id=<%=_topic_id%>&sl=<%=sl%>><%=name_topic%></a> (<%=count%>)</span>
                                             <%
                                                 Statement stmt_topic_followers;
                                                 ResultSet rs_topic_followers;

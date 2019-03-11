@@ -178,17 +178,23 @@
                                                                         <label for="lname"><%=PASSWORD%></label>
                                                                         <div class="boxHeading">
                                                                             <input type="password" id="lname" name="password" pattern=".{6,}" title="Six or more characters" required="">
-                                                                        </div>                                                                                                                               
-                                                                        <div class="float-right margintop20" style="vertical-align:bottom">
-                                                                            <button type="submit" class="btn" data-toggle="modal" ><%=CREATE_ACCOUNT%></button>
-                                                                        </div>
-
+                                                                        </div> 
+                                                                        <table>
+                                                                            <tr><td><br>
+                                                                        
+                                                                                    <button type="submit" class="button button1" data-toggle="modal" style="background-color: red;" ><%=CREATE_ACCOUNT%></button>
+                                                                        
+                                                                                </td></tr>
                                                                     </form>
-                                                                    </form>
+                                                                        
+                                                                  
+                                                                    <tr><td><br>
+                                                                        
                                                                     <form action="ForgotPassword.jsp?sl=<%=sl%>">
-                                                                        <button class="button button1"><%=FORGET_PASSWORD%></button>
+                                                                    ,    <button class="button button1"><%=FORGET_PASSWORD%></button>
                                                                     </form>
-                                                                </div>
+                                                                        </td></tr>
+                                                                    </table>
                                                             </div>
 
                                                         </center> </div>

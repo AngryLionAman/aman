@@ -112,7 +112,7 @@
                                                                                     preparedStatement = connection.prepareStatement(sql_v);
                                                                                     resultSet = preparedStatement.executeQuery();
                                                                                     while (resultSet.next()) {
-                                                                                        TopicName = resultSet.getString("topic_name");
+                                                                                        TopicName = resultSet.getString("topic_name").substring(0, 1).toUpperCase()+resultSet.getString("topic_name").substring(1).toLowerCase();
                                                                                         out.println("<option>" + TopicName + "</option>");
                                                                                     }
                                                                                     

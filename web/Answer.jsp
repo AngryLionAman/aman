@@ -7,7 +7,7 @@
         <meta charset="UTF-8">
         <meta http-equiv="content-type" content="text/html" charset="utf-8">
 
-        <%!
+        <%!            
             String FOLLOWED_TOPIC = "";
             String QUESTION = "";
             String POSTED_BY = "";
@@ -146,21 +146,22 @@
             <% }%>
             }
         </script>
-        
+
         <%
             String StoredQuestion = "";
             String StoredAnswer = "";
-            int StoredQuestionId;
+            int StoredQuestionId = 0;
             try {
-                String sql = "SELECT q_id,question FROM question WHERE q_id = (?)";
-                //String sql = "SELECT q.q_id,q.question,SUBSTRING(a.answer,1,500) FROM question q RIGHT JOIN answer a on q.q_id = a.q_id WHERE q.q_id = (?)";
+                //String sql = "SELECT q_id,question FROM question WHERE q_id = (?)";
+                String sql = " SELECT q.q_id AS q_id,q.question AS question,SUBSTRING(a.answer,1,500) AS answer"
+                        + " FROM question q RIGHT JOIN answer a on q.q_id = a.q_id WHERE q.q_id = (?)";
                 preparedStatement = connection.prepareStatement(sql);
                 preparedStatement.setInt(1, Question);
                 resultSet = preparedStatement.executeQuery();
                 while (resultSet.next()) {
                     StoredQuestion = resultSet.getString("question");
                     StoredQuestionId = resultSet.getInt("q_id");
-                    //StoredAnswer = resultSet.getString("SUBSTRING(a.answer,1,500)");
+                    StoredAnswer = resultSet.getString("answer");
                 }
             } catch (Exception e) {
                 out.println("Unable to retrieve!!" + e);
@@ -215,11 +216,12 @@
 
                             <div class="themeBox" style="height:auto;">
                                 <div class="boxHeading">
-                                    <%  if (session.getAttribute("email") != null) {%>
+                                    Topic, Related to this question
+                                    <%--  if (session.getAttribute("email") != null) {%>
                                     <%=FOLLOWED_TOPIC%>
                                     <% } else {%>
                                     <%=TOPIC_YOU_MAY_LIKE%>
-                                    <% } %>
+                                    <% } --%>
                                 </div>
                                 <div>
                                     <ul>
@@ -228,19 +230,21 @@
                                             String topic_name;
                                             try {
                                                 String p_fetch_topic;
-                                                if (session.getAttribute("email") != null) {
+                                                /*if (session.getAttribute("email") != null) {
                                                     p_fetch_topic = "select t.unique_id,t.topic_name from topic t "
                                                             + "right join topic_followers_detail de "
                                                             + "on t.unique_id = de.topic_id "
                                                             + "where user_or_followers_id= '" + id_of_user + "'";
                                                 } else {
                                                     p_fetch_topic = "select * from topic LIMIT 50,20";
-                                                }
-
+                                                }*/
+                                                p_fetch_topic = "select tag_id as unique_id,"
+                                                        + "(select topic_name from topic where unique_id = question_topic_tag.tag_id)"
+                                                        + " topic_name from question_topic_tag  where question_id ='" + StoredQuestionId + "'";
                                                 preparedStatement = connection.prepareStatement(p_fetch_topic);
                                                 resultSet = preparedStatement.executeQuery();
                                                 while (resultSet.next()) {
-                                                    topic_name = resultSet.getString("topic_name");
+                                                    topic_name = resultSet.getString("topic_name").substring(0, 1).toUpperCase()+resultSet.getString("topic_name").substring(1).toLowerCase();
                                                     topic_id = resultSet.getInt("unique_id");
                                                     if (topic_id != 0) {%>
                                         <li><a href="topic.jsp?id=<%=topic_id%>&sl=<%=sl%>"><%=topic_name%></a></li>
@@ -358,7 +362,7 @@
                         </div>
                         <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
 
-                            <div class="themeBox" style="height:500px;overflow-y: auto;">
+                            <div class="themeBox" style="height:250px;overflow-y: auto;">
                                 <div class="boxHeading">
                                     <%=RELATED_QUESTION%>
                                 </div>
@@ -366,36 +370,30 @@
                                     <%
                                         Statement stmt_detail = null;
                                         ResultSet rs_detail = null;
-                                        int RelatedTag;
                                         String question_detail;
                                         try {
                                             stmt_detail = connection.createStatement();
-                                            String sql_R = "SELECT * FROM question_topic_tag WHERE question_id = '" + q_id + "'";
-                                            preparedStatement = connection.prepareStatement(sql_R);
-                                            resultSet = preparedStatement.executeQuery();
                                             int count = 0;
-                                            while (resultSet.next()) {
-                                                RelatedTag = resultSet.getInt("tag_id");
-                                                String q_detail = "select DISTINCT q.id,q.question,q.q_id from question q "
-                                                        + "right join question_topic_tag qtt on qtt.question_id=q.q_id where tag_id='" + RelatedTag + "'";
-                                                rs_detail = stmt_detail.executeQuery(q_detail);
-                                                try {
-                                                    while (rs_detail.next()) {
-                                                        question_detail = rs_detail.getString("question");
-                                                        int questionID = rs_detail.getInt("q_id");
-                                                        if (questionID != q_id) {
-                                                            if (question_detail != null) {
-                                                                count++;
+                                            String q_detail = "select DISTINCT q.id,q.question,q.q_id from question q "
+                                                    + "right join question_topic_tag qtt on qtt.question_id=q.q_id where tag_id IN "
+                                                    + "(SELECT distinct(tag_id) as tag_id from question_topic_tag WHERE question_id = '" + q_id + "') and q_id is not null";
+                                            rs_detail = stmt_detail.executeQuery(q_detail);
+                                            try {
+                                                while (rs_detail.next()) {
+                                                    question_detail = rs_detail.getString("question");
+                                                    int questionID = rs_detail.getInt("q_id");
+                                                    if (questionID != q_id) {
+                                                        if (question_detail != null) {
+                                                            count++;
                                     %>
                                     <a href="Answer.jsp?Id=<%=questionID%>&sl=<%=sl%>" ><%=question_detail%></a><br><br>
                                     <%
-                                                            }
-
                                                         }
+
                                                     }
-                                                } catch (Exception error) {
-                                                    out.println("Error in inside blok" + error);
                                                 }
+                                            } catch (Exception error) {
+                                                out.println("Error in inside blok" + error);
                                             }
                                             if (count == 0) {
                                                 if (request.getParameter("lang") != "hindi") {
@@ -455,7 +453,7 @@
 
                             </div><% }%>
                             <div class="clear-fix"></div>
-                            <%
+                            <%--
                                 if (session.getAttribute("email") != null) {
                             %>
                             <div class="themeBox" style="height:auto;">
@@ -465,7 +463,7 @@
                                 <div>
                                     <jsp:include page="TrendingQuestion.jsp" />
                                 </div>
-                            </div><% }%>
+                            </div><% }--%>
                             <div class="clear-fix"></div>
 
                             <div class="clear-fix"></div>

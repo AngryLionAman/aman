@@ -66,30 +66,59 @@
                     String question_tag = (String) request.getParameter("tag_of_question");
                     String[] arrSplit = question_tag.split(",");
                     String status = null;
+                    boolean firstStep = false;
+                    boolean secondStep = true;
 
                     for (int i = 0; i < arrSplit.length; i++) {
 
-                        String v = "select topic_name from topic";
-                        preparedStatement = connection.prepareStatement(v);
-                        resultSet = preparedStatement.executeQuery();
-                        while (resultSet.next()) {
-                            String Stored_topic = resultSet.getString("topic_name");
-                            if (Stored_topic.equalsIgnoreCase(arrSplit[i])) {
-                                status = "present";
+                        if (arrSplit[i].length() >= 1) {//If topic name having the extra space
+                            firstStep = true;
+                            for (; true;) {
+                                try {
+                                    if (arrSplit[i].charAt(0) == 32) {
+                                        arrSplit[i] = arrSplit[i].substring(1);
+                                        out.println(" |  word is:" + arrSplit[i].toLowerCase() + ", langth is:" + arrSplit[i].length());
+                                        if (arrSplit[i].length() == 0) {
+                                            secondStep = false;
+                                            break;
+                                        }
+                                    } else {
+                                        break;
+                                    }
+                                } catch (Exception msg) {
+                                    out.println(msg);
+                                }
                             }
                         }
-                        if (status != "present") {
-                            try {
-                                String inserting_the_topic = "insert into topic(topic_name) values('" + arrSplit[i] + "')";
-                                preparedStatement = connection.prepareStatement(inserting_the_topic);
-                                preparedStatement.executeUpdate();
-                                out.println("<br><b>Successfully inserted</b>");
-                            } catch (Exception e2) {
-                                out.println("Status Error:" + e2);
+                        if (firstStep && secondStep) {
+
+                            String v = "select lower(topic_name) from topic";
+                            preparedStatement = connection.prepareStatement(v);
+                            resultSet = preparedStatement.executeQuery();
+                            while (resultSet.next()) {
+                                String Stored_topic = resultSet.getString("lower(topic_name)");
+                                if (Stored_topic.equals(arrSplit[i].toLowerCase())) {
+                                    status = "present";
+                                }
                             }
-                        } else {
-                            out.println("<br><b>Topic already present</b>");
+                            if (status != "present") {
+                                try {
+                                    String inserting_the_topic = "insert into topic(topic_name) values('" + arrSplit[i] + "')";
+                                    preparedStatement = connection.prepareStatement(inserting_the_topic);
+                                    preparedStatement.executeUpdate();
+                                    out.println("<br><b>Successfully inserted</b>");
+                                } catch (Exception e2) {
+                                    out.println("Status Error:" + e2);
+                                }
+                                status = null;
+                            } else {
+                                out.println("<br><b>Topic already present</b>");
+                            }
+                            status = null;
                         }
+                        firstStep = false;
+                        secondStep = true;
+
                     }
 
                     for (int i = 0; i < arrSplit.length; i++) {
@@ -102,7 +131,7 @@
                                 int topic_id = resultSet.getInt("unique_id");
                                 if (Stored_topic.equalsIgnoreCase(arrSplit[i])) {
                                     out.println("<br>" + topic_id + " " + Stored_topic);
-                                    String p = "insert into question_topic_tag(question_id,tag_id) values('" + question_id + "','" + topic_id + "') ";
+                                    String p = "insert into question_topic_tag(question_id,tag_id) values('" + question_id + "',lower('" + topic_id + "')) ";
                                     preparedStatement = connection.prepareStatement(p);
                                     preparedStatement.executeUpdate();
                                 }

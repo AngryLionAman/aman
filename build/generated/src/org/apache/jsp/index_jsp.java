@@ -12,7 +12,7 @@ public final class index_jsp extends org.apache.jasper.runtime.HttpJspBase
 String DB_URL_ = "jdbc:mysql://localhost/bharat?useUnicode=true&characterEncoding=utf-8";
 String DB_USERNAME_ = "root";
 String DB_PASSWORD_ = null;
-String DB_AJAX_PATH = "http://localhost:8081/InquiryHere";
+String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
 
             String name = null;
             int id_of_user = 0;
@@ -95,7 +95,8 @@ String DB_AJAX_PATH = "http://localhost:8081/InquiryHere";
       _jspx_out = out;
       _jspx_resourceInjector = (org.glassfish.jsp.api.ResourceInjector) application.getAttribute("com.sun.appserv.jsp.resource.injector");
 
-      out.write("<html lang=\"en\"><head>\r\n");
+      out.write("<html lang=\"en\">\r\n");
+      out.write("    <head>\r\n");
       out.write("        \r\n");
       out.write("         \r\n");
       out.write("        ");
@@ -217,6 +218,40 @@ String DB_AJAX_PATH = "http://localhost:8081/InquiryHere";
       out.write("            google.setOnLoadCallback(OnLoad);\r\n");
       out.write("\r\n");
       out.write("        </script> \r\n");
+      out.write("        <script type=\"text/javascript\">\r\n");
+      out.write("            function take_value(el, question_id, action) {\r\n");
+      out.write("            ");
+ if (session.getAttribute("email") == null) { 
+      out.write("\r\n");
+      out.write("                alert(\"Please login first\");");
+
+                } else {
+      out.write("\r\n");
+      out.write("                el.onclick = function (event) {\r\n");
+      out.write("                    event.preventDefault();\r\n");
+      out.write("                };\r\n");
+      out.write("                if (action === \"upvote\") {\r\n");
+      out.write("                    var http = new XMLHttpRequest();\r\n");
+      out.write("                    http.open(\"POST\", \"");
+      out.print(DB_AJAX_PATH);
+      out.write("/submit_question_vote.jsp?question_id=\" + question_id + \"&action=upvote\", true);\r\n");
+      out.write("                    http.setRequestHeader(\"Content-type\", \"application/x-www-form-urlencoded\");\r\n");
+      out.write("                    http.send();\r\n");
+      out.write("                }\r\n");
+      out.write("                if (action === \"downvote\") {\r\n");
+      out.write("                    var http = new XMLHttpRequest();\r\n");
+      out.write("                    http.open(\"POST\", \"");
+      out.print(DB_AJAX_PATH);
+      out.write("/submit_question_vote.jsp?question_id=\" + question_id + \"&action=downvote\", true);\r\n");
+      out.write("                    http.setRequestHeader(\"Content-type\", \"application/x-www-form-urlencoded\");\r\n");
+      out.write("                    http.send();\r\n");
+      out.write("                }\r\n");
+      out.write("            ");
+ }
+      out.write("\r\n");
+      out.write("            }\r\n");
+      out.write("        </script>\r\n");
+      out.write("\r\n");
       out.write("\r\n");
       out.write("    </head>\r\n");
       out.write("\r\n");
@@ -299,28 +334,37 @@ String DB_AJAX_PATH = "http://localhost:8081/InquiryHere";
                                             String topic_name;
                                             try {
                                                 if (session.getAttribute("email") != null) {
-                                                    sql = "select t.unique_id,t.topic_name from topic t "
-                                                            + "right join topic_followers_detail de "
-                                                            + "on t.unique_id = de.topic_id "
-                                                            + "where user_or_followers_id= '" + id_of_user + "'";
+                                                    sql = "select t.unique_id,t.topic_name,(select count(topic_id) "
+                                                            + "from topic_followers_detail where topic_id = t.unique_id)as count"
+                                                            + " from topic t right join topic_followers_detail de on t.unique_id = de.topic_id "
+                                                            + "where user_or_followers_id ='" + id_of_user + "'";
                                                 } else {
-                                                    sql = "select * from topic LIMIT 30,20";
+                                                    sql = "select topic.unique_id,topic_name,count(topic_id) as count from topic inner join "
+                                                            + "topic_followers_detail where topic.unique_id = topic_followers_detail.topic_id "
+                                                            + "group by topic_followers_detail.topic_id limit 60,20";
                                                 }
                                                 preparedStatement = connection.prepareStatement(sql);
                                                 resultSet = preparedStatement.executeQuery();
                                                 while (resultSet.next()) {
-                                                    topic_name = resultSet.getString("topic_name");
+                                                    topic_name = resultSet.getString("topic_name").substring(0, 1).toUpperCase() + resultSet.getString("topic_name").substring(1).toLowerCase();
                                                     topic_id = resultSet.getInt("unique_id");
+                                                    int count = resultSet.getInt("count");
                                                     if (topic_id != 0) {
       out.write("\r\n");
-      out.write("                                        <li><a href=\"topic.jsp?id=");
+      out.write("                                        <li><span title=\"Totoal followers of ");
+      out.print(topic_name);
+      out.write(" is ");
+      out.print(count);
+      out.write("\"><a href=\"topic.jsp?id=");
       out.print(topic_id);
       out.write("&sl=");
       out.print(sl);
       out.write('"');
       out.write('>');
       out.print(topic_name);
-      out.write("</a></li>\r\n");
+      out.write("</a> (");
+      out.print(count);
+      out.write(")</span></li>\r\n");
       out.write("                                            ");
  }
                                                     }
@@ -368,6 +412,10 @@ String DB_AJAX_PATH = "http://localhost:8081/InquiryHere";
       out.write("                            <div class=\"row\">\r\n");
       out.write("\r\n");
       out.write("                                <div class=\"col-lg-12 col-md-12 col-sm-12 col-xs-12\">\r\n");
+      out.write("                                    ");
+
+                                    if(request.getParameter("iPageNo") == null && request.getParameter("cPageNo") == null){
+                                    
       out.write("\r\n");
       out.write("\r\n");
       out.write("                                    <h4>");
@@ -397,7 +445,7 @@ String DB_AJAX_PATH = "http://localhost:8081/InquiryHere";
       out.write("\" >");
       out.print(TrendingQuestion_T);
       out.write(" ?</a>\r\n");
-      out.write("                                           \r\n");
+      out.write("\r\n");
       out.write("                                        </div>\r\n");
       out.write("                                        <div class=\"questionArea\">\r\n");
       out.write("\r\n");
@@ -410,23 +458,37 @@ String DB_AJAX_PATH = "http://localhost:8081/InquiryHere";
       out.write("\"> ");
       out.print(UserName_for_trending_question_T);
       out.write("</a>\r\n");
-      out.write("                                             &nbsp;&nbsp;&nbsp;&nbsp; \r\n");
-      out.write("                                            ");
+      out.write("                                                &nbsp;&nbsp;&nbsp;&nbsp; \r\n");
+      out.write("                                                ");
   if (session.getAttribute("Session_id_of_user") != null) {
-                                                    int Session_id_of_user = (Integer) session.getAttribute("Session_id_of_user");
-                                                    if (userID == Session_id_of_user) {
+                                                        int Session_id_of_user = (Integer) session.getAttribute("Session_id_of_user");
+                                                        if (userID == Session_id_of_user) {
       out.write("\r\n");
-      out.write("                                            <a href=\"edit_q.jsp?Id=");
+      out.write("                                                <a href=\"edit_q.jsp?Id=");
       out.print(question_id);
       out.write("&sl=");
       out.print(sl);
       out.write("\">edit</a>\r\n");
-      out.write("                                            ");
+      out.write("                                                ");
  }
-                                                }
+                                                    }
       out.write("\r\n");
       out.write("                                            </div>\r\n");
-      out.write("\r\n");
+      out.write("                                            <a href=\"javascript:void(0)\" onclick=\"this.style.color = 'red';return take_value(this, '");
+      out.print(question_id);
+      out.write("', '");
+      out.print("upvote");
+      out.write("');\" >Upvote</a>&nbsp;&nbsp; \r\n");
+      out.write("                                            <a href=\"javascript:void(0)\" onclick=\"this.style.color = 'red';return take_value(this, '");
+      out.print(question_id);
+      out.write("', '");
+      out.print("downvote");
+      out.write("');\" >Downvote</a>&nbsp;&nbsp; \r\n");
+      out.write("                                            <a href=\"Answer.jsp?Id=");
+      out.print(question_id);
+      out.write("&sl=");
+      out.print(sl);
+      out.write("\" >Answer</a>\r\n");
       out.write("                                        </div>\r\n");
       out.write("\r\n");
       out.write("                                    </div>");
@@ -435,6 +497,7 @@ String DB_AJAX_PATH = "http://localhost:8081/InquiryHere";
                                         } catch (Exception e) {
                                             out.println("Error " + e);
                                         }
+                }
                                     
       out.write(" \r\n");
       out.write("                                    ");
@@ -497,6 +560,22 @@ String DB_AJAX_PATH = "http://localhost:8081/InquiryHere";
       out.print(fname);
       out.write("</a></div>\r\n");
       out.write("                                        </div>\r\n");
+      out.write("                                        <a href=\"javascript:void(0)\" onclick=\"this.style.color = 'red';return take_value(this, '");
+      out.print(resultSet.getInt("q.q_id"));
+      out.write("', '");
+      out.print("upvote");
+      out.write("');\" >Upvote</a>&nbsp;&nbsp; \r\n");
+      out.write("                                        <a href=\"javascript:void(0)\" onclick=\"this.style.color = 'red';return take_value(this, '");
+      out.print(resultSet.getInt("q.q_id"));
+      out.write("', '");
+      out.print("downvote");
+      out.write("');\" >Downvote</a>&nbsp;&nbsp; \r\n");
+      out.write("                                        <a href=\"Answer.jsp?Id=");
+      out.print(resultSet.getInt("q.q_id"));
+      out.write("&sl=");
+      out.print(sl);
+      out.write("\" >Answer</a>\r\n");
+      out.write("\r\n");
       out.write("                                    </div>\r\n");
       out.write("\r\n");
       out.write("\r\n");
@@ -532,7 +611,8 @@ String DB_AJAX_PATH = "http://localhost:8081/InquiryHere";
                                         int totalRecords = 5;
                                         int totalRows = nullIntconvert(request.getParameter("totalRows"));
                                         int totalPages = nullIntconvert(request.getParameter("totalPages"));
-                                        int iPageNo = nullIntconvert(request.getParameter("iPageNo"));
+                                        int iPageNo;
+                                        iPageNo = nullIntconvert(request.getParameter("iPageNo"));
                                         int cPageNo = nullIntconvert(request.getParameter("cPageNo"));
 
                                         int startResult = 0;
@@ -618,6 +698,17 @@ String DB_AJAX_PATH = "http://localhost:8081/InquiryHere";
       out.write("</a></div>\r\n");
       out.write("\r\n");
       out.write("                                            </div>\r\n");
+      out.write("                                            <a href=\"javascript:void(0)\" onclick=\"return take_value(this, '");
+      out.print(rs1.getInt("q_id"));
+      out.write("', 'upvote');\">Upvote</a>&nbsp;&nbsp;\r\n");
+      out.write("                                            <a href=\"javascript:void(0)\" onclick=\"return take_value(this, '");
+      out.print(rs1.getInt("q_id"));
+      out.write("', 'upvote');\">Downvote</a>&nbsp;&nbsp;\r\n");
+      out.write("                                            <a href=\"Answer.jsp?Id=");
+      out.print(rs1.getInt("q_id"));
+      out.write("&sl=");
+      out.print(sl);
+      out.write("\">Answer</a>\r\n");
       out.write("\r\n");
       out.write("                                        </div>\r\n");
       out.write("\r\n");
@@ -760,72 +851,80 @@ String DB_AJAX_PATH = "http://localhost:8081/InquiryHere";
       out.write("                        </div>\r\n");
       out.write("                        <div class=\"col-lg-3 col-md-3 col-sm-12 col-xs-12\">\r\n");
       out.write("\r\n");
-      out.write("                            <div class=\"themeBox\" style=\"height:auto;\">\r\n");
+      out.write("                            <!--div class=\"themeBox\" style=\"height:auto;\">\r\n");
       out.write("                                <div class=\"boxHeading\">\r\n");
       out.write("                                    ");
       out.print(TRENDING_QUESTION);
       out.write("\r\n");
       out.write("                                </div>\r\n");
       out.write("                                <div>\r\n");
-      out.write("                                    ");
+      out.write("//                                    ");
 
-                                        String UserName_for_trending_question = null;
-                                        try {
-                                            String v_count = "SELECT * FROM question ORDER BY TotalLiked DESC limit 10";
-                                            preparedStatement = connection.prepareStatement(v_count);
-                                            resultSet = preparedStatement.executeQuery();
-                                            while (resultSet.next()) {
-                                                String TrendingQuestion = resultSet.getString("question");
-                                                int questionID = resultSet.getInt("q_id");
-                                    
+//                                        //String UserName_for_trending_question = null;
+//                                        try {
+//                                            String v_count = "SELECT * FROM question ORDER BY TotalLiked DESC limit 10";
+//                                            preparedStatement = connection.prepareStatement(v_count);
+//                                            resultSet = preparedStatement.executeQuery();
+//                                            while (resultSet.next()) {
+//                                                String TrendingQuestion = resultSet.getString("question");
+//                                                int questionID = resultSet.getInt("q_id");
+//                                    
       out.write("\r\n");
-      out.write("                                    <a href=\"Answer.jsp?Id=");
-      out.print(questionID);
-      out.write("&sl=");
-      out.print(sl);
-      out.write("\" >");
-      out.print(TrendingQuestion);
+      out.write("//                                    <a href=\"Answer.jsp?Id=");
       out.write("</a><br><br>\r\n");
-      out.write("                                    ");
+      out.write("//                                    ");
 
-                                            }
-                                        } catch (Exception e) {
-                                            out.println("Error " + e);
-                                        }
-                                    
+//                                            }
+//                                        } catch (Exception e) {
+//                                            out.println("Error " + e);
+//                                        }
+//                                    
       out.write("\r\n");
       out.write("                                </div>\r\n");
+      out.write("                                </div-->\r\n");
       out.write("                                ");
 
                                     } catch (Exception e) {
                                         out.println("Error in main try block:-" + e);
                                     } finally {
 
-                                        if (connection != null || !connection.isClosed()) {
-                                            try {
-                                                connection.close();
-                                            } catch (Exception e) {
-                                                out.println("Exception in closing connection " + e);
+                                        try {
+                                            if (connection != null || !connection.isClosed()) {
+                                                try {
+                                                    connection.close();
+                                                } catch (Exception e) {
+                                                    out.println("Exception in closing connection " + e);
+                                                }
                                             }
+                                        } catch (Exception msg) {
+                                            out.println("Error in connection" + msg);
                                         }
-                                        if (resultSet != null || !resultSet.isClosed()) {
-                                            try {
-                                                resultSet.close();
-                                            } catch (Exception e) {
-                                                out.println("Exception in closing resulatset " + e);
+                                        try {
+                                            if (resultSet != null || !resultSet.isClosed()) {
+                                                try {
+                                                    resultSet.close();
+                                                } catch (Exception e) {
+                                                    out.println("Exception in closing resulatset " + e);
+                                                }
                                             }
+                                        } catch (Exception msg) {
+                                            out.println("Error in connection" + msg);
                                         }
-                                        if (preparedStatement != null || !preparedStatement.isClosed()) {
-                                            try {
-                                                preparedStatement.close();
-                                            } catch (Exception e) {
-                                                out.println("Exception in closing preparedStatement " + e);
+                                        try {
+                                            if (preparedStatement != null || !preparedStatement.isClosed()) {
+                                                try {
+                                                    preparedStatement.close();
+                                                } catch (Exception e) {
+                                                    out.println("Exception in closing preparedStatement " + e);
+                                                }
                                             }
+                                        } catch (Exception msg) {
+                                            out.println("Error in connection" + msg);
                                         }
                                     }
                                 
       out.write("\r\n");
-      out.write("                            </div>\r\n");
+      out.write("                            \r\n");
       out.write("                            <div class=\"clear-fix\"></div>\r\n");
       out.write("                            <div class=\"clear-fix\"></div>\r\n");
       out.write("\r\n");

@@ -165,6 +165,7 @@
             }
         </script>
 
+
     </head>
 
     <body>
@@ -174,6 +175,7 @@
             <%--@include file="header.jsp" --%>
             <jsp:include page="header.jsp">
                 <jsp:param name="sl" value="<%=sl%>"/>
+                <jsp:param name="page" value="index.jsp"/>
             </jsp:include>
             <%
                 Connection connection = null;
@@ -228,22 +230,28 @@
                                             String topic_name;
                                             try {
                                                 if (session.getAttribute("email") != null) {
-                                                    sql = "select t.unique_id,t.topic_name from topic t "
-                                                            + "right join topic_followers_detail de "
-                                                            + "on t.unique_id = de.topic_id "
-                                                            + "where user_or_followers_id= '" + id_of_user + "'";
+                                                    sql = "select t.unique_id,t.topic_name,(select count(topic_id) "
+                                                            + "from topic_followers_detail where topic_id = t.unique_id)as count"
+                                                            + " from topic t right join topic_followers_detail de on t.unique_id = de.topic_id "
+                                                            + "where user_or_followers_id ='" + id_of_user + "' and t.unique_id is not null and t.topic_name is not null";
                                                 } else {
-                                                    sql = "select * from topic LIMIT 30,20";
+                                                    sql = "select topic.unique_id,topic_name,count(topic_id) as count from topic inner join "
+                                                            + "topic_followers_detail where topic.unique_id = topic_followers_detail.topic_id "
+                                                            + "group by topic_followers_detail.topic_id limit 20";
                                                 }
                                                 preparedStatement = connection.prepareStatement(sql);
                                                 resultSet = preparedStatement.executeQuery();
+                                                boolean status = true;
                                                 while (resultSet.next()) {
-                                                    topic_name = resultSet.getString("topic_name").substring(0, 1).toUpperCase()+resultSet.getString("topic_name").substring(1);
+                                                    topic_name = resultSet.getString("topic_name").substring(0, 1).toUpperCase() + resultSet.getString("topic_name").substring(1).toLowerCase();
                                                     topic_id = resultSet.getInt("unique_id");
-                                                    if (topic_id != 0) {%>
-                                        <li><a href="topic.jsp?id=<%=topic_id%>&sl=<%=sl%>"><%=topic_name%></a></li>
+                                                    int count = resultSet.getInt("count");
+                                                    if (topic_id != 0) {
+                                                    status = false;    %>
+                                        <li><span title="Totoal followers of <%=topic_name%> is <%=count%>"><a href="topic.jsp?id=<%=topic_id%>&sl=<%=sl%>"><%=topic_name%></a> (<%=count%>)</span></li>
                                             <% }
                                                     }
+                                                    if(status){out.println("Something went wrong<br>or you may not followed any topic");}
                                                 } catch (Exception e) {
                                                     out.println("Unable to retrieve!!" + e);
                                                 }
@@ -276,11 +284,15 @@
                             <div class="row">
 
                                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-
+                                    <%
+                                    if(request.getParameter("iPageNo") == null && request.getParameter("cPageNo") == null){
+                                    %>
 
                                     <h4><%=RECENT_POSTED_QUESTION%></h4>
                                     <%
-                                        String sql3 = "select q.q_id,q.question,user.firstname,user.ID from question q right join newuser user on user.id = q.id order by q_id desc limit 5";
+                                        String sql3 = "SELECT q.q_id,q.question,user.firstname,user.ID FROM question q "
+                                                + "RIGHT JOIN newuser user ON user.id = q.id WHERE q.q_id IS NOT NULL AND q.question IS NOT NULL "
+                                                + "ORDER BY q_id DESC LIMIT 5";
                                         String UserName_for_trending_question_T = null;
                                         try {
                                             preparedStatement = connection.prepareStatement(sql3);
@@ -294,7 +306,7 @@
                                     <div class="themeBox" style="height:auto;">
 
                                         <div class="boxHeading marginbot10">
-                                            <a href="Answer.jsp?Id=<%=question_id%>&sl=<%=sl%>" ><%=TrendingQuestion_T%> ?</a>
+                                            <a href="Answer.jsp?Id=<%=question_id%>&q=<%=TrendingQuestion_T%>&sl=<%=sl%>" ><%=TrendingQuestion_T%> ?</a>
 
                                         </div>
                                         <div class="questionArea">
@@ -318,6 +330,7 @@
                                         } catch (Exception e) {
                                             out.println("Error " + e);
                                         }
+                }
                                     %> 
                                     <%
                                         if (session.getAttribute("email") != null) {
@@ -407,7 +420,8 @@
                                         int totalRecords = 5;
                                         int totalRows = nullIntconvert(request.getParameter("totalRows"));
                                         int totalPages = nullIntconvert(request.getParameter("totalPages"));
-                                        int iPageNo = nullIntconvert(request.getParameter("iPageNo"));
+                                        int iPageNo;
+                                        iPageNo = nullIntconvert(request.getParameter("iPageNo"));
                                         int cPageNo = nullIntconvert(request.getParameter("cPageNo"));
 
                                         int startResult = 0;
@@ -468,9 +482,9 @@
                                                 <div class="postedBy"><%=POSTED_BY%> :<a href="profile.jsp?ID=<%=userId%>&sl=<%=sl%>"> <%=Username%></a></div>
 
                                             </div>
-                                                <a href="javascript:void(0)" onclick="return take_value(this, '<%=rs1.getInt("q_id")%>', 'upvote');">Upvote</a>&nbsp;&nbsp;
-                                                <a href="javascript:void(0)" onclick="return take_value(this, '<%=rs1.getInt("q_id")%>', 'upvote');">Downvote</a>&nbsp;&nbsp;
-                                                <a href="Answer.jsp?Id=<%=rs1.getInt("q_id")%>&sl=<%=sl%>">Answer</a>
+                                            <a href="javascript:void(0)" onclick="return take_value(this, '<%=rs1.getInt("q_id")%>', 'upvote');">Upvote</a>&nbsp;&nbsp;
+                                            <a href="javascript:void(0)" onclick="return take_value(this, '<%=rs1.getInt("q_id")%>', 'upvote');">Downvote</a>&nbsp;&nbsp;
+                                            <a href="Answer.jsp?Id=<%=rs1.getInt("q_id")%>&sl=<%=sl%>">Answer</a>
 
                                         </div>
 
@@ -566,58 +580,71 @@
                         </div>
                         <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
 
-                            <div class="themeBox" style="height:auto;">
+                            <!--div class="themeBox" style="height:auto;">
                                 <div class="boxHeading">
                                     <%=TRENDING_QUESTION%>
                                 </div>
                                 <div>
-                                    <%
-                                        String UserName_for_trending_question = null;
-                                        try {
-                                            String v_count = "SELECT * FROM question ORDER BY TotalLiked DESC limit 10";
-                                            preparedStatement = connection.prepareStatement(v_count);
-                                            resultSet = preparedStatement.executeQuery();
-                                            while (resultSet.next()) {
-                                                String TrendingQuestion = resultSet.getString("question");
-                                                int questionID = resultSet.getInt("q_id");
-                                    %>
-                                    <a href="Answer.jsp?Id=<%=questionID%>&sl=<%=sl%>" ><%=TrendingQuestion%></a><br><br>
-                                    <%
-                                            }
-                                        } catch (Exception e) {
-                                            out.println("Error " + e);
-                                        }
-                                    %>
+//                                    <%
+//                                        //String UserName_for_trending_question = null;
+//                                        try {
+//                                            String v_count = "SELECT * FROM question ORDER BY TotalLiked DESC limit 10";
+//                                            preparedStatement = connection.prepareStatement(v_count);
+//                                            resultSet = preparedStatement.executeQuery();
+//                                            while (resultSet.next()) {
+//                                                String TrendingQuestion = resultSet.getString("question");
+//                                                int questionID = resultSet.getInt("q_id");
+//                                    %>
+//                                    <a href="Answer.jsp?Id=<%--=questionID%>&sl=<%=sl%>" ><%=TrendingQuestion--%></a><br><br>
+//                                    <%
+//                                            }
+//                                        } catch (Exception e) {
+//                                            out.println("Error " + e);
+//                                        }
+//                                    %>
                                 </div>
+                                </div-->
                                 <%
                                     } catch (Exception e) {
                                         out.println("Error in main try block:-" + e);
                                     } finally {
 
-                                        if (connection != null || !connection.isClosed()) {
-                                            try {
-                                                connection.close();
-                                            } catch (Exception e) {
-                                                out.println("Exception in closing connection " + e);
+                                        try {
+                                            if (connection != null || !connection.isClosed()) {
+                                                try {
+                                                    connection.close();
+                                                } catch (Exception e) {
+                                                    out.println("Exception in closing connection " + e);
+                                                }
                                             }
+                                        } catch (Exception msg) {
+                                            out.println("Error in connection" + msg);
                                         }
-                                        if (resultSet != null || !resultSet.isClosed()) {
-                                            try {
-                                                resultSet.close();
-                                            } catch (Exception e) {
-                                                out.println("Exception in closing resulatset " + e);
+                                        try {
+                                            if (resultSet != null || !resultSet.isClosed()) {
+                                                try {
+                                                    resultSet.close();
+                                                } catch (Exception e) {
+                                                    out.println("Exception in closing resulatset " + e);
+                                                }
                                             }
+                                        } catch (Exception msg) {
+                                            out.println("Error in connection" + msg);
                                         }
-                                        if (preparedStatement != null || !preparedStatement.isClosed()) {
-                                            try {
-                                                preparedStatement.close();
-                                            } catch (Exception e) {
-                                                out.println("Exception in closing preparedStatement " + e);
+                                        try {
+                                            if (preparedStatement != null || !preparedStatement.isClosed()) {
+                                                try {
+                                                    preparedStatement.close();
+                                                } catch (Exception e) {
+                                                    out.println("Exception in closing preparedStatement " + e);
+                                                }
                                             }
+                                        } catch (Exception msg) {
+                                            out.println("Error in connection" + msg);
                                         }
                                     }
                                 %>
-                            </div>
+                            
                             <div class="clear-fix"></div>
                             <div class="clear-fix"></div>
 

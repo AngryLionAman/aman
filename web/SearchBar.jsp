@@ -156,14 +156,14 @@
                                                         String Answer_given_by_user;
                                                         int Question_id = 0;
                                                         String SearchValue_Case_Converted = SearchValue.toLowerCase();
-                                                        String Q_a = "Select q.question,q.q_id, ans.answer from question q right join answer ans on ans.q_id = q.q_id where lower(answer) LIKE '%" + SearchValue_Case_Converted + "%'";
+                                                        String Q_a = "Select q.question,q.q_id, substring(ans.answer,1,500) from question q right join answer ans on ans.q_id = q.q_id where lower(answer) LIKE '%" + SearchValue_Case_Converted + "%'";
                                                         preparedStatement = connection.prepareCall(Q_a);
                                                         resultSet = preparedStatement.executeQuery();
                                                         
                                                         boolean count = true;
                                                         while (resultSet.next()) {
                                                             count = false;
-                                                            Answer_given_by_user = resultSet.getString("answer");
+                                                            Answer_given_by_user = resultSet.getString("substring(ans.answer,1,500)");
                                                             String Question_by_user = resultSet.getString("question");
                                                             int question_id = resultSet.getInt("q.q_id");
                                             %><br> Q. <a href="Answer.jsp?Id=<%=question_id%>" ><%=Question_by_user%> ?</a><%

@@ -23,7 +23,6 @@
             }
             String firstname = null;
             String lastname = null;
-            String interests = null;
             String higher_edu = null;
             String best_achievement = null;
             String ImagePath = null;
@@ -39,7 +38,6 @@
                     userId = resultSet.getInt("ID");
                     firstname = resultSet.getString("firstname");
                     lastname = resultSet.getString("lastname");
-                    interests = resultSet.getString("interests");
                     higher_edu = resultSet.getString("higher_edu");
                     best_achievement = resultSet.getString("best_achievement");
                     bio = resultSet.getString("bio");

@@ -92,6 +92,8 @@
                                         <center> 
                                             <div class="boxHeading">
                                                 <%                                                                            // String Topic_id = request.getParameter("id");
+                                                    int countQuestion = 0;
+                                                    int total_followers = 0;
                                                     String str = request.getParameter("id");
                                                     String Topic_id = "";
                                                     if (str != null && !(str.isEmpty())) {
@@ -107,7 +109,7 @@
                                                             int StoredtopicId = 0;
                                                             int StoredfollowersID = 0;
                                                             int Session_id_of_user = 0;
-                                                            int countQuestion = 0;
+                                                            
 
                                                             String status = "NotLogin";
                                                             String count_sql = "select count(*) from question q right join question_topic_tag qtt on qtt.question_id=q.q_id where tag_id=? and q_id is not null";
@@ -117,6 +119,14 @@
                                                             while(resultSet.next()){
                                                                  countQuestion = resultSet.getInt("count(*)");
                                                             }
+                                                            String Total_followers = "select count(user_or_followers_id)as totoal_followers from topic_followers_detail where topic_id =?";
+                                                            preparedStatement = connection.prepareStatement(Total_followers);
+                                                            preparedStatement.setString(1, Topic_id);
+                                                            resultSet = preparedStatement.executeQuery();
+                                                            while(resultSet.next()){
+                                                                total_followers = resultSet.getInt("totoal_followers");
+                                                            }
+                                                            
                                                             String v = "SELECT * FROM topic WHERE unique_id = '" + Topic_id + "'";
                                                             preparedStatement = connection.prepareStatement(v);
                                                             resultSet = preparedStatement.executeQuery();
@@ -144,7 +154,7 @@
 
                                                 %>
                                                 <div>
-                                                    <h4><%=TopicName%>&nbsp;&nbsp;&nbsp;&nbsp;(<%=countQuestion%>)</h4>
+                                                    <span title="Totoal followers of <%=TopicName%> is <%=total_followers%>"><h4><%=TopicName%>&nbsp;(<%=total_followers%>)</h4></span>  
                                                     <%
                                                         if (status == "present") {
                                                     %> <input type="button" value="Unfollow" id="myButton1" onclick="return take_value(this, '<%=SelectedTopicID%>', '<%=Session_id_of_user%>');" /><%
@@ -169,7 +179,7 @@
                                     </div>
                                     <div class="themeBox" style="height:auto;">
                                         <div>
-                                            <h4><%=RELATED_QUESTION%></h4>
+                                            <h4><%=RELATED_QUESTION%> <span title="Totoal <%=countQuestion%> question asked related to this topic">(<%=countQuestion%>)</span></h4>
                                             <%
                                                 String question_detail;
                                                 try {
@@ -211,7 +221,7 @@
                                         int countQ = 0;
                                         try {
                                             String p_related_topic = "select DISTINCT "
-                                                    + "t.unique_id,t.topic_name from topic t "
+                                                    + "t.unique_id,t.topic_name,(SELECT COUNT(user_or_followers_id) FROM topic_followers_detail WHERE topic_id=t.unique_id ) as totoal_followers from topic t "
                                                     + "right join question_topic_tag qtt "
                                                     + "on t.unique_id=qtt.tag_id where question_id "
                                                     + "IN (select question_id from question_topic_tag where tag_id='" + Topic_id + "')";
@@ -220,10 +230,11 @@
                                             while (resultSet.next()) {
                                                 int unique_id = resultSet.getInt("unique_id");
                                                 String topic_nameA = resultSet.getString("topic_name");
+                                                int total_followers_sider_bar = resultSet.getInt("totoal_followers");
                                                 if (Integer.valueOf(Topic_id) != unique_id) {
                                                     if (topic_nameA != null) {
                                                         countQ++;
-                                    %><li><a href="topic.jsp?id=<%=unique_id%>&sl=<%=sl%>"><%=topic_nameA%></a></li><%}
+                                                        %><li><span title="Total followers of <%=topic_nameA%> is <%=total_followers_sider_bar%>"><a href="topic.jsp?id=<%=unique_id%>&sl=<%=sl%>"><%=topic_nameA%></a>&nbsp;(<%=total_followers_sider_bar%>)</span></li><%}
                                                 }
                                             }
                                             if (countQ == 0) {

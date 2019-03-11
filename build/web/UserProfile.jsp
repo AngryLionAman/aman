@@ -136,8 +136,8 @@
                                                     resultSet = preparedStatement.executeQuery();
                                                     while (resultSet.next()) {
                                                         user_id = resultSet.getInt("ID");
-                                                        firstname = resultSet.getString("firstname");
-                                                        lastname = resultSet.getString("lastname");
+                                                        firstname = resultSet.getString("firstname").substring(0, 1).toUpperCase()+resultSet.getString("firstname").substring(1).toLowerCase();
+                                                        lastname = resultSet.getString("lastname").substring(0, 1).toUpperCase()+resultSet.getString("lastname").substring(1).toLowerCase();
                                                         imagepath = resultSet.getString("imagepath");
                                                         Statement stmt_topic_followers;
 
@@ -159,7 +159,7 @@
                                             %>
                                             <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
 
-                                                <img src="images/UploadedImage/<%=imagepath%>" alt="" style="width:100%; border:1px solid #ddd;margin-top:20px;">
+                                                <img src="images/<%=imagepath%>" alt="" style="width:100%; border:1px solid #ddd;margin-top:20px;">
                                                 <a href="profile.jsp?ID=<%=user_id%>&sl=<%=sl%>"><%=firstname + " " + lastname%></a>
                                                 <%
                                                     if (Status == "present") {

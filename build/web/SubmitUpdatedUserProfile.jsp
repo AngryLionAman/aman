@@ -33,7 +33,7 @@
 
 %>
 <script>window.alert("Profile has been successfull updated");
-    window.location = "http://localhost:8081/InquiryHere/profile.jsp?sl=<%=sl%>";</script>
+    window.location = "http://localhost:8084/inquiryhere/profile.jsp?sl=<%=sl%>";</script>
     <%
                     } catch (Exception e) {
                         out.println("Error : " + e);

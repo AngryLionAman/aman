@@ -208,8 +208,8 @@
                                                                 mailid = UserEmail;
                                                                 subject = "Reset Password of inquiryhere.com";
                                                                 feedback = "Your InquryHere password is : " + UserPassword + "<br>Thanks for using our service";
-                                                                froma = "cse13302.sbit@gmail.com";
-                                                                password = "alok@ankit";
+                                                                froma = "email";
+                                                                password = "password";
 
                                                                 to = mailid;
 
@@ -246,7 +246,7 @@
                                                                         transport.sendMessage(message, message.getAllRecipients());
                                                                         //out.println("Mail has been sent");%>
                                                     <script>window.alert("Password has been sent to your Mail");
-                                                        window.location = "http://localhost:8081/InquiryHere/Login.jsp";</script>
+                                                        window.location = "http://localhost:8084/inquiryhere/Login.jsp";</script>
                                                         <% 
                                                                             out.println("<b><a href=Login.html?sl=" + sl + ">Click here to visit Login page</a></b>");
                                                                             //response.sendRedirect("Login.html");

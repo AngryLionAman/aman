@@ -14,6 +14,7 @@
     String SELECT = "";
 %>
 <%
+    //String page_name = request.getParameter("page");
     String sl = request.getParameter("sl");
     if (sl == null) {
         sl = "en";
@@ -76,7 +77,7 @@
             <%if (session.getAttribute("email") == null) {%><a href="Login.jsp?sl=<%=sl%>" class="helpicon" style="color: white;padding-right: 50px; "><%=LOGIN%></a><% }%>
             <a href="index.jsp?sl=<%=sl%>" class="helpicon" style="color: white;padding-right: 50px; "><%=HOME%></a>
             <a href="help.jsp?sl=<%=sl%>"><img src="images/home/HelpIcon.png" class="helpicon"/></a>
-            <% if (session.getAttribute("email") != null) {%> 
+            <% if (session.getAttribute("email") != null && request.getParameter("page") != null) {%> 
             <a href="#" class="notification" data-toggle="modal" data-target="#myModalN">
                 <span>Inbox</span>
                 <span class="badge">0</span>
@@ -127,7 +128,7 @@
                     rs = stmt.executeQuery(p);
                     while (rs.next()) {
                         id_of_user = rs.getInt("id");
-                        name = rs.getString("firstname");
+                        name = rs.getString("firstname").substring(0, 1).toUpperCase()+rs.getString("firstname").substring(1).toLowerCase();
                     }
                     stmt.close();
                     con.close();

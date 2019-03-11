@@ -167,33 +167,40 @@
                                                                     <form action="validate.jsp" method="post" name="">
                                                                      <input type="hidden" name="URL" value="<%=request.getParameter("URL")%>">
                                                                         <% }else{ %>
+                                                                        <div> 
+                                                                       
                                                                         <form action="validate.jsp" method="post" name="">
                                                                      <% } %>
                                                                         <input type="hidden" name="sl" value="<%=sl%>">
+                                                                        <table>
+                                                                            <tr><td>
+                                                                            <label for="fname"><%=EMAIL%></label>
                                                                         
-                                                                        <label for="fname"><%=EMAIL%></label>
-                                                                        <div class="boxHeading">
-                                                                            <input type="text" id="fname" name="email" required="">
-                                                                        </div>
-                                                                        <label for="lname"><%=PASSWORD%></label>
-                                                                        <div class="boxHeading">
-                                                                            <input type="password" id="lname" name="password" required="">
-                                                                        </div>                                                                                                                               
-                                                                        <div class="float-right margintop20" style="vertical-align:bottom">
-                                                                            <button type="submit" class="btn" data-toggle="modal" ><%=LOGIN%></button>
-                                                                        </div>
-
+                                                                            <input type="text" id="fname" name="email" required="" placeholder="username">
+                                                                                </td></tr>   
+                                                                            <tr><td>
+                                                                      
+                                                                            <label for="lname"><%=PASSWORD%></label>
+                                                                        
+                                                                            <input type="password" id="lname" name="password" required="" placeholder="password">
+                                                                            <br> </td></tr>
+                                                                            <tr><td><br>
+                                                                      
+                                                                            <button type="submit" class="button button1" data-toggle="modal"  style="background-color: red;" ><%=LOGIN%></button>
+                                                                                      </td></tr>
                                                                     </form>
+                                                                     </div>
+                                                                         
+                                                                                      <tr><td><br>               
                                                                     <form action="ForgotPassword.jsp">
                                                                          <input type="hidden" name="sl" value="<%=sl%>">
-                                                                        <button class="button button1"><%=FORGET_PASSWORD%></button>
+                                                                        <button class="button button1" style="width"><%=FORGET_PASSWORD%></button>
                                                                     </form>
-                                                                </div>
+                                                                          </td></tr>
+                                                                    </table>                                                                          </div>
                                                             </div>
 
-                                                        </center> </div>
-
-
+                                                     
                                                 </div>
 
                                                 <div class="clear-fix"></div>

@@ -2,7 +2,7 @@
 <html lang="en">
     <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
     <meta charset="UTF-8">
-    <%!
+    <%
         String EMAIL = "";
         String PASSWORD = "";
         String HOME = "";
@@ -56,6 +56,8 @@
         String sl = request.getParameter("sl");
         if (sl == null) {
             sl = "en";
+        } else {
+
         }
         if (sl.equalsIgnoreCase("hi")) {
             EMAIL = "ईमेल";
@@ -139,7 +141,7 @@
             NOT_FOLLOWING_ANY_USER = "Not following any user";
             FOLLOW_MORE_USER = "Follow More User";
             NO_BLOG_POSTED_YET = "No blog posted yet";
-            BLOG_ABOUT_SOMETHING = "blog about something";
+            BLOG_ABOUT_SOMETHING = "Blog about something";
             NO_QUESTES_POSTED_YET = "No quotes posted yet";
             ADD_MORE_QUOTES = "Add more quotes";
             NOT_FOLLOWED_BY_ANY_USER = "Not followed by any user";
@@ -208,6 +210,21 @@
             <% }%>
             }
         </script>
+        <script type="text/javascript">
+
+            function hide_mail(el, session_id_of_user, action) {
+            <% if (session.getAttribute("email") == null) { %>
+                alert("Please login first");<%
+               } else {%>
+
+                var http = new XMLHttpRequest();
+                http.open("POST", "<%=DB_AJAX_PATH%>/mail_serurity.jsp?session_id_of_user=" + session_id_of_user + "&action=" + action, true);
+                http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                http.send();
+                
+            <% }%>
+            }
+        </script>
     </head>
 
     <body>
@@ -273,6 +290,7 @@
                                             int id_of_user = 0;
                                             int topic_id = 0;
                                             int session_id_of_user = 0;
+                                            int email_status = 0;
                                             String email = (String) session.getAttribute("email");
                                             if (email == null) {
                                         %><select class="helpicon w100 username" onchange="location = this.value;">
@@ -290,7 +308,7 @@
                                                 while (resultSet.next()) {
                                                     id_of_user = resultSet.getInt("id");
                                                     session_id_of_user = resultSet.getInt("id");
-                                                    firstname = resultSet.getString("firstname");
+                                                    firstname = resultSet.getString("firstname").substring(0, 1).toUpperCase() + resultSet.getString("firstname").substring(1).toLowerCase();
                                                 }
                                             } catch (Exception e) {
                                                 out.println("Unable to retrieve!!" + e);
@@ -336,13 +354,14 @@
                                                     resultSet = preparedStatement.executeQuery();
                                                     while (resultSet.next()) {
                                                         id_of_user = resultSet.getInt("id");
-                                                        firstname = resultSet.getString("firstname").substring(0,1).toUpperCase()+resultSet.getString("firstname").substring(1).toLowerCase();
-                                                        lastname = resultSet.getString("lastname").substring(0,1).toUpperCase()+resultSet.getString("lastname").substring(1).toLowerCase();
+                                                        firstname = resultSet.getString("firstname").substring(0, 1).toUpperCase() + resultSet.getString("firstname").substring(1).toLowerCase();
+                                                        lastname = resultSet.getString("lastname").substring(0, 1).toUpperCase() + resultSet.getString("lastname").substring(1).toLowerCase();
                                                         mail = resultSet.getString("email");
                                                         higher_colification = resultSet.getString("higher_edu");
                                                         bio = resultSet.getString("bio");
                                                         BestAchievement = resultSet.getString("best_achievement");
                                                         ImagePath = resultSet.getString("imagepath");
+                                                        email_status = resultSet.getInt("email_s");
                                                     }
                                                 } catch (Exception e) {
                                                     out.println("Unable to retrieve!!" + e);
@@ -356,7 +375,7 @@
                                                             <%=PROFILE_DETAILS%>
                                                         </div>
                                                         <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                                                            <img src="images/UploadedImage/<%=ImagePath%>" alt="Image" style="width:90%; margin:10px 0px 0px; border:1px solid #ddd;">
+                                                            <img src="images/<%=ImagePath%>" alt="Image" style="width:90%; margin:10px 0px 0px; border:1px solid #ddd;">
                                                             <%
                                                                 try {
                                                                     if (session.getAttribute("email") != null) {
@@ -408,7 +427,34 @@
                                                                 </tr>
                                                                 <tr>
                                                                     <td><%=MAIL_ID%> </td>
-                                                                    <td>: <%=mail%></td>
+                                                                    <td>: 
+                                                                        <%
+                                                                        if(email_status == 1){
+                                                                            if (mail.equals(session.getAttribute("email"))) {
+                                                                                out.println(mail);
+                                                                            }else{
+                                                                                out.println("Hidden by user");
+                                                                            }
+                                                                        }else{
+                                                                            out.println(mail);
+                                                                        }
+                                                                        %><%--=mail--%>&nbsp;&nbsp;
+                                                                        <%
+                                                                            if (session.getAttribute("email") != null) {
+                                                                                if (mail.equals(session.getAttribute("email"))) {
+                                                                                    if (email_status == 0) {
+                                                                        %>
+                                                                        <a href="" onclick="return hide_mail(this, '<%=session_id_of_user%>', '<%="hide"%>');">Hide your mail</a>
+                                                                        <%
+                                                                            }
+                                                                            if (email_status == 1) {
+                                                                        %>
+                                                                        <a href="" onclick="return hide_mail(this, '<%=session_id_of_user%>', '<%="show"%>');">Display your mail</a>
+                                                                        <%
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        %></td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td><%=HIGHER_QUALIFICATION%> </td>
@@ -479,14 +525,14 @@
                                                                     int UserId = resultSet.getInt("user.ID");
                                                                     if (UserId != id_of_user) {
                                                                         found = false;
-                                                                        String FirstName = resultSet.getString("user.firstname").substring(0, 1).toUpperCase()+resultSet.getString("user.firstname").substring(1).toLowerCase();
-                                                                        String lastName = resultSet.getString("user.lastname").substring(0, 1).toUpperCase()+resultSet.getString("user.lastname").substring(1).toLowerCase();
+                                                                        String FirstName = resultSet.getString("user.firstname").substring(0, 1).toUpperCase() + resultSet.getString("user.firstname").substring(1).toLowerCase();
+                                                                        String lastName = resultSet.getString("user.lastname").substring(0, 1).toUpperCase() + resultSet.getString("user.lastname").substring(1).toLowerCase();
 
                                                                         String Image_Path = resultSet.getString("user.imagepath");
 
                                                             %>
                                                             <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                                                                <img src="images/UploadedImage/<%=Image_Path%>" alt="Image" style="width:90%; margin:10px 0px 0px; border:1px solid #ddd;">
+                                                                <img src="images/<%=Image_Path%>" alt="Image" style="width:90%; margin:10px 0px 0px; border:1px solid #ddd;">
                                                                 <a href="profile.jsp?ID=<%=UserId%>&sl=<%=sl%>"><b><%=FirstName + " " + lastName%></b></a>
                                                             </div>
                                                             <%
@@ -604,14 +650,14 @@
                                                                 %><br> Q. <a href="Answer.jsp?Id=<%=Question_id%>&sl=<%=sl%>" ><%=Question_by_user%> ?</a>
                                                                 &nbsp;&nbsp;&nbsp;&nbsp;
                                                                 <%  if (session.getAttribute("Session_id_of_user") != null) {
-                                                        int Session_id_of_user = (Integer) session.getAttribute("Session_id_of_user");
-                                                        if (ans_by_id == Session_id_of_user) {%>
+                                                                        int Session_id_of_user = (Integer) session.getAttribute("Session_id_of_user");
+                                                                        if (ans_by_id == Session_id_of_user) {%>
 
                                                                 <a href="edit_a.jsp?q_id=<%=Question_id%>&ans_id=<%=ans_id%>&ans_by_id=<%=ans_by_id%>">Edit your answer</a>
                                                                 <% }
-                                                    }%>
+                                                                    }%>
                                                                 <%
-                                                                            out.println("<br>Ans.</b>&nbsp;&nbsp;&nbsp;&nbsp;" + Answer_given_by_user);
+                                                                            out.println("<br>Ans.</b>&nbsp;&nbsp;&nbsp;&nbsp;" + Answer_given_by_user + " <a href=Answer.jsp?Id=" + Question_id + "> Continue Reading</a>");
                                                                         }
                                                                         if (count == 0) {
                                                                             out.println("<b style=color:red;>No answer posted yet !!</b>");
@@ -624,7 +670,7 @@
                                                                             String p_fetch_topic = "select t.unique_id,t.topic_name from topic t "
                                                                                     + "right join topic_followers_detail de "
                                                                                     + "on t.unique_id = de.topic_id "
-                                                                                    + "where user_or_followers_id= '" + ID + "'";
+                                                                                    + "where user_or_followers_id= '" + ID + "' and t.unique_id is not null and t.topic_name is not null";
                                                                             preparedStatement = connection.prepareStatement(p_fetch_topic);
                                                                             resultSet = preparedStatement.executeQuery();
                                                                             int count = 0;
@@ -635,42 +681,42 @@
                                                                                 topic_id = resultSet.getInt("unique_id");
                                                                                 if (topic_name != null) {
                                                                 %><br> <a href="topic.jsp?id=<%=topic_id%>&sl=<%=sl%>" >&nbsp;&nbsp;&nbsp;&nbsp;<%=topic_name%> </a><%
-                                                                                                }
-                                                                                            }
-                                                                                            if (count == 0) {
-                                                                                                out.println("<b style=color:red;>No Topic followed yet !!</b>");
-                                                                                            }
-                                                                                            try {
-                                                                                                if (session.getAttribute("email") != null) {
-                                                                                                    if (mail.equals(session.getAttribute("email"))) {
-                                                                                                        out.println("<br><a href=FollowMoreTopic.jsp> Follow more topic</a>");
-                                                                                                    }
-                                                                                                }
-                                                                                            } catch (Exception ex) {
-                                                                                                out.println("What the hell is going on" + ex);
-                                                                                            }
-                                                                                        } catch (Exception e) {
-                                                                                            out.println("Unable to retrieve!!" + e);
-                                                                                        }
+                                                                                }
+                                                                            }
+                                                                            if (count == 0) {
+                                                                                out.println("<b style=color:red;>No Topic followed yet !!</b>");
+                                                                            }
+                                                                            try {
+                                                                                if (session.getAttribute("email") != null) {
+                                                                                    if (mail.equals(session.getAttribute("email"))) {
+                                                                                        out.println("<br><a href=FollowMoreTopic.jsp> Follow more topic</a>");
                                                                                     }
-                                                                                    if (ParametrVariable.equals("Following")) {
-                                                                                        out.println("<center><div class=boxHeading>" + FOLLOWING + "</div></center>");
-                                                                                        String topic_name;
-                                                                                        try {
-                                                                                            String p_fetch_topic = "select user.ID,user.firstname,user.lastname,user.imagepath from newuser user right join ak_follower_detail ak on ak.user_id=user.ID where followers_id = '" + id_of_user + "'";
-                                                                                            preparedStatement = connection.prepareStatement(p_fetch_topic);
-                                                                                            resultSet = preparedStatement.executeQuery();
-                                                                                            int count = 0;
-                                                                                            while (resultSet.next()) {
-                                                                                                count++;
-                                                                                                int userid = resultSet.getInt("ID");
-                                                                                                String UserFirstName = resultSet.getString("firstname");
-                                                                                                String UserLastName = resultSet.getString("lastname");
-                                                                                                String Image_Path = resultSet.getString("imagepath");
+                                                                                }
+                                                                            } catch (Exception ex) {
+                                                                                out.println("What the hell is going on" + ex);
+                                                                            }
+                                                                        } catch (Exception e) {
+                                                                            out.println("Unable to retrieve!!" + e);
+                                                                        }
+                                                                    }
+                                                                    if (ParametrVariable.equals("Following")) {
+                                                                        out.println("<center><div class=boxHeading>" + FOLLOWING + "</div></center>");
+                                                                        String topic_name;
+                                                                        try {
+                                                                            String p_fetch_topic = "select user.ID,user.firstname,user.lastname,user.imagepath from newuser user right join ak_follower_detail ak on ak.user_id=user.ID where followers_id = '" + id_of_user + "'";
+                                                                            preparedStatement = connection.prepareStatement(p_fetch_topic);
+                                                                            resultSet = preparedStatement.executeQuery();
+                                                                            int count = 0;
+                                                                            while (resultSet.next()) {
+                                                                                count++;
+                                                                                int userid = resultSet.getInt("ID");
+                                                                                String UserFirstName = resultSet.getString("firstname");
+                                                                                String UserLastName = resultSet.getString("lastname");
+                                                                                String Image_Path = resultSet.getString("imagepath");
                                                                 %>
                                                                 <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
 
-                                                                    <img src="images/UploadedImage/<%=Image_Path%>" alt="" style="width:100%; border:1px solid #ddd;margin-top:20px;">
+                                                                    <img src="images/<%=Image_Path%>" alt="" style="width:100%; border:1px solid #ddd;margin-top:20px;">
                                                                     <a href="profile.jsp?ID=<%=userid%>&sl=<%=sl%>"> <%=UserFirstName + " " + UserLastName%></a>
                                                                 </div>                
                                                                 <%
@@ -708,7 +754,7 @@
                                                                 %>
                                                                 <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
 
-                                                                    <img src="images/UploadedImage/<%=Image_Path%>" alt="" style="width:100%; border:1px solid #ddd;margin-top:20px;">
+                                                                    <img src="images/<%=Image_Path%>" alt="" style="width:100%; border:1px solid #ddd;margin-top:20px;">
                                                                     <a href="profile.jsp?ID=<%=userid%>&sl=<%=sl%>"> <%=UserFirstName + " " + UserLastName%></a>
                                                                 </div>                
                                                                 <%

@@ -226,10 +226,10 @@
                                                                     <label for="fname"><%=UPDATE_YOUR_PROFILE_IMAGE%></label>
                                                                     <div class="boxHeading">
                                                                         <div>
-                                                                            <img src="images/UploadedImage/<%=ImagePath%>" alt="Image" style="width:20%; margin:10px 0px 0px; border:1px solid #ddd;">
+                                                                            <img src="images/<%=ImagePath%>" alt="Update your profile" style="width:20%; margin:10px 0px 0px; border:1px solid #ddd;">
                                                                         </div>
                                                                         <div>
-                                                                            <form action="UploadImage.jsp" method="post" enctype="multipart/form-data">
+                                                                            <form action="imageUpload" method="post" enctype="multipart/form-data">
                                                                                 <input type="file" name="photo" required="">
                                                                                 <input type="submit" value="<%=CLICK_HERE_TO_UPDATE%>">
                                                                             </form>
