@@ -76,7 +76,7 @@
         <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12 float-right textalign-right">
             <%if (session.getAttribute("email") == null) {%><a href="Login.jsp?sl=<%=sl%>" class="helpicon" style="color: white;padding-right: 50px; "><%=LOGIN%></a><% }%>
             <a href="index.jsp?sl=<%=sl%>" class="helpicon" style="color: white;padding-right: 50px; "><%=HOME%></a>
-            <a href="help.jsp?sl=<%=sl%>"><img src="images/home/HelpIcon.png" class="helpicon"/></a>
+            <a href="help.jsp?sl=<%=sl%>"><img src="images/home/HelpIcon.png" class="helpicon " /></a>
             <% if (session.getAttribute("email") != null && request.getParameter("page") != null) {%> 
             <a href="#" class="notification" data-toggle="modal" data-target="#myModalN">
                 <span>Inbox</span>

@@ -44,8 +44,9 @@
                     }
                     try {
 
-                        String fetch_question = "select * from question where question= '" + Question + "'";
+                        String fetch_question = "select * from question where question= ?";
                         preparedStatement = connection.prepareStatement(fetch_question);
+                        preparedStatement.setString(1, Question);
                         resultSet = preparedStatement.executeQuery();
                         while (resultSet.next()) {
                             String Stored_question = resultSet.getString("question");
@@ -103,8 +104,9 @@
                             }
                             if (status != "present") {
                                 try {
-                                    String inserting_the_topic = "insert into topic(topic_name) values('" + arrSplit[i] + "')";
+                                    String inserting_the_topic = "insert into topic(topic_name) values(?)";
                                     preparedStatement = connection.prepareStatement(inserting_the_topic);
+                                    preparedStatement.setString(1, arrSplit[i]);
                                     preparedStatement.executeUpdate();
                                     out.println("<br><b>Successfully inserted</b>");
                                 } catch (Exception e2) {

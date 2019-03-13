@@ -140,23 +140,9 @@
                     }
                 }
             %>
-
-            <!-- Footer ______________________________ -->
-            <footer>
-                <div class="container">
-                    <div class="clear-fix">
-
-                        <div class="row ">
-                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                <div class="float-right reserved">
-                                    All Rights Reserved All Rights Reserved All Rights Reserved All Rights Reserved
-                                </div>
-                            </div>
-                        </div>
-
-                    </div> 
-                </div>   
-            </footer>
+ <jsp:include page="footer.jsp">
+                <jsp:param name="sl" value="<%=sl%>"/>
+            </jsp:include>
             <script type="text/javascript" src="vendor/jquery-2.1.4.js"></script>
 
             <script type="text/javascript" src="vendor/bootstrap/bootstrap.min.js"></script>

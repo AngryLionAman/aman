@@ -154,7 +154,7 @@
 
                                                 %>
                                                 <div>
-                                                    <span title="Totoal followers of <%=TopicName%> is <%=total_followers%>"><h4><%=TopicName%>&nbsp;(<%=total_followers%>)</h4></span>  
+                                                    <span title="Totoal followers of <%=TopicName.substring(0, 1).toUpperCase()+TopicName.substring(1).toLowerCase()%> is <%=total_followers%>"><h4><%=TopicName.substring(0, 1).toUpperCase()+TopicName.substring(1).toLowerCase()%>&nbsp;(<%=total_followers%>)</h4></span>  
                                                     <%
                                                         if (status == "present") {
                                                     %> <input type="button" value="Unfollow" id="myButton1" onclick="return take_value(this, '<%=SelectedTopicID%>', '<%=Session_id_of_user%>');" /><%
@@ -192,7 +192,7 @@
                                                         int questionID = resultSet.getInt("q.q_id");
                                                         if (question_detail != null) {
                                                             count++;
-                                            %><br>Q.<a href="Answer.jsp?Id=<%=questionID%>&sl=<%=sl%>" >&nbsp;<%=question_detail%> ?</a><%
+                                            %><br>Q.<a href="Answer.jsp?q=<%=question_detail.replaceAll(" ", "-")%>&Id=<%=questionID%>&sl=<%=sl%>" >&nbsp;<%=question_detail%> ?</a><%
                                                         }
                                                     }
                                                     if (count == 0) {
@@ -229,12 +229,12 @@
                                             resultSet = preparedStatement.executeQuery();
                                             while (resultSet.next()) {
                                                 int unique_id = resultSet.getInt("unique_id");
-                                                String topic_nameA = resultSet.getString("topic_name");
+                                                String topic_nameA = resultSet.getString("topic_name").substring(0, 1).toUpperCase()+resultSet.getString("topic_name").substring(1).toLowerCase();
                                                 int total_followers_sider_bar = resultSet.getInt("totoal_followers");
                                                 if (Integer.valueOf(Topic_id) != unique_id) {
                                                     if (topic_nameA != null) {
                                                         countQ++;
-                                                        %><li><span title="Total followers of <%=topic_nameA%> is <%=total_followers_sider_bar%>"><a href="topic.jsp?id=<%=unique_id%>&sl=<%=sl%>"><%=topic_nameA%></a>&nbsp;(<%=total_followers_sider_bar%>)</span></li><%}
+                                                        %><li><span title="Total followers of <%=topic_nameA%> is <%=total_followers_sider_bar%>"><a href="topic.jsp?t=<%=topic_nameA.replaceAll(" ", "-")%>&id=<%=unique_id%>&sl=<%=sl%>"><%=topic_nameA%></a>&nbsp;(<%=total_followers_sider_bar%>)</span></li><%}
                                                 }
                                             }
                                             if (countQ == 0) {
@@ -284,6 +284,9 @@
                 <div class="clear-fix"></div>
             </div>
             <div class="clear-fix"></div>
+             <jsp:include page="footer.jsp">
+                <jsp:param name="sl" value="<%=sl%>"/>
+            </jsp:include>
             <script type="text/javascript" src="vendor/jquery-2.1.4.js"></script>
             <!-- Bootstrap JS -->
             <script type="text/javascript" src="vendor/bootstrap/bootstrap.min.js"></script>

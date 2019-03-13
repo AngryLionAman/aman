@@ -235,9 +235,10 @@
                                                             + " from topic t right join topic_followers_detail de on t.unique_id = de.topic_id "
                                                             + "where user_or_followers_id ='" + id_of_user + "' and t.unique_id is not null and t.topic_name is not null";
                                                 } else {
-                                                    sql = "select topic.unique_id,topic_name,count(topic_id) as count from topic inner join "
-                                                            + "topic_followers_detail where topic.unique_id = topic_followers_detail.topic_id "
-                                                            + "group by topic_followers_detail.topic_id limit 20";
+                                                    sql = "SELECT t.unique_id AS unique_id,t.topic_name AS topic_name,"
+                                                            + "(SELECT COUNT(user_or_followers_id) FROM topic_followers_detail "
+                                                            + "WHERE topic_id = t.unique_id) AS count FROM topic t "
+                                                            + "where t.unique_id IS NOT NULL AND t.topic_name IS NOT NULL LIMIT 10";
                                                 }
                                                 preparedStatement = connection.prepareStatement(sql);
                                                 resultSet = preparedStatement.executeQuery();
@@ -248,7 +249,7 @@
                                                     int count = resultSet.getInt("count");
                                                     if (topic_id != 0) {
                                                     status = false;    %>
-                                        <li><span title="Totoal followers of <%=topic_name%> is <%=count%>"><a href="topic.jsp?id=<%=topic_id%>&sl=<%=sl%>"><%=topic_name%></a> (<%=count%>)</span></li>
+                                        <li><span title="Totoal followers of <%=topic_name%> is <%=count%>"><a href="topic.jsp?t=<%=topic_name.replaceAll(" ", "-")%>&id=<%=topic_id%>&sl=<%=sl%>"><%=topic_name%></a> (<%=count%>)</span></li>
                                             <% }
                                                     }
                                                     if(status){out.println("Something went wrong<br>or you may not followed any topic");}
@@ -306,12 +307,12 @@
                                     <div class="themeBox" style="height:auto;">
 
                                         <div class="boxHeading marginbot10">
-                                            <a href="Answer.jsp?Id=<%=question_id%>&q=<%=TrendingQuestion_T%>&sl=<%=sl%>" ><%=TrendingQuestion_T%> ?</a>
+                                            <a href="Answer.jsp?q=<%=TrendingQuestion_T.replaceAll(" ", "-")%>&Id=<%=question_id%>&sl=<%=sl%>" ><%=TrendingQuestion_T%> ?</a>
 
                                         </div>
                                         <div class="questionArea">
 
-                                            <div class="postedBy"><%=POSTED_BY%> :<a href="profile.jsp?ID=<%=userID%>&sl=<%=sl%>"> <%=UserName_for_trending_question_T%></a>
+                                            <div class="postedBy"><%=POSTED_BY%> :<a href="profile.jsp?user=<%=UserName_for_trending_question_T%>&ID=<%=userID%>&sl=<%=sl%>"> <%=UserName_for_trending_question_T%></a>
                                                 &nbsp;&nbsp;&nbsp;&nbsp; 
                                                 <%  if (session.getAttribute("Session_id_of_user") != null) {
                                                         int Session_id_of_user = (Integer) session.getAttribute("Session_id_of_user");
@@ -322,7 +323,7 @@
                                             </div>
                                             <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=question_id%>', '<%="upvote"%>');" >Upvote</a>&nbsp;&nbsp; 
                                             <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=question_id%>', '<%="downvote"%>');" >Downvote</a>&nbsp;&nbsp; 
-                                            <a href="Answer.jsp?Id=<%=question_id%>&sl=<%=sl%>" >Answer</a>
+                                            <a href="Answer.jsp?q=<%=TrendingQuestion_T.replaceAll(" ", "-")%>&Id=<%=question_id%>&sl=<%=sl%>" >Answer</a>
                                         </div>
 
                                     </div><%
@@ -366,14 +367,14 @@
                                     <div class="themeBox" style="height:auto;">
 
                                         <div class="boxHeading marginbot10">
-                                            <a href="Answer.jsp?Id=<%=resultSet.getInt("q.q_id")%>&sl=<%=sl%>" ><%=question%> ?</a>
+                                            <a href="Answer.jsp?q=<%=question.replaceAll(" ", "-")%>&Id=<%=resultSet.getInt("q.q_id")%>&sl=<%=sl%>" ><%=question%> ?</a>
                                         </div>
                                         <div class="questionArea">
                                             <div class="postedBy"><%=POSTED_BY%> : <a href="profile.jsp?ID=<%=ide%>&sl=<%=sl%>"><%=fname%></a></div>
                                         </div>
                                         <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=resultSet.getInt("q.q_id")%>', '<%="upvote"%>');" >Upvote</a>&nbsp;&nbsp; 
                                         <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=resultSet.getInt("q.q_id")%>', '<%="downvote"%>');" >Downvote</a>&nbsp;&nbsp; 
-                                        <a href="Answer.jsp?Id=<%=resultSet.getInt("q.q_id")%>&sl=<%=sl%>" >Answer</a>
+                                        <a href="Answer.jsp?q=<%=question.replaceAll(" ", "-")%>&Id=<%=resultSet.getInt("q.q_id")%>&sl=<%=sl%>" >Answer</a>
 
                                     </div>
 
@@ -463,7 +464,7 @@
                                         <div class="themeBox" style="height:auto;">
 
                                             <div class="boxHeading marginbot10">
-                                                <a href="Answer.jsp?Id=<%=rs1.getInt("q_id")%>&sl=<%=sl%>" ><%=rs1.getString("question")%> ?</a>
+                                                <a href="Answer.jsp?q=<%=rs1.getString("question").replaceAll(" ", "-")%>&Id=<%=rs1.getInt("q_id")%>&sl=<%=sl%>" ><%=rs1.getString("question")%> ?</a>
                                             </div>
                                             <%
                                                 String query3 = "SELECT ID,firstname FROM newuser WHERE id='" + rs1.getString("id") + "' ";
@@ -479,12 +480,12 @@
                                                 ps3.close();%>
                                             <div class="questionArea">
 
-                                                <div class="postedBy"><%=POSTED_BY%> :<a href="profile.jsp?ID=<%=userId%>&sl=<%=sl%>"> <%=Username%></a></div>
+                                                <div class="postedBy"><%=POSTED_BY%> :<a href="profile.jsp?user=<%=Username%>&ID=<%=userId%>&sl=<%=sl%>"> <%=Username%></a></div>
 
                                             </div>
                                             <a href="javascript:void(0)" onclick="return take_value(this, '<%=rs1.getInt("q_id")%>', 'upvote');">Upvote</a>&nbsp;&nbsp;
                                             <a href="javascript:void(0)" onclick="return take_value(this, '<%=rs1.getInt("q_id")%>', 'upvote');">Downvote</a>&nbsp;&nbsp;
-                                            <a href="Answer.jsp?Id=<%=rs1.getInt("q_id")%>&sl=<%=sl%>">Answer</a>
+                                            <a href="Answer.jsp?q=<%=rs1.getString("question").replaceAll(" ", "-")%>&Id=<%=rs1.getInt("q_id")%>&sl=<%=sl%>">Answer</a>
 
                                         </div>
 
@@ -730,7 +731,9 @@
                 </div>
             </div>
 
-
+            <jsp:include page="footer.jsp">
+                <jsp:param name="sl" value="<%=sl%>"/>
+            </jsp:include>
             <script type="text/javascript" src="vendor/jquery-2.1.4.js"></script>
             <!-- Bootstrap JS -->
             <script type="text/javascript" src="vendor/bootstrap/bootstrap.min.js"></script>

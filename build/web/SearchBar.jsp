@@ -190,7 +190,7 @@
                                                             boolean count = true;
                                                             while (resultSet.next()) {
                                                                 count = false;
-                                                                String Topic_assgned_by_user = resultSet.getString("topic_name");
+                                                                String Topic_assgned_by_user = resultSet.getString("topic_name").substring(0, 1).toUpperCase()+resultSet.getString("topic_name").substring(1).toLowerCase();
                                                                 int selected_topic_id = resultSet.getInt("unique_id");
                                                                 out.print("<br><br>" + count_++ + "<b>&nbsp;&nbsp;<a href=topic.jsp?id=" + selected_topic_id + ">" + Topic_assgned_by_user + "</a></b>");
 
@@ -216,8 +216,8 @@
                                                             while (resultSet.next()) {
                                                                 count = false;
                                                                 StoredUserID = resultSet.getInt("ID");
-                                                                StoredUserFirstName = resultSet.getString("firstname");
-                                                                StoredUserLatName = resultSet.getString("lastname");
+                                                                StoredUserFirstName = resultSet.getString("firstname").substring(0, 1).toUpperCase()+resultSet.getString("firstname").substring(1).toLowerCase();
+                                                                StoredUserLatName = resultSet.getString("lastname").substring(0, 1).toUpperCase()+resultSet.getString("lastname").substring(1).toLowerCase();
 
                                                                 out.print("<br><br>" + count_++ + "<b>&nbsp;&nbsp;<a href=profile.jsp?ID=" + StoredUserID + ">" + StoredUserFirstName + " " + StoredUserLatName + "</a></b>");
 
@@ -287,9 +287,12 @@
                 </div>
 
                 <!-- j Query -->
+                 <jsp:include page="footer.jsp">
+                <jsp:param name="sl" value="<%=sl%>"/>
+            </jsp:include>
                 <script type="text/javascript" src="vendor/jquery-2.1.4.js"></script>
                 <script type="text/javascript" src="vendor/bootstrap/bootstrap.min.js"></script
                 <script type="text/javascript" src="vendor/bootstrap-select/dist/js/bootstrap-select.js"></script>
             </div> <!-- /.main-page-wrapper -->
     </body>
-                                    </html>
+ </html>

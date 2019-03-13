@@ -438,7 +438,7 @@
                                                                         }else{
                                                                             out.println(mail);
                                                                         }
-                                                                        %><%--=mail--%>&nbsp;&nbsp;
+                                                                        %>&nbsp;&nbsp;
                                                                         <%
                                                                             if (session.getAttribute("email") != null) {
                                                                                 if (mail.equals(session.getAttribute("email"))) {
@@ -915,6 +915,9 @@
 
                                         </div>
                                     </div>
+                                     <jsp:include page="footer.jsp">
+                <jsp:param name="sl" value="<%=sl%>"/>
+            </jsp:include>
                                     <script type="text/javascript" src="vendor/jquery-2.1.4.js"></script>
 
                                     <script type="text/javascript" src="vendor/bootstrap/bootstrap.min.js"></script>

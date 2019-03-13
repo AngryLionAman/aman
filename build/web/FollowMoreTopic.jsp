@@ -132,7 +132,7 @@
                                                     name_topic = resultSet.getString("t.topic_name").substring(0, 1).toUpperCase()+resultSet.getString("topic_name").substring(1).toLowerCase();
                                         %>   
                                         <div style="width:auto;height:52px;border:1px solid #000;float: left; margin-right: 5px; margin-bottom: 5px;" class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                                            <span title="Totoal followers of <%=name_topic%> is <%=count%>"><a href=topic.jsp?id=<%=_topic_id%>&sl=<%=sl%>><%=name_topic%></a> (<%=count%>)</span>
+                                            <span title="Totoal followers of <%=name_topic%> is <%=count%>"><a href=topic.jsp?t=<%=name_topic.replaceAll(" ", "-")%>&id=<%=_topic_id%>&sl=<%=sl%>><%=name_topic%></a> (<%=count%>)</span>
                                             <%
                                                 Statement stmt_topic_followers;
                                                 ResultSet rs_topic_followers;
@@ -215,6 +215,9 @@
                         </div>
                     </div>
                 </div>
+                <jsp:include page="footer.jsp">
+                <jsp:param name="sl" value="<%=sl%>"/>
+            </jsp:include>
                 <script type="text/javascript" src="vendor/jquery-2.1.4.js"></script>
                 <script type="text/javascript" src="vendor/bootstrap/bootstrap.min.js"></script>
                 <script type="text/javascript" src="vendor/bootstrap-select/dist/js/bootstrap-select.js"></script>

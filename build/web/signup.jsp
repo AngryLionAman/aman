@@ -124,7 +124,7 @@
                                         <div style="overflow: hidden; padding-right: .5em;">
                                             <form action="SearchBar.jsp">
                                                 <input type="hidden" name="sl" value="<%=sl%>">
-                                                <input type="text" style="width: 100%;" name="search" >
+                                                <input type="text" style="width: 100%;" name="search" required="" >
                                                 <button type="submit" style="float: right;width: 50px;" /><%=SEARCH%></button>
                                             </form>
                                         </div>
@@ -210,7 +210,9 @@
                                     </div>
                                     <div class="clear-fix"></div>
 
-
+                                      <jsp:include page="footer.jsp">
+                <jsp:param name="sl" value="<%=sl%>"/>
+            </jsp:include>
                                     <script type="text/javascript" src="vendor/jquery-2.1.4.js"></script>
                                     <!-- Bootstrap JS -->
                                     <script type="text/javascript" src="vendor/bootstrap/bootstrap.min.js"></script>

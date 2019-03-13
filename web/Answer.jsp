@@ -247,7 +247,7 @@
                                                     topic_name = resultSet.getString("topic_name").substring(0, 1).toUpperCase()+resultSet.getString("topic_name").substring(1).toLowerCase();
                                                     topic_id = resultSet.getInt("unique_id");
                                                     if (topic_id != 0) {%>
-                                        <li><a href="topic.jsp?id=<%=topic_id%>&sl=<%=sl%>"><%=topic_name%></a></li>
+                                        <li><a href="topic.jsp?t=<%=topic_name.replaceAll(" ", "-")%>&id=<%=topic_id%>&sl=<%=sl%>"><%=topic_name%></a></li>
                                             <% }
                                                     }
                                                 } catch (Exception e) {
@@ -291,7 +291,7 @@
                                         %>
                                         <div class="questionArea">
 
-                                            <div class="postedBy"><%=POSTED_BY%> :<a href="profile.jsp?ID=<%=q_asked_by_user%>&sl=<%=sl%>"><%=firstname_of_user_who_asked_the_question%></a> </div>
+                                            <div class="postedBy"><%=POSTED_BY%> :<a href="profile.jsp?user=<%=firstname_of_user_who_asked_the_question%>&ID=<%=q_asked_by_user%>&sl=<%=sl%>"><%=firstname_of_user_who_asked_the_question%></a> </div>
 
                                         </div>
                                         <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=q_id%>', 'upvote', 'question');" >Upvote</a> &nbsp;&nbsp; 
@@ -319,7 +319,7 @@
                                             <%=answer%> 
                                         </div>
                                         <div class="questionArea">
-                                            <div class="postedBy"><%=ANSWERED_BY%> :<a href="profile.jsp?ID=<%=who_gave_answer%>&sl=<%=sl%>"><%=firstname%></a> 
+                                            <div class="postedBy"><%=ANSWERED_BY%> :<a href="profile.jsp?user=<%=firstname%>&ID=<%=who_gave_answer%>&sl=<%=sl%>"><%=firstname%></a> 
                                                 &nbsp;&nbsp;&nbsp;&nbsp;
                                                 <%  if (session.getAttribute("Session_id_of_user") != null) {
                                                         int Session_id_of_user = (Integer) session.getAttribute("Session_id_of_user");
@@ -386,7 +386,7 @@
                                                         if (question_detail != null) {
                                                             count++;
                                     %>
-                                    <a href="Answer.jsp?Id=<%=questionID%>&sl=<%=sl%>" ><%=question_detail%></a><br><br>
+                                    <a href="Answer.jsp?q=<%=question_detail.replaceAll(" ", "-")%>&Id=<%=questionID%>&sl=<%=sl%>" ><%=question_detail%></a><br><br>
                                     <%
                                                         }
 
@@ -480,7 +480,9 @@
                 <div class="modal-dialog">
                 </div>
             </div>
-
+             <jsp:include page="footer.jsp">
+                <jsp:param name="sl" value="<%=sl%>"/>
+            </jsp:include>
             <script type="text/javascript" src="vendor/jquery-2.1.4.js"></script>
             <!-- Bootstrap JS -->
             <script type="text/javascript" src="vendor/bootstrap/bootstrap.min.js"></script>

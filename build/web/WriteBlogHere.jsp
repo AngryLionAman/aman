@@ -165,7 +165,7 @@
                             <%
                                 if (session.getAttribute("email") != null) {
                             %>
-                            <div class="themeBox" style="height:330px;">
+                            <div class="themeBox" style="height:auto;">
                                 <div class="boxHeading">
                                     <%=COMPLETE_YOUR_PROFILE%>
                                 </div>
@@ -173,7 +173,7 @@
 
                             </div><% }%>
                             <div class="clear-fix"></div>
-                            <%
+                            <%--
                                 if (session.getAttribute("email") != null) {
                             %>
                             <div class="themeBox" style="height:auto;">
@@ -183,7 +183,7 @@
                                 <div>
                                     <jsp:include page="TrendingQuestion.jsp" />
                                 </div>
-                            </div><% }%>
+                            </div><% }--%>
                             <div class="clear-fix"></div>
 
                             <div class="clear-fix"></div>
@@ -200,7 +200,9 @@
                 <div class="modal-dialog">
                 </div>
             </div>
-
+             <jsp:include page="footer.jsp">
+                <jsp:param name="sl" value="<%=sl%>"/>
+            </jsp:include>
             <script type="text/javascript" src="vendor/jquery-2.1.4.js"></script>
             <!-- Bootstrap JS -->
             <script type="text/javascript" src="vendor/bootstrap/bootstrap.min.js"></script>
