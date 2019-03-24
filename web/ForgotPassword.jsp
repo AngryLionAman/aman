@@ -211,8 +211,8 @@
                                                                 mailid = UserEmail;
                                                                 subject = "Reset Password of inquiryhere.com";
                                                                 feedback = "Your InquryHere password is : " + UserPassword + "<br>Thanks for using our service";
-                                                                froma = "cse13302.sbit@gmail.com";
-                                                                password = "passwordofgmail";
+                                                                froma = "";
+                                                                password = "";
 
                                                                 to = mailid;
 
