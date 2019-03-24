@@ -35,7 +35,7 @@
                 COOKIES = "कुकीज़";
                 COOKIES_DESCRIPTION = "inquiryhere.com आपके computer,Mobile के किसी भी प्रकार के data को कभी नहीं पढ़ता है या संग्रहीत नहीं करता है। यदि उपयोगकर्ता कभी भी बेहतर प्रदर्शन के लिए कुकीज़ का उपयोग नहीं करता है, तो यह Google गोपनीयता नीति के तहत आएगा";
                 QUESTION = "सवाल";
-                QUESTION_DESCRIPTION = "यदि आपके पास इस सुरक्षा नीति के बारे में कोई प्रश्न हैं, तो आप inquiryhere.com से संपर्क कर सकते हैं";
+                QUESTION_DESCRIPTION = "यदि आपके पास इस सुरक्षा नीति के बारे में कोई प्रश्न हैं, तो आप inquiryhere.com से <a href=ContactUs.jsp?sl="+sl+">संपर्क</a> कर सकते हैं";
 
             } else {
                 PRIVACY_NOTES = "Privacy And Policy";
@@ -43,7 +43,7 @@
                 COOKIES = "Cookies";
                 COOKIES_DESCRIPTION = "inquiryhere.com never read or store any type of cookies of your local machine.if inquiryhere.com ever use cookies for the user better performance, it will come under the Google Privacy Policy";
                 QUESTION = "Question";
-                QUESTION_DESCRIPTION = "If you have questions regarding this privacy policy, you may contact inquiryhere.com.";
+                QUESTION_DESCRIPTION = "If you have questions regarding this privacy policy, you may <a href=ContactUs.jsp?sl="+sl+">contact</a> inquiryhere.com.";
             }
         %>
 

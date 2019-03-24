@@ -30,7 +30,7 @@
                 }
                 connection = DriverManager.getConnection(DB_URL_, DB_USERNAME_, DB_PASSWORD_);
             }
-            String username1, password1, firstname;
+            String  password1;
             int Session_id_of_user=0;
             try {
 
@@ -40,7 +40,6 @@
                 preparedStatement.setString(1, email);
                 resultSet = preparedStatement.executeQuery();
                 while (resultSet.next()) {
-                    username1 = resultSet.getString("email");
                     password1 = resultSet.getString("password");
                     Session_id_of_user = resultSet.getInt("ID");
                     if (password.equals(password1)) {
@@ -78,9 +77,11 @@
                 session.setAttribute("Session_id_of_user", Session_id_of_user);
                 if (request.getParameter("URL") != null) {
                     String URL = request.getParameter("URL");
-                    response.sendRedirect(URL + "&sl=" + sl);
+                    String ans = request.getParameter("ans");
+                    response.sendRedirect(URL + "&sl=" + sl+"&ans="+ans);
+                }else{ 
+                    response.sendRedirect("index.jsp?sl=" + sl);
                 }
-                response.sendRedirect("index.jsp?sl=" + sl);
             } else {
                 response.sendRedirect("Login.jsp?sl=" + sl + "&msg=valid");
             }

@@ -48,7 +48,7 @@
             subject = Name_h + " need help!!";
             feedback = "Mail id: " + Email_h + "<br> " + query;
             froma = "cse13302.sbit@gmail.com";
-            password = "alok@ankit";
+            password = "passwordofgmail";
 
             to = mailid;
 
@@ -112,7 +112,7 @@
             subject = Name_s + " Gave suggestion to you!!";
             feedback = "Mail id: " + Email_s + "<br> " + S_s;
             froma = "cse13302.sbit@gmail.com";
-            password = "alok@ankit";
+            password = "passwordofgmail";
 
             to = mailid;
 
@@ -156,8 +156,8 @@
     } else {
 %>
 <script>window.alert("you can't access this page directly!!!");
-    window.location = "http://localhost:8081/InquiryHere/ContactUs.jsp";</script><%
+    window.location = "<%=DB_AJAX_PATH%>/ContactUs.jsp";</script><%
         }
     %>
 <script>window.alert("Thanks for your precious time you always be important for us.\nWe have started working on it ");
-    window.location = "http://localhost:8081/InquiryHere/index.jsp";</script>
+    window.location = "<%=DB_AJAX_PATH%>/index.jsp";</script>

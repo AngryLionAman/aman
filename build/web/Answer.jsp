@@ -64,6 +64,7 @@
             int Question = 0;
             if (request.getParameter("Id") != null) {
                 Question = Integer.valueOf(request.getParameter("Id"));
+                //out.println(Question);
             } else {
                 response.sendRedirect("index.jsp");
             }
@@ -148,13 +149,20 @@
         </script>
 
         <%
+            String email = null;
+            int CurrentuserId = 0;
             String StoredQuestion = "";
             String StoredAnswer = "";
             int StoredQuestionId = 0;
             try {
-                //String sql = "SELECT q_id,question FROM question WHERE q_id = (?)";
+                //This statement not using because ,if a question having no result then it will not fetch the question also.
+                //It is only applicable on that which having the at least one answer;
+                
+                //Now usnig the left join for,if any question had no answer the it will show null value 
+                //but extra all function will work
                 String sql = " SELECT q.q_id AS q_id,q.question AS question,SUBSTRING(a.answer,1,500) AS answer"
-                        + " FROM question q RIGHT JOIN answer a on q.q_id = a.q_id WHERE q.q_id = (?)";
+                        + " FROM question q LEFT JOIN answer a on q.q_id = a.q_id WHERE q.q_id = (?)";
+                /*String sql = "SELECT q.q_id AS q_id,q.question AS question FROM question q WHERE q.q_id = (?)";*/
                 preparedStatement = connection.prepareStatement(sql);
                 preparedStatement.setInt(1, Question);
                 resultSet = preparedStatement.executeQuery();
@@ -165,6 +173,23 @@
                 }
             } catch (Exception e) {
                 out.println("Unable to retrieve!!" + e);
+                if (session.getAttribute("email") == null) {
+                    email = "Anonuous";
+                } else {
+                    email = (String) session.getAttribute("email");
+                }
+                if (session.getAttribute("Session_id_of_user") == null) {
+                    CurrentuserId = 0;
+                } else {
+                    CurrentuserId = (Integer) session.getAttribute("Session_id_of_user");
+                }
+                String URL = request.getRequestURL() + "?" + request.getQueryString();
+        %><jsp:include page="ExceptionCollector.jsp">
+            <jsp:param name="userName" value="<%=email%>"></jsp:param>
+            <jsp:param name="userID" value="<%=CurrentuserId%>"></jsp:param>
+            <jsp:param name="URLParameter" value="<%=URL%>"></jsp:param>
+            <jsp:param name="ExceptionMessage" value="<%=e%>"></jsp:param>
+        </jsp:include><%
             }
         %>
         <title><%=StoredQuestion%></title>
@@ -194,7 +219,7 @@
                 int q_asked_by_user = 0;// initilazing
                 String firstname_of_user_who_asked_the_question = null;
                 if (session.getAttribute("email") != null) {
-                    String email = (String) session.getAttribute("email");
+                    email = (String) session.getAttribute("email");
                     try {
                         String sql = "SELECT * FROM newuser WHERE email = '" + email + "'";
                         preparedStatement = connection.prepareCall(sql);
@@ -244,14 +269,31 @@
                                                 preparedStatement = connection.prepareStatement(p_fetch_topic);
                                                 resultSet = preparedStatement.executeQuery();
                                                 while (resultSet.next()) {
-                                                    topic_name = resultSet.getString("topic_name").substring(0, 1).toUpperCase()+resultSet.getString("topic_name").substring(1).toLowerCase();
+                                                    topic_name = resultSet.getString("topic_name").substring(0, 1).toUpperCase() + resultSet.getString("topic_name").substring(1).toLowerCase();
                                                     topic_id = resultSet.getInt("unique_id");
                                                     if (topic_id != 0) {%>
                                         <li><a href="topic.jsp?t=<%=topic_name.replaceAll(" ", "-")%>&id=<%=topic_id%>&sl=<%=sl%>"><%=topic_name%></a></li>
                                             <% }
-                                                    }
-                                                } catch (Exception e) {
-                                                    out.println("Unable to retrieve!!" + e);
+                                                }
+                                            } catch (Exception e) {
+                                                out.println("Unable to retrieve!!" + e);
+                                                if (session.getAttribute("email") == null) {
+                                                    email = "Anonuous";
+                                                } else {
+                                                    email = (String) session.getAttribute("email");
+                                                }
+                                                if (session.getAttribute("Session_id_of_user") == null) {
+                                                    CurrentuserId = 0;
+                                                } else {
+                                                    CurrentuserId = (Integer) session.getAttribute("Session_id_of_user");
+                                                }
+                                                String URL = request.getRequestURL() + "?" + request.getQueryString();
+                                            %><jsp:include page="ExceptionCollector.jsp">
+                                                <jsp:param name="userName" value="<%=email%>"></jsp:param>
+                                                <jsp:param name="userID" value="<%=CurrentuserId%>"></jsp:param>
+                                                <jsp:param name="URLParameter" value="<%=URL%>"></jsp:param>
+                                                <jsp:param name="ExceptionMessage" value="<%=e%>"></jsp:param>
+                                            </jsp:include><%
                                                 }
                                             %>
                                         <a href="FollowMoreTopic.jsp?sl=<%=sl%>"><%=CLICK_HERE_TO_MORE_TOPIC%></a>
@@ -283,10 +325,27 @@
                                                 while (resultSet.next()) {
                                                     q_id = resultSet.getInt("q_id");
                                                     q_asked_by_user = resultSet.getInt("id");
-                                                    firstname_of_user_who_asked_the_question = resultSet.getString("firstname");
+                                                    firstname_of_user_who_asked_the_question = resultSet.getString("firstname").substring(0, 1).toUpperCase()+resultSet.getString("firstname").substring(1).toLowerCase();
                                                 }
                                             } catch (Exception e) {
                                                 out.println("Unable to retrieve!!" + e);
+                                                if (session.getAttribute("email") == null) {
+                                                    email = "Anonuous";
+                                                } else {
+                                                    email = (String) session.getAttribute("email");
+                                                }
+                                                if (session.getAttribute("Session_id_of_user") == null) {
+                                                    CurrentuserId = 0;
+                                                } else {
+                                                    CurrentuserId = (Integer) session.getAttribute("Session_id_of_user");
+                                                }
+                                                String URL = request.getRequestURL() + "?" + request.getQueryString();
+                                        %><jsp:include page="ExceptionCollector.jsp">
+                                            <jsp:param name="userName" value="<%=email%>"></jsp:param>
+                                            <jsp:param name="userID" value="<%=CurrentuserId%>"></jsp:param>
+                                            <jsp:param name="URLParameter" value="<%=URL%>"></jsp:param>
+                                            <jsp:param name="ExceptionMessage" value="<%=e%>"></jsp:param>
+                                        </jsp:include><%
                                             }
                                         %>
                                         <div class="questionArea">
@@ -311,7 +370,7 @@
                                                 count++;
                                                 String answer = resultSet.getString("answer");
                                                 int who_gave_answer = resultSet.getInt("Answer_by_id");
-                                                String firstname = resultSet.getString("firstname");
+                                                String firstname = resultSet.getString("firstname").substring(0, 1).toUpperCase()+resultSet.getString("firstname").substring(1).toLowerCase();
                                                 int answer_id = resultSet.getInt("ans.a_id");
                                     %>
                                     <div class="themeBox" style="height:auto;">
@@ -343,13 +402,36 @@
                                         </div>
                                     </div>
                                     <%
-                                            }
-                                        } catch (Exception e) {
-                                            out.println("Unable to retrieve!!" + e);
+                                        }
+                                    } catch (Exception e) {
+                                        out.println("Unable to retrieve!!" + e);
+                                        if (session.getAttribute("email") == null) {
+                                            email = "Anonuous";
+                                        } else {
+                                            email = (String) session.getAttribute("email");
+                                        }
+                                        if (session.getAttribute("Session_id_of_user") == null) {
+                                            CurrentuserId = 0;
+                                        } else {
+                                            CurrentuserId = (Integer) session.getAttribute("Session_id_of_user");
+                                        }
+                                        String URL = request.getRequestURL() + "?" + request.getQueryString();
+                                    %><jsp:include page="ExceptionCollector.jsp">
+                                        <jsp:param name="userName" value="<%=email%>"></jsp:param>
+                                        <jsp:param name="userID" value="<%=CurrentuserId%>"></jsp:param>
+                                        <jsp:param name="URLParameter" value="<%=URL%>"></jsp:param>
+                                        <jsp:param name="ExceptionMessage" value="<%=e%>"></jsp:param>
+                                    </jsp:include><%
                                         }
                                     %>
-                                    <form name="submitquestion" method="post" action="SubmitAnswer.jsp?_id_of_user=<%=id_of_user%>&q_id=<%=q_id%>&URL=<%=request.getRequestURL() + "?" + request.getQueryString()%>&sl=<%=sl%>">
-                                        <textarea class="ckeditor" name="answer" required=""></textarea>
+                                    <form name="submitquestion" method="post" action="SubmitAnswer.jsp?_id_of_user=<%=id_of_user%>&q_id=<%=q_id%>&URL=<%=request.getRequestURL()%>?Id=<%=q_id%>&sl=<%=sl%>">
+                                        <textarea class="ckeditor" name="answer" required="">
+                                            <%
+                                            if(request.getParameter("ans")!= null){
+                                                out.println(request.getParameter("ans"));
+                                            }
+                                            %>
+                                        </textarea>
                                         <input type="submit" name="Post" value="<%=SUBMIT%>"> 
                                     </form>
 
@@ -362,7 +444,7 @@
                         </div>
                         <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
 
-                            <div class="themeBox" style="height:250px;overflow-y: auto;">
+                            <div class="themeBox" style="height:auto;">
                                 <div class="boxHeading">
                                     <%=RELATED_QUESTION%>
                                 </div>
@@ -374,9 +456,10 @@
                                         try {
                                             stmt_detail = connection.createStatement();
                                             int count = 0;
-                                            String q_detail = "select DISTINCT q.id,q.question,q.q_id from question q "
-                                                    + "right join question_topic_tag qtt on qtt.question_id=q.q_id where tag_id IN "
-                                                    + "(SELECT distinct(tag_id) as tag_id from question_topic_tag WHERE question_id = '" + q_id + "') and q_id is not null";
+                                            String q_detail = "SELECT DISTINCT q.id,q.question,q.q_id FROM question q "
+                                                    + "RIGHT JOIN question_topic_tag qtt ON qtt.question_id=q.q_id WHERE tag_id "
+                                                    + "IN (SELECT DISTINCT(tag_id) AS tag_id FROM question_topic_tag WHERE question_id = '" + q_id + "') "
+                                                    + "AND q_id IS NOT NULL LIMIT 5";
                                             rs_detail = stmt_detail.executeQuery(q_detail);
                                             try {
                                                 while (rs_detail.next()) {
@@ -388,24 +471,58 @@
                                     %>
                                     <a href="Answer.jsp?q=<%=question_detail.replaceAll(" ", "-")%>&Id=<%=questionID%>&sl=<%=sl%>" ><%=question_detail%></a><br><br>
                                     <%
-                                                        }
+                                                }
 
-                                                    }
-                                                }
-                                            } catch (Exception error) {
-                                                out.println("Error in inside blok" + error);
                                             }
-                                            if (count == 0) {
-                                                if (request.getParameter("lang") != "hindi") {
-                                                    out.println(NO_RELATED_QUESTION_FOUND + " !!!");
-                                                } else {
-                                                    out.println(NO_RELATED_QUESTION_FOUND + "!!!");
-                                                }
+                                        }
+                                    } catch (Exception error) {
+                                        out.println("Error in inside blok" + error);
+                                        if (session.getAttribute("email") == null) {
+                                            email = "Anonuous";
+                                        } else {
+                                            email = (String) session.getAttribute("email");
+                                        }
+                                        if (session.getAttribute("Session_id_of_user") == null) {
+                                            CurrentuserId = 0;
+                                        } else {
+                                            CurrentuserId = (Integer) session.getAttribute("Session_id_of_user");
+                                        }
+                                        String URL = request.getRequestURL() + "?" + request.getQueryString();
+                                    %><jsp:include page="ExceptionCollector.jsp">
+                                        <jsp:param name="userName" value="<%=email%>"></jsp:param>
+                                        <jsp:param name="userID" value="<%=CurrentuserId%>"></jsp:param>
+                                        <jsp:param name="URLParameter" value="<%=URL%>"></jsp:param>
+                                        <jsp:param name="ExceptionMessage" value="<%=error%>"></jsp:param>
+                                    </jsp:include><%
+                                        }
+                                        if (count == 0) {
+                                            if (request.getParameter("lang") != "hindi") {
+                                                out.println(NO_RELATED_QUESTION_FOUND + " !!!");
+                                            } else {
+                                                out.println(NO_RELATED_QUESTION_FOUND + "!!!");
                                             }
-                                            rs_detail.close();
-                                            stmt_detail.close();
-                                        } catch (Exception e) {
-                                            out.println("Exception in Related question :" + e);
+                                        }
+                                        rs_detail.close();
+                                        stmt_detail.close();
+                                    } catch (Exception e) {
+                                        out.println("Exception in Related question :" + e);
+                                        if (session.getAttribute("email") == null) {
+                                            email = "Anonuous";
+                                        } else {
+                                            email = (String) session.getAttribute("email");
+                                        }
+                                        if (session.getAttribute("Session_id_of_user") == null) {
+                                            CurrentuserId = 0;
+                                        } else {
+                                            CurrentuserId = (Integer) session.getAttribute("Session_id_of_user");
+                                        }
+                                        String URL = request.getRequestURL() + "?" + request.getQueryString();
+                                    %><jsp:include page="ExceptionCollector.jsp">
+                                        <jsp:param name="userName" value="<%=email%>"></jsp:param>
+                                        <jsp:param name="userID" value="<%=CurrentuserId%>"></jsp:param>
+                                        <jsp:param name="URLParameter" value="<%=URL%>"></jsp:param>
+                                        <jsp:param name="ExceptionMessage" value="<%=e%>"></jsp:param>
+                                    </jsp:include><%
                                         }
                                     %>
                                 </div>
@@ -480,7 +597,7 @@
                 <div class="modal-dialog">
                 </div>
             </div>
-             <jsp:include page="footer.jsp">
+            <jsp:include page="footer.jsp">
                 <jsp:param name="sl" value="<%=sl%>"/>
             </jsp:include>
             <script type="text/javascript" src="vendor/jquery-2.1.4.js"></script>

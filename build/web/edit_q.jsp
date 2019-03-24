@@ -1,11 +1,17 @@
 <%@page import="java.util.ArrayList"%>
 <html lang="en">
     <head>
-         <%
-        if(session.getAttribute("Session_id_of_user")== null){
-            response.sendRedirect("Login.jsp");
-        }
+        <%
+       if(session.getAttribute("Session_id_of_user")== null){
+           response.sendRedirect("Login.jsp");
+       }
         %>
+        <%
+            String sl = request.getParameter("sl");
+            if (sl == null) {
+                sl = "en";
+            }
+            %>
         <meta charset="UTF-8">
         <%@page language="java"%>
         <%@page import="java.sql.*"%>
@@ -17,7 +23,7 @@
         <!-- For Resposive Device -->
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <title>AMAN HTML</title>
+        <title>Edit question</title>
 
         <link rel="stylesheet" type="text/css" href="css/style.css">
         <!-- responsive style sheet -->
@@ -140,7 +146,7 @@
                     }
                 }
             %>
- <jsp:include page="footer.jsp">
+            <jsp:include page="footer.jsp">
                 <jsp:param name="sl" value="<%=sl%>"/>
             </jsp:include>
             <script type="text/javascript" src="vendor/jquery-2.1.4.js"></script>

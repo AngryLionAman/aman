@@ -178,6 +178,8 @@
                 <jsp:param name="page" value="index.jsp"/>
             </jsp:include>
             <%
+                int CurrentuserId = 0;
+                String email = null;
                 Connection connection = null;
                 ResultSet resultSet = null;
                 PreparedStatement preparedStatement = null;
@@ -194,7 +196,7 @@
 
             <%
                 if (session.getAttribute("email") != null) {
-                    String email = (String) session.getAttribute("email");
+                    email = (String) session.getAttribute("email");
                     try {
                         String sql1 = "SELECT * FROM newuser WHERE email = '" + email + "'";
                         preparedStatement = connection.prepareStatement(sql1);
@@ -203,8 +205,24 @@
                             id_of_user = resultSet.getInt("id");
                             name = resultSet.getString("firstname");
                         }
-                    } catch (Exception e) {
-                        out.println("Unable to retrieve!!" + e);
+                    } catch (Exception Exceptionmsg) {
+                        if (session.getAttribute("email") == null) {
+                            email = "Anonuous";
+                        } else {
+                            email = (String) session.getAttribute("email");
+                        }
+                        if (session.getAttribute("Session_id_of_user") == null) {
+                            CurrentuserId = 0;
+                        } else {
+                            CurrentuserId = (Integer) session.getAttribute("Session_id_of_user");
+                        }
+                        String URL = request.getRequestURL() + "?" + request.getQueryString();
+            %><jsp:include page="ExceptionCollector.jsp">
+                <jsp:param name="userName" value="<%=email%>"></jsp:param>
+                <jsp:param name="userID" value="<%=CurrentuserId%>"></jsp:param>
+                <jsp:param name="URLParameter" value="<%=URL%>"></jsp:param>
+                <jsp:param name="ExceptionMessage" value="<%=Exceptionmsg%>"></jsp:param>
+            </jsp:include><%
                     }
                 }
             %>
@@ -238,7 +256,7 @@
                                                     sql = "SELECT t.unique_id AS unique_id,t.topic_name AS topic_name,"
                                                             + "(SELECT COUNT(user_or_followers_id) FROM topic_followers_detail "
                                                             + "WHERE topic_id = t.unique_id) AS count FROM topic t "
-                                                            + "where t.unique_id IS NOT NULL AND t.topic_name IS NOT NULL LIMIT 10";
+                                                            + "where t.unique_id IS NOT NULL AND t.topic_name IS NOT NULL LIMIT 5";
                                                 }
                                                 preparedStatement = connection.prepareStatement(sql);
                                                 resultSet = preparedStatement.executeQuery();
@@ -248,13 +266,32 @@
                                                     topic_id = resultSet.getInt("unique_id");
                                                     int count = resultSet.getInt("count");
                                                     if (topic_id != 0) {
-                                                    status = false;    %>
+                                                        status = false;%>
                                         <li><span title="Totoal followers of <%=topic_name%> is <%=count%>"><a href="topic.jsp?t=<%=topic_name.replaceAll(" ", "-")%>&id=<%=topic_id%>&sl=<%=sl%>"><%=topic_name%></a> (<%=count%>)</span></li>
                                             <% }
-                                                    }
-                                                    if(status){out.println("Something went wrong<br>or you may not followed any topic");}
-                                                } catch (Exception e) {
-                                                    out.println("Unable to retrieve!!" + e);
+                                                }
+                                                if (status) {
+                                                    out.println("Something went wrong<br>or you may not followed any topic");
+                                                }
+                                            } catch (Exception Exceptionmsg) {
+                                                out.println("Unable to retrieve!!" + Exceptionmsg);
+                                                if (session.getAttribute("email") == null) {
+                                                    email = "Anonuous";
+                                                } else {
+                                                    email = (String) session.getAttribute("email");
+                                                }
+                                                if (session.getAttribute("Session_id_of_user") == null) {
+                                                    CurrentuserId = 0;
+                                                } else {
+                                                    CurrentuserId = (Integer) session.getAttribute("Session_id_of_user");
+                                                }
+                                                String URL = request.getRequestURL() + "?" + request.getQueryString();
+                                            %><jsp:include page="ExceptionCollector.jsp">
+                                                <jsp:param name="userName" value="<%=email%>"></jsp:param>
+                                                <jsp:param name="userID" value="<%=CurrentuserId%>"></jsp:param>
+                                                <jsp:param name="URLParameter" value="<%=URL%>"></jsp:param>
+                                                <jsp:param name="ExceptionMessage" value="<%=Exceptionmsg%>"></jsp:param>
+                                            </jsp:include><%
                                                 }
                                             %>
                                         <a href="FollowMoreTopic.jsp?sl=<%=sl%>"><%=CLICK_HERE_TO_MORE_TOPIC%></a>
@@ -286,7 +323,7 @@
 
                                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                     <%
-                                    if(request.getParameter("iPageNo") == null && request.getParameter("cPageNo") == null){
+                                        if (request.getParameter("iPageNo") == null && request.getParameter("cPageNo") == null) {
                                     %>
 
                                     <h4><%=RECENT_POSTED_QUESTION%></h4>
@@ -302,7 +339,7 @@
                                                 String TrendingQuestion_T = resultSet.getString("question");
                                                 int question_id = resultSet.getInt("q.q_id");
                                                 int userID = resultSet.getInt("user.ID");
-                                                UserName_for_trending_question_T = resultSet.getString("firstname");
+                                                UserName_for_trending_question_T = resultSet.getString("firstname").substring(0, 1).toUpperCase()+resultSet.getString("firstname").substring(1).toLowerCase();
                                     %>
                                     <div class="themeBox" style="height:auto;">
 
@@ -327,11 +364,28 @@
                                         </div>
 
                                     </div><%
-                                            }
-                                        } catch (Exception e) {
-                                            out.println("Error " + e);
                                         }
-                }
+                                    } catch (Exception Exceptionmsg) {
+                                        out.println("Error " + Exceptionmsg);
+                                        if (session.getAttribute("email") == null) {
+                                            email = "Anonuous";
+                                        } else {
+                                            email = (String) session.getAttribute("email");
+                                        }
+                                        if (session.getAttribute("Session_id_of_user") == null) {
+                                            CurrentuserId = 0;
+                                        } else {
+                                            CurrentuserId = (Integer) session.getAttribute("Session_id_of_user");
+                                        }
+                                        String URL = request.getRequestURL() + "?" + request.getQueryString();
+                                    %><jsp:include page="ExceptionCollector.jsp">
+                                        <jsp:param name="userName" value="<%=email%>"></jsp:param>
+                                        <jsp:param name="userID" value="<%=CurrentuserId%>"></jsp:param>
+                                        <jsp:param name="URLParameter" value="<%=URL%>"></jsp:param>
+                                        <jsp:param name="ExceptionMessage" value="<%=Exceptionmsg%>"></jsp:param>
+                                    </jsp:include><%
+                                            }
+                                        }
                                     %> 
                                     <%
                                         if (session.getAttribute("email") != null) {
@@ -360,7 +414,7 @@
                                                     String T = "SELECT firstname FROM newuser WHERE id='" + ide + "' ";
                                                     rs2 = stmt2.executeQuery(T);
                                                     while (rs2.next()) {
-                                                        fname = rs2.getString("firstname");
+                                                        fname = rs2.getString("firstname").substring(0, 1).toUpperCase()+rs2.getString("firstname").substring(1).toLowerCase();
                                                     }
 
                                     %>
@@ -380,11 +434,28 @@
 
 
                                     <%             }
-                                            }
-                                            stmt2.close();
-                                            rs2.close();
-                                        } catch (Exception e) {
-                                            out.println("<b style=color:red;>No question found related to your selected topic</b>");
+                                        }
+                                        stmt2.close();
+                                        rs2.close();
+                                    } catch (Exception e) {
+                                        out.println("<b style=color:red;>No question found related to your selected topic</b>");
+                                        if (session.getAttribute("email") == null) {
+                                            email = "Anonuous";
+                                        } else {
+                                            email = (String) session.getAttribute("email");
+                                        }
+                                        if (session.getAttribute("Session_id_of_user") == null) {
+                                            CurrentuserId = 0;
+                                        } else {
+                                            CurrentuserId = (Integer) session.getAttribute("Session_id_of_user");
+                                        }
+                                        String URL = request.getRequestURL() + "?" + request.getQueryString();
+                                    %><jsp:include page="ExceptionCollector.jsp">
+                                        <jsp:param name="userName" value="<%=email%>"></jsp:param>
+                                        <jsp:param name="userID" value="<%=CurrentuserId%>"></jsp:param>
+                                        <jsp:param name="URLParameter" value="<%=URL%>"></jsp:param>
+                                        <jsp:param name="ExceptionMessage" value="<%=e%>"></jsp:param>
+                                    </jsp:include><%
                                         }
                                     } else {
                                     %>
@@ -472,7 +543,7 @@
                                                 rs3 = ps3.executeQuery();
 
                                                 while (rs3.next()) {
-                                                    Username = rs3.getString("firstname");
+                                                    Username = rs3.getString("firstname").substring(0, 1).toUpperCase()+rs3.getString("firstname").substring(1).toLowerCase();
                                                     userId = rs3.getInt("ID");
                                                     //out.println(fname);
                                                 }
@@ -490,9 +561,26 @@
                                         </div>
 
                                         <%
-                                                }
-                                            } catch (Exception e) {
-                                                out.println(e);
+                                            }
+                                        } catch (Exception e) {
+                                            out.println(e);
+                                            if (session.getAttribute("email") == null) {
+                                                email = "Anonuous";
+                                            } else {
+                                                email = (String) session.getAttribute("email");
+                                            }
+                                            if (session.getAttribute("Session_id_of_user") == null) {
+                                                CurrentuserId = 0;
+                                            } else {
+                                                CurrentuserId = (Integer) session.getAttribute("Session_id_of_user");
+                                            }
+                                            String URL = request.getRequestURL() + "?" + request.getQueryString();
+                                        %><jsp:include page="ExceptionCollector.jsp">
+                                            <jsp:param name="userName" value="<%=email%>"></jsp:param>
+                                            <jsp:param name="userID" value="<%=CurrentuserId%>"></jsp:param>
+                                            <jsp:param name="URLParameter" value="<%=URL%>"></jsp:param>
+                                            <jsp:param name="ExceptionMessage" value="<%=e%>"></jsp:param>
+                                        </jsp:include><%
 
                                             }
                                         %>
@@ -580,12 +668,34 @@
 
                         </div>
                         <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                            <div class="themeBox" style="height:auto;">
+                                <div class="boxHeading">
+                                    Fun Zone
+                                </div>
+                                <div>
+                                    <ul>
+                                        <li><a href="jokes.jsp">Joke</a></li>
+                                        <li><a href="quotes.jsp">Quotes</a></li>
+                                        <li><a href="blog.jsp">Read Blog</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="themeBox" style="height:auto;">
+                                <div class="boxHeading">
+                                    Education Zone
+                                </div>
+                                <div>
+                                    <ul>
+                                        <li><a href="fullForm.jsp">Full Form</a></li>
+                                    </ul>
+                                </div>
+                            </div>
 
                             <!--div class="themeBox" style="height:auto;">
                                 <div class="boxHeading">
-                                    <%=TRENDING_QUESTION%>
-                                </div>
-                                <div>
+                            <%--=TRENDING_QUESTION--%>
+                        </div>
+                        <div>
 //                                    <%
 //                                        //String UserName_for_trending_question = null;
 //                                        try {
@@ -603,55 +713,53 @@
 //                                            out.println("Error " + e);
 //                                        }
 //                                    %>
-                                </div>
-                                </div-->
-                                <%
-                                    } catch (Exception e) {
-                                        out.println("Error in main try block:-" + e);
-                                    } finally {
+                        </div>
+                        </div-->
+                            <div class="clear-fix"></div>
+                            <div class="clear-fix"></div>
 
+                            <div class="clear-fix"></div>
+                        </div>
+                        <%
+                            } catch (Exception e) {
+                                out.println("Error in main try block:-" + e);
+                            } finally {
+
+                                try {
+                                    if (connection != null || !connection.isClosed()) {
                                         try {
-                                            if (connection != null || !connection.isClosed()) {
-                                                try {
-                                                    connection.close();
-                                                } catch (Exception e) {
-                                                    out.println("Exception in closing connection " + e);
-                                                }
-                                            }
-                                        } catch (Exception msg) {
-                                            out.println("Error in connection" + msg);
-                                        }
-                                        try {
-                                            if (resultSet != null || !resultSet.isClosed()) {
-                                                try {
-                                                    resultSet.close();
-                                                } catch (Exception e) {
-                                                    out.println("Exception in closing resulatset " + e);
-                                                }
-                                            }
-                                        } catch (Exception msg) {
-                                            out.println("Error in connection" + msg);
-                                        }
-                                        try {
-                                            if (preparedStatement != null || !preparedStatement.isClosed()) {
-                                                try {
-                                                    preparedStatement.close();
-                                                } catch (Exception e) {
-                                                    out.println("Exception in closing preparedStatement " + e);
-                                                }
-                                            }
-                                        } catch (Exception msg) {
-                                            out.println("Error in connection" + msg);
+                                            connection.close();
+                                        } catch (Exception e) {
+                                            out.println("Exception in closing connection " + e);
                                         }
                                     }
-                                %>
-                            
-                            <div class="clear-fix"></div>
-                            <div class="clear-fix"></div>
-
-                            <div class="clear-fix"></div>
-                        </div>          
-
+                                } catch (Exception msg) {
+                                    out.println("Error in connection" + msg);
+                                }
+                                try {
+                                    if (resultSet != null || !resultSet.isClosed()) {
+                                        try {
+                                            resultSet.close();
+                                        } catch (Exception e) {
+                                            out.println("Exception in closing resulatset " + e);
+                                        }
+                                    }
+                                } catch (Exception msg) {
+                                    out.println("Error in connection" + msg);
+                                }
+                                try {
+                                    if (preparedStatement != null || !preparedStatement.isClosed()) {
+                                        try {
+                                            preparedStatement.close();
+                                        } catch (Exception e) {
+                                            out.println("Exception in closing preparedStatement " + e);
+                                        }
+                                    }
+                                } catch (Exception msg) {
+                                    out.println("Error in connection" + msg);
+                                }
+                            }
+                        %>
                         <div class="clear-fix"></div>
                     </div>
                     <div class="clear-fix"></div>

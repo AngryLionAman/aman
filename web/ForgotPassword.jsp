@@ -113,6 +113,9 @@
                                     <div class="bodydata">
                                         <div class="container clear-fix">
                                             <div class="row">
+                                                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+
+                                                </div>
                                                 <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                                     <div class="row"><center>
                                                             <%
@@ -208,8 +211,8 @@
                                                                 mailid = UserEmail;
                                                                 subject = "Reset Password of inquiryhere.com";
                                                                 feedback = "Your InquryHere password is : " + UserPassword + "<br>Thanks for using our service";
-                                                                froma = "email";
-                                                                password = "password";
+                                                                froma = "cse13302.sbit@gmail.com";
+                                                                password = "passwordofgmail";
 
                                                                 to = mailid;
 

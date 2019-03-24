@@ -23,7 +23,10 @@
                         <a href="privacy.jsp?sl=<%=sl%>">Privacy Policy</a> &nbsp;&nbsp;
                     </div>
                     <div class="float-right reserved">
-                        <a href="terms.jsp?sl=<%=sl%>">Terms and condition</a> &nbsp;&nbsp;
+                        <a href="terms.jsp?sl=<%=sl%>">Terms</a> &nbsp;&nbsp;
+                    </div>
+                    <div class="float-right reserved">
+                        <a href="index.jsp?sl=<%=sl%>">Home</a> &nbsp;&nbsp;
                     </div>
                 </div>
             </div>

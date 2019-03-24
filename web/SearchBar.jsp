@@ -99,6 +99,8 @@
 
                             </div>
                             <%
+                                String email = null;
+                                int CurrentuserId = 0;
                                 Connection connection = null;
                                 ResultSet resultSet = null;
                                 PreparedStatement preparedStatement = null;
@@ -108,9 +110,26 @@
                                             Class.forName("com.mysql.jdbc.Driver");
                                         } catch (ClassNotFoundException ex) {
                                             out.println("Exception in loading the class forname Driver" + ex);
-                                        }
-                                        connection = DriverManager.getConnection(DB_URL_, DB_USERNAME_, DB_PASSWORD_);
+                                            if (session.getAttribute("email") == null) {
+                                                email = "Anonuous";
+                                            } else {
+                                                email = (String) session.getAttribute("email");
+                                            }
+                                            if (session.getAttribute("Session_id_of_user") == null) {
+                                                CurrentuserId = 0;
+                                            } else {
+                                                CurrentuserId = (Integer) session.getAttribute("Session_id_of_user");
+                                            }
+                                            String URL = request.getRequestURL() + "?" + request.getQueryString();
+                            %><jsp:include page="ExceptionCollector.jsp">
+                                <jsp:param name="userName" value="<%=email%>"></jsp:param>
+                                <jsp:param name="userID" value="<%=CurrentuserId%>"></jsp:param>
+                                <jsp:param name="URLParameter" value="<%=URL%>"></jsp:param>
+                                <jsp:param name="ExceptionMessage" value="<%=ex%>"></jsp:param>
+                            </jsp:include><%
                                     }
+                                    connection = DriverManager.getConnection(DB_URL_, DB_USERNAME_, DB_PASSWORD_);
+                                }
                             %>
 
                             <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
@@ -129,24 +148,39 @@
                                                         out.println("<center><div class=boxHeading>" + QUESTION + "</div></center>");
                                                         try {
                                                             String Question_asked_by_user;
-                                                            String SearchValue_Case_Converted = SearchValue.toLowerCase(); 
+                                                            String SearchValue_Case_Converted = SearchValue.toLowerCase();
                                                             String Q = "SELECT * FROM question WHERE lower(question) LIKE '%" + SearchValue_Case_Converted + "%'";
                                                             preparedStatement = connection.prepareStatement(Q);
                                                             resultSet = preparedStatement.executeQuery();
-                                                            //rs_q = stmt_q.executeQuery(Q);
-                                                            //int count = 0;
                                                             boolean count = true;
                                                             while (resultSet.next()) {
                                                                 count = false;
                                                                 Question_asked_by_user = resultSet.getString("question");
                                                                 int question_id = resultSet.getInt("q_id");
                                             %> <br>Q. <a href="Answer.jsp?Id=<%=question_id%>" ><h6><%=Question_asked_by_user%> ?</h6></a><%
-                                                        }
-                                                        if(count){
-                                                            out.println("No related question found");
-                                                            }
-                                                    } catch (Exception e1) {
-                                                        out.println("Error in Question search : " + e1);
+                                                }
+                                                if (count) {
+                                                    out.println("No related question found");
+                                                }
+                                            } catch (Exception e1) {
+                                                out.println("Error in Question search : " + e1);
+                                                if (session.getAttribute("email") == null) {
+                                                    email = "Anonuous";
+                                                } else {
+                                                    email = (String) session.getAttribute("email");
+                                                }
+                                                if (session.getAttribute("Session_id_of_user") == null) {
+                                                    CurrentuserId = 0;
+                                                } else {
+                                                    CurrentuserId = (Integer) session.getAttribute("Session_id_of_user");
+                                                }
+                                                String URL = request.getRequestURL() + "?" + request.getQueryString();
+                                            %><jsp:include page="ExceptionCollector.jsp">
+                                                <jsp:param name="userName" value="<%=email%>"></jsp:param>
+                                                <jsp:param name="userID" value="<%=CurrentuserId%>"></jsp:param>
+                                                <jsp:param name="URLParameter" value="<%=URL%>"></jsp:param>
+                                                <jsp:param name="ExceptionMessage" value="<%=e1%>"></jsp:param>
+                                            </jsp:include><%
                                                     }
                                                 }
                                                 //Staring answer programming....................................................
@@ -159,7 +193,7 @@
                                                         String Q_a = "Select q.question,q.q_id, substring(ans.answer,1,500) from question q right join answer ans on ans.q_id = q.q_id where lower(answer) LIKE '%" + SearchValue_Case_Converted + "%'";
                                                         preparedStatement = connection.prepareCall(Q_a);
                                                         resultSet = preparedStatement.executeQuery();
-                                                        
+
                                                         boolean count = true;
                                                         while (resultSet.next()) {
                                                             count = false;
@@ -167,64 +201,119 @@
                                                             String Question_by_user = resultSet.getString("question");
                                                             int question_id = resultSet.getInt("q.q_id");
                                             %><br> Q. <a href="Answer.jsp?Id=<%=question_id%>" ><%=Question_by_user%> ?</a><%
-                                                                out.println("<br>Ans.</b>&nbsp;&nbsp;&nbsp;&nbsp;" + Answer_given_by_user);
+                                                    out.println("<br>Ans.</b>&nbsp;&nbsp;&nbsp;&nbsp;" + Answer_given_by_user);
 
-                                                            }
-                                                            if(count){
-                                                                out.println("No related answer found");
-                                                        }
-                                                        } catch (Exception e2) {
-                                                            out.println("Error in Answer search : " + e2);
-                                                        }
+                                                }
+                                                if (count) {
+                                                    out.println("No related answer found");
+                                                }
+                                            } catch (Exception e2) {
+                                                out.println("Error in Answer search : " + e2);
+                                                if (session.getAttribute("email") == null) {
+                                                    email = "Anonuous";
+                                                } else {
+                                                    email = (String) session.getAttribute("email");
+                                                }
+                                                if (session.getAttribute("Session_id_of_user") == null) {
+                                                    CurrentuserId = 0;
+                                                } else {
+                                                    CurrentuserId = (Integer) session.getAttribute("Session_id_of_user");
+                                                }
+                                                String URL = request.getRequestURL() + "?" + request.getQueryString();
+                                            %><jsp:include page="ExceptionCollector.jsp">
+                                                <jsp:param name="userName" value="<%=email%>"></jsp:param>
+                                                <jsp:param name="userID" value="<%=CurrentuserId%>"></jsp:param>
+                                                <jsp:param name="URLParameter" value="<%=URL%>"></jsp:param>
+                                                <jsp:param name="ExceptionMessage" value="<%=e2%>"></jsp:param>
+                                            </jsp:include><%
                                                     }
-                                                    //Starting the topic search program
+                                                }
+                                                //Starting the topic search program
 
-                                                    if (ParametrVariable.equals("Topic")) {
-                                                        out.println("<center><div class=boxHeading>" + TOPIC + "</div></center>");
-                                                        try {
+                                                if (ParametrVariable.equals("Topic")) {
+                                                    out.println("<center><div class=boxHeading>" + TOPIC + "</div></center>");
+                                                    try {
                                                         String SearchValue_Case_Converted = SearchValue.toLowerCase();
-                                                            String T = "SELECT * FROM topic WHERE lower(topic_name) LIKE '%" + SearchValue_Case_Converted + "%'";
-                                                            preparedStatement = connection.prepareStatement(T);
-                                                            resultSet = preparedStatement.executeQuery();
-                                                            int count_ = 1;
-                                                            boolean count = true;
-                                                            while (resultSet.next()) {
-                                                                count = false;
-                                                                String Topic_assgned_by_user = resultSet.getString("topic_name").substring(0, 1).toUpperCase()+resultSet.getString("topic_name").substring(1).toLowerCase();
-                                                                int selected_topic_id = resultSet.getInt("unique_id");
-                                                                out.print("<br><br>" + count_++ + "<b>&nbsp;&nbsp;<a href=topic.jsp?id=" + selected_topic_id + ">" + Topic_assgned_by_user + "</a></b>");
+                                                        String T = "SELECT * FROM topic WHERE lower(topic_name) LIKE '%" + SearchValue_Case_Converted + "%'";
+                                                        preparedStatement = connection.prepareStatement(T);
+                                                        resultSet = preparedStatement.executeQuery();
+                                                        int count_ = 1;
+                                                        boolean count = true;
+                                                        while (resultSet.next()) {
+                                                            count = false;
+                                                            String Topic_assgned_by_user = resultSet.getString("topic_name").substring(0, 1).toUpperCase() + resultSet.getString("topic_name").substring(1).toLowerCase();
+                                                            int selected_topic_id = resultSet.getInt("unique_id");
+                                                            out.print("<br><br>" + count_++ + "<b>&nbsp;&nbsp;<a href=topic.jsp?id=" + selected_topic_id + ">" + Topic_assgned_by_user + "</a></b>");
 
-                                                            }
-                                                            if(count){out.println("No related topic found");}
-                                                        } catch (Exception e) {
-                                                            out.println("Error in Topic Search:" + e);
                                                         }
+                                                        if (count) {
+                                                            out.println("No related topic found");
+                                                        }
+                                                    } catch (Exception e) {
+                                                        out.println("Error in Topic Search:" + e);
+                                                        if (session.getAttribute("email") == null) {
+                                                            email = "Anonuous";
+                                                        } else {
+                                                            email = (String) session.getAttribute("email");
+                                                        }
+                                                        if (session.getAttribute("Session_id_of_user") == null) {
+                                                            CurrentuserId = 0;
+                                                        } else {
+                                                            CurrentuserId = (Integer) session.getAttribute("Session_id_of_user");
+                                                        }
+                                                        String URL = request.getRequestURL() + "?" + request.getQueryString();
+                                            %><jsp:include page="ExceptionCollector.jsp">
+                                                <jsp:param name="userName" value="<%=email%>"></jsp:param>
+                                                <jsp:param name="userID" value="<%=CurrentuserId%>"></jsp:param>
+                                                <jsp:param name="URLParameter" value="<%=URL%>"></jsp:param>
+                                                <jsp:param name="ExceptionMessage" value="<%=e%>"></jsp:param>
+                                            </jsp:include><%
                                                     }
-                                                    //Satring the userprofile search option
+                                                }
+                                                //Satring the userprofile search option
 
-                                                    if (ParametrVariable.equals("UserProfile")) {
-                                                        out.println("<center><div class=boxHeading> " + USER_PROFILE + " </div></center>");
-                                                        try {
-                                                            String StoredUserFirstName, StoredUserLatName;
-                                                            int StoredUserID;
-                                                            String SearchValue_Case_Converted = SearchValue.toLowerCase();
-                                                            String SQL_T = "SELECT * FROM newuser WHERE lower(firstname) LIKE '%" + SearchValue_Case_Converted + "%' OR lower(lastname) LIKE '%" + SearchValue_Case_Converted + "%'";
-                                                            preparedStatement = connection.prepareStatement(SQL_T);
-                                                            resultSet = preparedStatement.executeQuery();
-                                                            int count_ = 1;
-                                                            boolean count = true;
-                                                            while (resultSet.next()) {
-                                                                count = false;
-                                                                StoredUserID = resultSet.getInt("ID");
-                                                                StoredUserFirstName = resultSet.getString("firstname").substring(0, 1).toUpperCase()+resultSet.getString("firstname").substring(1).toLowerCase();
-                                                                StoredUserLatName = resultSet.getString("lastname").substring(0, 1).toUpperCase()+resultSet.getString("lastname").substring(1).toLowerCase();
+                                                if (ParametrVariable.equals("UserProfile")) {
+                                                    out.println("<center><div class=boxHeading> " + USER_PROFILE + " </div></center>");
+                                                    try {
+                                                        String StoredUserFirstName, StoredUserLatName;
+                                                        int StoredUserID;
+                                                        String SearchValue_Case_Converted = SearchValue.toLowerCase();
+                                                        String SQL_T = "SELECT * FROM newuser WHERE lower(firstname) LIKE '%" + SearchValue_Case_Converted + "%' OR lower(lastname) LIKE '%" + SearchValue_Case_Converted + "%'";
+                                                        preparedStatement = connection.prepareStatement(SQL_T);
+                                                        resultSet = preparedStatement.executeQuery();
+                                                        int count_ = 1;
+                                                        boolean count = true;
+                                                        while (resultSet.next()) {
+                                                            count = false;
+                                                            StoredUserID = resultSet.getInt("ID");
+                                                            StoredUserFirstName = resultSet.getString("firstname").substring(0, 1).toUpperCase() + resultSet.getString("firstname").substring(1).toLowerCase();
+                                                            StoredUserLatName = resultSet.getString("lastname").substring(0, 1).toUpperCase() + resultSet.getString("lastname").substring(1).toLowerCase();
 
-                                                                out.print("<br><br>" + count_++ + "<b>&nbsp;&nbsp;<a href=profile.jsp?ID=" + StoredUserID + ">" + StoredUserFirstName + " " + StoredUserLatName + "</a></b>");
+                                                            out.print("<br><br>" + count_++ + "<b>&nbsp;&nbsp;<a href=profile.jsp?ID=" + StoredUserID + ">" + StoredUserFirstName + " " + StoredUserLatName + "</a></b>");
 
-                                                            }
-                                                            if(count){out.println("No related user profile found");}
-                                                        } catch (Exception e) {
-                                                            out.println("Error in User profile search:" + e);
+                                                        }
+                                                        if (count) {
+                                                            out.println("No related user profile found");
+                                                        }
+                                                    } catch (Exception e) {
+                                                        out.println("Error in User profile search:" + e);
+                                                        if (session.getAttribute("email") == null) {
+                                                            email = "Anonuous";
+                                                        } else {
+                                                            email = (String) session.getAttribute("email");
+                                                        }
+                                                        if (session.getAttribute("Session_id_of_user") == null) {
+                                                            CurrentuserId = 0;
+                                                        } else {
+                                                            CurrentuserId = (Integer) session.getAttribute("Session_id_of_user");
+                                                        }
+                                                        String URL = request.getRequestURL() + "?" + request.getQueryString();
+                                            %><jsp:include page="ExceptionCollector.jsp">
+                                                <jsp:param name="userName" value="<%=email%>"></jsp:param>
+                                                <jsp:param name="userID" value="<%=CurrentuserId%>"></jsp:param>
+                                                <jsp:param name="URLParameter" value="<%=URL%>"></jsp:param>
+                                                <jsp:param name="ExceptionMessage" value="<%=e%>"></jsp:param>
+                                            </jsp:include><%
                                                         }
                                                     }
 
@@ -287,11 +376,11 @@
                 </div>
 
                 <!-- j Query -->
-                 <jsp:include page="footer.jsp">
-                <jsp:param name="sl" value="<%=sl%>"/>
-            </jsp:include>
+                <jsp:include page="footer.jsp">
+                    <jsp:param name="sl" value="<%=sl%>"/>
+                </jsp:include>
                 <script type="text/javascript" src="vendor/jquery-2.1.4.js"></script>
-                <script type="text/javascript" src="vendor/bootstrap/bootstrap.min.js"></script
+    <script type="text/javascript" src="vendor/bootstrap/bootstrap.min.js"></script
                 <script type="text/javascript" src="vendor/bootstrap-select/dist/js/bootstrap-select.js"></script>
             </div> <!-- /.main-page-wrapper -->
     </body>

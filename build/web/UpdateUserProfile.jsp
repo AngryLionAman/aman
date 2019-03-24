@@ -47,7 +47,7 @@
                 LOGOUT = "बाहर जाये";
                 SELECT = "चयन करें";
                 UPDATE_YOUR_PROFILE_IMAGE = "अपनी प्रोफ़ाइल छवि को अपडेट करें";
-                CLICK_HERE_TO_UPDATE = "अपडेट करने के लिए यहां क्लिक करें";
+                CLICK_HERE_TO_UPDATE = "ये सुविधा अभी चालू नहीं हैं";
                 FULL_NAME = "पूरा नाम";
                 NOT_EDITABLE = "बदल नहीं सकते";
                 HIGER_QUALIFICATION = "उच्च योग्यता";
@@ -70,7 +70,7 @@
                 LOGOUT = "Logout";
                 SELECT = "Select";
                 UPDATE_YOUR_PROFILE_IMAGE = "Update your profile image";
-                CLICK_HERE_TO_UPDATE = "Click here to update";
+                CLICK_HERE_TO_UPDATE = "These features are not currently operational";
                 FULL_NAME = "Full Name";
                 NOT_EDITABLE = "Not Editable";
                 HIGER_QUALIFICATION = "Higher Qualification";
@@ -231,7 +231,7 @@
                                                                         <div>
                                                                             <form action="imageUpload" method="post" enctype="multipart/form-data">
                                                                                 <input type="file" name="photo" required="">
-                                                                                <input type="submit" value="<%=CLICK_HERE_TO_UPDATE%>">
+                                                                                <input type="submit" onclick="return false" value="<%=CLICK_HERE_TO_UPDATE%>">
                                                                             </form>
                                                                         </div>
                                                                     </div>

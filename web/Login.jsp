@@ -14,7 +14,8 @@
             String MEG_FROM_VALIDATION_PAGE = "";
             String MEG_FROM_LOGOUT_PAGE = "";
             String MEG_FROM_SUBMITANS_PAGE = "";
-        %><%
+        %>
+        <%
             String sl = request.getParameter("sl");
             if (sl == null) {
                 sl = "en";
@@ -40,7 +41,7 @@
                 SEARCH = "Search";
                 FORGET_PASSWORD = "Forget Password";
 
-                MEG_FROM_VALIDATION_PAGE = "Invalid UserName and PassWord";
+                MEG_FROM_VALIDATION_PAGE = "Invalid UserName or PassWord";
                 MEG_FROM_LOGOUT_PAGE = "Thanks for using our service. Please visit again";
                 MEG_FROM_SUBMITANS_PAGE = "Please Login First";
             }
@@ -97,9 +98,9 @@
                                     <div class="logotext">
                                         Inquiryhere.com
                                         <div>
-
                                             </h4>
-                                            </a></div>
+                                            </a>
+                                        </div>
                                     </div>
                                     <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 serachhere" style="display:inline-block;">
 
@@ -162,45 +163,34 @@
                                                                 }
                                                             %>
                                                             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                                                <div class="themeBox" style="height:270px;">
-                                                                    <% if (request.getParameter("URL") != null) {%>
+                                                                <div class="themeBox" style="height:300px;">
                                                                     <form action="validate.jsp" method="post" name="">
+                                                                        <% if (request.getParameter("URL") != null) {%>
                                                                         <input type="hidden" name="URL" value="<%=request.getParameter("URL")%>">
-                                                                        <% } else { %>
-                                                                        <div> 
+                                                                    
+                                                                        <input type="hidden" name="ans" value="<%=request.getParameter("ans")%>">
+                                                                        <% }%> 
+                                                                        <input type="hidden" name="sl" value="<%=sl%>">
 
-                                                                            <form action="validate.jsp" method="post" name="">
-                                                                                <% }%>
-                                                                                <input type="hidden" name="sl" value="<%=sl%>">
-                                                                                <table>
-                                                                                    <tr><td>
-                                                                                            <label for="fname"><%=EMAIL%></label>
-
-                                                                                            <input type="text" id="fname" name="email" required="" placeholder="username">
-                                                                                        </td></tr>   
-                                                                                    <tr><td>
-
-                                                                                            <label for="lname"><%=PASSWORD%></label>
-
-                                                                                            <input type="password" id="lname" name="password" required="" placeholder="password">
-                                                                                            <br> </td></tr>
-                                                                                    <tr><td><br>
-
-                                                                                            <button type="submit" class="button button1" data-toggle="modal"  style="background-color: red;" ><%=LOGIN%></button>
-                                                                                        </td></tr>
-                                                                            </form>
+                                                                        <label for="fname"><%=EMAIL%></label>
+                                                                        <div class="boxHeading">
+                                                                            <input type="email"  name="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required="">
                                                                         </div>
+                                                                        <label for="lname"><%=PASSWORD%></label>
+                                                                        <div class="boxHeading">
+                                                                            <input type="password"  name="password" required="">
+                                                                        </div> 
+                                                                        <br>
+                                                                        <button type="submit" class="button button1" data-toggle="modal"   ><%=LOGIN%></button>
+                                                                    </form>
 
-                                                                        <tr><td><br>               
-                                                                                <form action="ForgotPassword.jsp">
-                                                                                    <input type="hidden" name="sl" value="<%=sl%>">
-                                                                                    <button class="button button1" style="width"><%=FORGET_PASSWORD%></button>
-                                                                                </form>
-                                                                            </td></tr>
-                                                                    </table>                                                                          </div>
+                                                                    <form action="ForgotPassword.jsp">
+                                                                        <input type="hidden" name="sl" value="<%=sl%>">
+                                                                        <button class="button button1" style="background-color: red;"><%=FORGET_PASSWORD%></button>
+                                                                    </form>
+
+                                                                </div>
                                                             </div>
-
-
                                                     </div>
 
                                                     <div class="clear-fix"></div>
@@ -210,15 +200,13 @@
                                             <div class="clear-fix"></div>
                                         </div>
                                         <div class="clear-fix"></div>
-
-                                         <jsp:include page="footer.jsp">
-                <jsp:param name="sl" value="<%=sl%>"/>
-            </jsp:include>
+                                        <jsp:include page="footer.jsp">
+                                            <jsp:param name="sl" value="<%=sl%>"/>
+                                        </jsp:include>
                                         <script type="text/javascript" src="vendor/jquery-2.1.4.js"></script>
                                         <!-- Bootstrap JS -->
                                         <script type="text/javascript" src="vendor/bootstrap/bootstrap.min.js"></script>
                                         <!-- Bootstrap Select JS -->
                                         <script type="text/javascript" src="vendor/bootstrap-select/dist/js/bootstrap-select.js"></script>
-
                                     </div> 
                                     </body></html>

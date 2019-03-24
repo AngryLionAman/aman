@@ -41,10 +41,10 @@
                 FORGET_PASSWORD = "Forgot Password";
             }
         %>
-         <%
-        if(session.getAttribute("email")!=null){
-            response.sendRedirect("index.jsp?sl="+sl);
-        }
+        <%
+            if (session.getAttribute("email") != null) {
+                response.sendRedirect("index.jsp?sl=" + sl);
+            }
         %>
         <meta charset="UTF-8">
         <!-- For IE -->
@@ -81,28 +81,27 @@
             }
             .button1 {width: 250px;}
         </style>
-         <script language="Javascript" type="text/javascript">
+        <script language="Javascript" type="text/javascript">
 
-        function onlyAlphabets(e, t) {
-            try {
-                if (window.event) {
-                    var charCode = window.event.keyCode;
+            function onlyAlphabets(e, t) {
+                try {
+                    if (window.event) {
+                        var charCode = window.event.keyCode;
+                    } else if (e) {
+                        var charCode = e.which;
+                    } else {
+                        return true;
+                    }
+                    if ((charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123))
+                        return true;
+                    else
+                        return false;
+                } catch (err) {
+                    alert(err.Description);
                 }
-                else if (e) {
-                    var charCode = e.which;
-                }
-                else { return true; }
-                if ((charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123))
-                    return true;
-                else
-                    return false;
             }
-            catch (err) {
-                alert(err.Description);
-            }
-        }
 
-    </script>
+        </script>
     </head>
     <body>
         <div class="main-page-wrapper">
@@ -151,73 +150,60 @@
 
                                                 </div>
 
-                                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">                                                   
-                                                    <div class="row"><center>                                                           
-                                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                                                <div class="themeBox" style="height:470px;">
-                                                                    <%
-                                                                        String ErrorMsg = request.getParameter("Error");
-                                                                        if (ErrorMsg != null) {
-                                                                            out.println("<center><b style=color:red;>" + ErrorMsg + "</b></center>");
-                                                                        }
-                                                                    %>
-                                                                    <form action="NewUser.jsp" method="post" name="">
-                                                                        <input type="hidden" name="sl" value="<%=sl%>">
-                                                                        <label for="fname"><%=FIRST_NAME%></label>
-                                                                        <div class="boxHeading">
-                                                                            <input type="text" id="fname" name="firstname" onkeypress="return onlyAlphabets(event,this);" required="">
-                                                                        </div>
-                                                                        <label for="fname"><%=LAST_NAME%></label>
-                                                                        <div class="boxHeading">
-                                                                            <input type="text" id="fname" name="lastname" onkeypress="return onlyAlphabets(event,this);" required="">
-                                                                        </div>
-                                                                        <label for="fname"><%=EMAIL%></label>
-                                                                        <div class="boxHeading">
-                                                                            <input type="email" id="fname" name="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required="">
-                                                                        </div>
-                                                                        <label for="lname"><%=PASSWORD%></label>
-                                                                        <div class="boxHeading">
-                                                                            <input type="password" id="lname" name="password" pattern=".{6,}" title="Six or more characters" required="">
-                                                                        </div> 
-                                                                        <table>
-                                                                            <tr><td><br>
-                                                                        
-                                                                                    <button type="submit" class="button button1" data-toggle="modal" style="background-color: red;" ><%=CREATE_ACCOUNT%></button>
-                                                                        
-                                                                                </td></tr>
-                                                                    </form>
-                                                                        
-                                                                  
-                                                                    <tr><td><br>
-                                                                        
-                                                                    <form action="ForgotPassword.jsp?sl=<%=sl%>">
-                                                                    ,    <button class="button button1"><%=FORGET_PASSWORD%></button>
-                                                                    </form>
-                                                                        </td></tr>
-                                                                    </table>
+                                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12" align="center">                                                   
+                                                    <div class="row">                                                     
+                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="themeBox" style="height:470px;">
+                                                                <%
+                                                                    String ErrorMsg = request.getParameter("Error");
+                                                                    if (ErrorMsg != null) {
+                                                                        out.println("<center><b style=color:red;>" + ErrorMsg + "</b></center>");
+                                                                    }
+                                                                %>
+                                                                <form action="NewUser.jsp" method="post" name="newUser">
+                                                                    <input type="hidden" name="sl" value="<%=sl%>">
+                                                                    <label for="fname"><%=FIRST_NAME%></label>
+                                                                    <div class="boxHeading">
+                                                                        <input type="text" id="fname" name="firstname" onkeypress="return onlyAlphabets(event, this);" required="">
+                                                                    </div>
+                                                                    <label for="lname"><%=LAST_NAME%></label>
+                                                                    <div class="boxHeading">
+                                                                        <input type="text" id="lname" name="lastname" onkeypress="return onlyAlphabets(event, this);" required="">
+                                                                    </div>
+                                                                    <label for="fname"><%=EMAIL%></label>
+                                                                    <div class="boxHeading">
+                                                                        <input type="email"  name="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required="">
+                                                                    </div>
+                                                                    <label for="lname"><%=PASSWORD%></label>
+                                                                    <div class="boxHeading">
+                                                                        <input type="password"  name="password" pattern=".{6,}" title="Six or more characters" required="">
+                                                                    </div> 
+                                                                    <br>
+                                                                    <button type="submit" class="button button1" data-toggle="modal" style="background-color: red;" ><%=CREATE_ACCOUNT%></button>
+                                                                </form>
+                                                                    <form action="ForgotPassword.jsp?sl=<%=sl%>" method="post" name="forgetPassword">
+                                                                    <button class="button button1"><%=FORGET_PASSWORD%></button>
+                                                                </form>
                                                             </div>
+                                                        </div>
+                                                    </div>
 
-                                                        </center> </div>
-
-
+                                                    <div class="clear-fix"></div>
                                                 </div>
-
                                                 <div class="clear-fix"></div>
                                             </div>
                                             <div class="clear-fix"></div>
                                         </div>
                                         <div class="clear-fix"></div>
-                                    </div>
-                                    <div class="clear-fix"></div>
 
-                                      <jsp:include page="footer.jsp">
-                <jsp:param name="sl" value="<%=sl%>"/>
-            </jsp:include>
-                                    <script type="text/javascript" src="vendor/jquery-2.1.4.js"></script>
-                                    <!-- Bootstrap JS -->
-                                    <script type="text/javascript" src="vendor/bootstrap/bootstrap.min.js"></script>
-                                    <!-- Bootstrap Select JS -->
-                                    <script type="text/javascript" src="vendor/bootstrap-select/dist/js/bootstrap-select.js"></script>
+                                        <jsp:include page="footer.jsp">
+                                            <jsp:param name="sl" value="<%=sl%>"/>
+                                        </jsp:include>
+                                        <script type="text/javascript" src="vendor/jquery-2.1.4.js"></script>
+                                        <!-- Bootstrap JS -->
+                                        <script type="text/javascript" src="vendor/bootstrap/bootstrap.min.js"></script>
+                                        <!-- Bootstrap Select JS -->
+                                        <script type="text/javascript" src="vendor/bootstrap-select/dist/js/bootstrap-select.js"></script>
 
                                     </div> 
                                     </body></html>

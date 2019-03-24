@@ -1,5 +1,6 @@
 <html lang="en"><head>
         <meta charset="UTF-8">
+        <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
         <!-- For IE -->
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
@@ -12,8 +13,8 @@
         <!-- responsive style sheet -->
         <link rel="stylesheet" type="text/css" href="css/responsive.css">
          <%!            
-            String RELATED_QUESTION = "";
-            String RELATED_TOPIC = "";
+            String WELCOME_NOTES = "";
+            String WELCOME_NOTES_DESCRIPTION = "";
         %>
         <%
             String sl = request.getParameter("sl");
@@ -21,12 +22,12 @@
                 sl = "en";
             }
             if (sl.equalsIgnoreCase("hi")) {
-                RELATED_QUESTION = "??????? ??????";
-                RELATED_TOPIC = "??????? ????";
+                WELCOME_NOTES = "inquiryhere.com में आपकी रुचि के लिए धन्यवाद";
+                WELCOME_NOTES_DESCRIPTION = "प्रिय उपयोगकर्ता, अगर आपके पास INQUIRYHERE.COM के बारे में कोई प्रश्न और सुझाव है। तो आप inquiry@inquiryhere.com पर एक मेल छोड़ सकते हैं या आप सीधे अनुभाग से नीचे पोस्ट कर सकते हैं। हम जल्द से जल्द आपकी मदद करेंगे।";
 
             } else {
-                RELATED_QUESTION = "Related Question";
-                RELATED_TOPIC = "Related Topic";
+                WELCOME_NOTES = "Thanks for your interest in inquiryhere.com";
+                WELCOME_NOTES_DESCRIPTION = "Dear user, If you have any query and suggestion about inquiryhere.com then you can drop a mail on inquiry@inquiryhere.com or you can directly post from below section.We will help you as soon as possible.";
             }
         %>
 
@@ -51,11 +52,10 @@
                                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                         <div class="themeBox" style="height:auto;">
                                             <div class="boxHeading">
-                                                Thanks for your interest in Inquiryhere.com
-                                            </div>
+                                                <%=WELCOME_NOTES%>
+                                            </div><BR>
                                             <div class="boxHeading">
-                                                Dear user, If you have any query and suggestion about inquiryhere.com then you
-                                                can drop a mail on aman@inquiryhere.com or you can directly post from below section.We will help you as soon as possible.
+                                            <%=WELCOME_NOTES_DESCRIPTION%>    
                                             </div>
                                         </div>
                                     </div>

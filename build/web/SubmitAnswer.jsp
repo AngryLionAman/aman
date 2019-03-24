@@ -5,6 +5,7 @@
 <%  request.setCharacterEncoding("UTF-8");
     response.setCharacterEncoding("UTF-8");
     String URL = request.getParameter("URL");
+    String answer = request.getParameter("answer");
     String sl = request.getParameter("sl");
     if (sl == null) {
         sl = "en";
@@ -13,7 +14,7 @@
         //String firstname, lastname, password, email;
         String v = request.getParameter("q_id");
         String v2 = request.getParameter("_id_of_user");
-        String answer = request.getParameter("answer");
+        
         if (answer != null && v != null && v2 != null) {
             Connection connection = null;
             PreparedStatement preparedStatement = null;
@@ -40,6 +41,14 @@
                     response.sendRedirect("Answer.jsp?Id=" + Q_id);
                 } catch (Exception e1) {
                     out.print("Error:-" + e1);
+                    String email = (String)session.getAttribute("email");
+                    int user_id = (Integer)session.getAttribute("Session_id_of_user");
+        %><jsp:include page="ExceptionCollector.jsp">
+            <jsp:param name="userName" value="<%=email%>"></jsp:param>
+            <jsp:param name="userID" value="<%=user_id%>"></jsp:param>
+            <jsp:param name="URLParameter" value="<%=URL%>"></jsp:param>
+            <jsp:param name="ExceptionMessage" value="<%=e1%>"></jsp:param>
+        </jsp:include><%
                 }
             } catch (Exception e) {
                 out.println("Error in main try block:-" + e);
@@ -64,8 +73,8 @@
             out.println("It seem Like you are logedin but tryin to access this page directly");
         }
     } else {
-        response.sendRedirect("Login.jsp?sl=" + sl + "&msg=submitAns&URL=" + URL);
-        out.println("please login first" + URL);
+        response.sendRedirect("Login.jsp?sl=" + sl + "&msg=submitAns&URL=" + URL+"&ans="+answer);
+        //out.println("please login first" + URL);
     }
 
 %>

@@ -215,13 +215,13 @@
             function hide_mail(el, session_id_of_user, action) {
             <% if (session.getAttribute("email") == null) { %>
                 alert("Please login first");<%
-               } else {%>
+                } else {%>
 
                 var http = new XMLHttpRequest();
                 http.open("POST", "<%=DB_AJAX_PATH%>/mail_serurity.jsp?session_id_of_user=" + session_id_of_user + "&action=" + action, true);
                 http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
                 http.send();
-                
+
             <% }%>
             }
         </script>
@@ -429,15 +429,15 @@
                                                                     <td><%=MAIL_ID%> </td>
                                                                     <td>: 
                                                                         <%
-                                                                        if(email_status == 1){
-                                                                            if (mail.equals(session.getAttribute("email"))) {
+                                                                            if (email_status == 1) {
+                                                                                if (mail.equals(session.getAttribute("email"))) {
+                                                                                    out.println(mail);
+                                                                                } else {
+                                                                                    out.println("Hidden by user");
+                                                                                }
+                                                                            } else {
                                                                                 out.println(mail);
-                                                                            }else{
-                                                                                out.println("Hidden by user");
                                                                             }
-                                                                        }else{
-                                                                            out.println(mail);
-                                                                        }
                                                                         %>&nbsp;&nbsp;
                                                                         <%
                                                                             if (session.getAttribute("email") != null) {
@@ -677,7 +677,7 @@
 
                                                                             while (resultSet.next()) {
                                                                                 count++;
-                                                                                topic_name = resultSet.getString("topic_name");
+                                                                                topic_name = resultSet.getString("topic_name").substring(0, 1).toUpperCase() + resultSet.getString("topic_name").substring(1).toLowerCase();
                                                                                 topic_id = resultSet.getInt("unique_id");
                                                                                 if (topic_name != null) {
                                                                 %><br> <a href="topic.jsp?id=<%=topic_id%>&sl=<%=sl%>" >&nbsp;&nbsp;&nbsp;&nbsp;<%=topic_name%> </a><%
@@ -915,9 +915,9 @@
 
                                         </div>
                                     </div>
-                                     <jsp:include page="footer.jsp">
-                <jsp:param name="sl" value="<%=sl%>"/>
-            </jsp:include>
+                                    <jsp:include page="footer.jsp">
+                                        <jsp:param name="sl" value="<%=sl%>"/>
+                                    </jsp:include>
                                     <script type="text/javascript" src="vendor/jquery-2.1.4.js"></script>
 
                                     <script type="text/javascript" src="vendor/bootstrap/bootstrap.min.js"></script>
