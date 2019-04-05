@@ -2,7 +2,7 @@
     public String convertStringUpperToLower(String sentence) {
         String finalSentenct = "";
         try {
-            //To remove white space before word started if having
+            //To remove white space before word start if having
             while (true) {
                 if (sentence.charAt(0) == 32) {
                     sentence = sentence.substring(1);

@@ -134,6 +134,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
         
       out.write("\r\n");
       out.write("        ");
+            
             Connection connection = null;
             ResultSet resultSet = null;
             PreparedStatement preparedStatement = null;
@@ -427,7 +428,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                                 while (resultSet.next()) {
                                                     q_id = resultSet.getInt("q_id");
                                                     q_asked_by_user = resultSet.getInt("id");
-                                                    firstname_of_user_who_asked_the_question = resultSet.getString("firstname");
+                                                    firstname_of_user_who_asked_the_question = resultSet.getString("firstname").substring(0, 1).toUpperCase()+resultSet.getString("firstname").substring(1).toLowerCase();
                                                 }
                                             } catch (Exception e) {
                                                 out.println("Unable to retrieve!!" + e);
@@ -488,7 +489,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                                 count++;
                                                 String answer = resultSet.getString("answer");
                                                 int who_gave_answer = resultSet.getInt("Answer_by_id");
-                                                String firstname = resultSet.getString("firstname");
+                                                String firstname = resultSet.getString("firstname").substring(0, 1).toUpperCase()+resultSet.getString("firstname").substring(1).toLowerCase();
                                                 int answer_id = resultSet.getInt("ans.a_id");
                                     
       out.write("\r\n");
@@ -578,11 +579,21 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("&q_id=");
       out.print(q_id);
       out.write("&URL=");
-      out.print(request.getRequestURL() + "?" + request.getQueryString());
+      out.print(request.getRequestURL());
+      out.write("?Id=");
+      out.print(q_id);
       out.write("&sl=");
       out.print(sl);
       out.write("\">\r\n");
-      out.write("                                        <textarea class=\"ckeditor\" name=\"answer\" required=\"\"></textarea>\r\n");
+      out.write("                                        <textarea class=\"ckeditor\" name=\"answer\" required=\"\">\r\n");
+      out.write("                                            ");
+
+                                            if(request.getParameter("ans")!= null){
+                                                out.println(request.getParameter("ans"));
+                                            }
+                                            
+      out.write("\r\n");
+      out.write("                                        </textarea>\r\n");
       out.write("                                        <input type=\"submit\" name=\"Post\" value=\"");
       out.print(SUBMIT);
       out.write("\"> \r\n");

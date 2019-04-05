@@ -16,7 +16,8 @@
         <%@page import="java.sql.*" %> 
         <%@include file="site.jsp" %>
         <%@include file="validator.jsp" %>
-        <%!            String WELCOME_NOTES = "";
+        <%!            
+            String WELCOME_NOTES = "";
         %>
         <%
             //String page_name = request.getParameter("page");
@@ -236,10 +237,7 @@
                                     Fun Zone
                                 </div>
                                 <div>
-                                    <ul>
-                                        <li><a href="quotes.jsp">Quotes</a></li>
-                                        <li><a href="blog.jsp">Read Blog</a></li>
-                                    </ul>
+                                    <jsp:include page="funZoneList.jsp"></jsp:include>
                                 </div>
                             </div>
                             <div class="themeBox" style="height:auto;">
@@ -247,9 +245,7 @@
                                     Education Zone
                                 </div>
                                 <div>
-                                    <ul>
-                                        <li><a href="fullForm.jsp">Full Form</a></li>
-                                    </ul>
+                                <jsp:include page="eduZoneList.jsp"></jsp:include>
                                 </div>
                             </div>
                         </div>

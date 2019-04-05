@@ -3,9 +3,11 @@
         <%@page language="java"%>
         <%@page import="java.sql.*"%>
         <%@include file="site.jsp" %>
+        <%@include file="validator.jsp" %>
         <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
         <meta charset="UTF-8">
-        <%!            String RELATED_QUESTION = "";
+        <%!            
+            String RELATED_QUESTION = "";
             String RELATED_TOPIC = "";
         %>
         <%
@@ -154,7 +156,7 @@
 
                                                 %>
                                                 <div>
-                                                    <span title="Totoal followers of <%=TopicName.substring(0, 1).toUpperCase()+TopicName.substring(1).toLowerCase()%> is <%=total_followers%>"><h4><%=TopicName.substring(0, 1).toUpperCase()+TopicName.substring(1).toLowerCase()%>&nbsp;(<%=total_followers%>)</h4></span>  
+                                                    <span title="Totoal followers of <%=convertStringUpperToLower(TopicName)%> is <%=total_followers%>"><h4><%=convertStringUpperToLower(TopicName)%>&nbsp;(<%=total_followers%>)</h4></span>  
                                                     <%
                                                         if (status == "present") {
                                                     %> <input type="button" value="Unfollow" id="myButton1" onclick="return take_value(this, '<%=SelectedTopicID%>', '<%=Session_id_of_user%>');" /><%
@@ -229,7 +231,7 @@
                                             resultSet = preparedStatement.executeQuery();
                                             while (resultSet.next()) {
                                                 int unique_id = resultSet.getInt("unique_id");
-                                                String topic_nameA = resultSet.getString("topic_name").substring(0, 1).toUpperCase()+resultSet.getString("topic_name").substring(1).toLowerCase();
+                                                String topic_nameA = convertStringUpperToLower(resultSet.getString("topic_name"));
                                                 int total_followers_sider_bar = resultSet.getInt("totoal_followers");
                                                 if (Integer.valueOf(Topic_id) != unique_id) {
                                                     if (topic_nameA != null) {

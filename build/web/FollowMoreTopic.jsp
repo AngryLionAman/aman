@@ -5,6 +5,7 @@
         <%@page language="java"%>
         <%@page import="java.sql.*"%>
         <%@include file="site.jsp" %>
+        <%@include file="validator.jsp" %>
         <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
         <%!            
             String TOPIC_MAY_YOU_LIKE = "";
@@ -129,7 +130,7 @@
                                                 while (resultSet.next()) {
                                                     int _topic_id = resultSet.getInt("t.unique_id");
                                                     int count = resultSet.getInt("count");
-                                                    name_topic = resultSet.getString("t.topic_name").substring(0, 1).toUpperCase()+resultSet.getString("topic_name").substring(1).toLowerCase();
+                                                    name_topic = convertStringUpperToLower(resultSet.getString("t.topic_name"));
                                         %>   
                                         <div style="width:auto;height:52px;border:1px solid #000;float: left; margin-right: 5px; margin-bottom: 5px;" class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                                             <span title="Totoal followers of <%=name_topic%> is <%=count%>"><a href=topic.jsp?t=<%=name_topic.replaceAll(" ", "-")%>&id=<%=_topic_id%>&sl=<%=sl%>><%=name_topic%></a> (<%=count%>)</span>

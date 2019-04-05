@@ -5,7 +5,8 @@
         <%@include file="site.jsp" %>
         <meta charset="UTF-8">
         <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-        <%!            String name = null;
+        <%!            
+            String name = null;
             int id_of_user = 0;
             int topic_id = 0;
 
@@ -673,11 +674,7 @@
                                     Fun Zone
                                 </div>
                                 <div>
-                                    <ul>
-                                        <li><a href="jokes.jsp">Joke</a></li>
-                                        <li><a href="quotes.jsp">Quotes</a></li>
-                                        <li><a href="blog.jsp">Read Blog</a></li>
-                                    </ul>
+                                    <jsp:include page="funZoneList.jsp"></jsp:include>
                                 </div>
                             </div>
                             <div class="themeBox" style="height:auto;">
@@ -685,9 +682,7 @@
                                     Education Zone
                                 </div>
                                 <div>
-                                    <ul>
-                                        <li><a href="fullForm.jsp">Full Form</a></li>
-                                    </ul>
+                                <jsp:include page="eduZoneList.jsp"></jsp:include>
                                 </div>
                             </div>
 

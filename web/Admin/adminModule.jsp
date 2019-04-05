@@ -15,10 +15,17 @@
         <h1>Hello Aman, I hope you are doing good..</h1>
         <b><a href="TotalRegistredUser.jsp">Total Registred User</a><br><br>
         <a href="TotalQuestion.jsp">Total Question</a><br><br>
-        <a href="">Total Answer</a><br><br>
-        <a href="">Total Tag</a><br><br>
-        <a href="">Active User Without login</a><br><br>
-        <a href="">Active Logged in user</a><br><br>
-        <a href="">Total visitor till now</a><br><br></b>
+        <a href="uploadJoke.jsp">Upload joke</a><br><br>
+        <a href="topten.jsp">Top 10</a><br><br>
+        <a href="uploadQuotes.jsp">Upload quotes</a><br><br>
+        <a href="uploadFullform.jsp">Upload Full form</a><br><br>
+        <a href="uploadStory.jsp">Upload Story</a><br><br>
+        <a href="uploadPoem.jsp">Upload Poem</a><br><br>
+        <a href="uploadWaStatus.jsp">WhatsApp Status</a><br><br>
+        <a href="chat.jsp">Chat for Admin</a><br><br>
+        <a href="didyouknow.jsp">Kya aap jante hain</a><br><br>
+        <a href="../index.jsp">Go to the main site</a><br><br>
+        </b>
+        
     </body>
 </html>

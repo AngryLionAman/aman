@@ -40,7 +40,7 @@
         SIGNUP = "SignUp";
         SEARCH = "Search";
         PROFILE = "Profile";
-        CONTACT_US = "contact Us";
+        CONTACT_US = "Contact Us";
         ABOUT_US = "About Us";
         LOGOUT = "Logout";
         SELECT = "Select";
@@ -64,7 +64,7 @@
             <div style="overflow: hidden; padding-right: .5em;">
                 <form action="SearchBar.jsp">
                     <input type="hidden" name="sl" value="<%=sl%>">
-                    <input type="text" style="width: 100%;" name="search" required="" >
+                    <input type="text" style="width: 100%;" name="search" required="">
                     <button type="submit" style="float: right;width: 50px;" /><%=SEARCH%></button>
                 </form>
             </div>
