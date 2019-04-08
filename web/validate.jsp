@@ -4,6 +4,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <meta charset="UTF-8">
 <%
+    request.setCharacterEncoding("UTF-8");
+    response.setCharacterEncoding("UTF-8");
+%>
+<%
     String sl = request.getParameter("sl");
     if (sl == null) {
         sl = "en";
@@ -30,12 +34,12 @@
                 }
                 connection = DriverManager.getConnection(DB_URL_, DB_USERNAME_, DB_PASSWORD_);
             }
-            String  password1;
-            int Session_id_of_user=0;
+            String password1;
+            int Session_id_of_user = 0;
             try {
 
                 String v = "SELECT ID,email,password FROM newuser WHERE email = ?";
-                
+
                 preparedStatement = connection.prepareStatement(v);
                 preparedStatement.setString(1, email);
                 resultSet = preparedStatement.executeQuery();
@@ -78,8 +82,8 @@
                 if (request.getParameter("URL") != null) {
                     String URL = request.getParameter("URL");
                     String ans = request.getParameter("ans");
-                    response.sendRedirect(URL + "&sl=" + sl+"&ans="+ans);
-                }else{ 
+                    response.sendRedirect(URL + "&sl=" + sl + "&ans=" + ans);
+                } else {
                     response.sendRedirect("index.jsp?sl=" + sl);
                 }
             } else {

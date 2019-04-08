@@ -169,7 +169,62 @@
                                         </div>
 
                                     </div>
-                                    <%
+                                   
+                                    <div class="clear-fix"></div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                           
+                            <div class="themeBox" style="height:auto;">
+                                <div class="boxHeading">
+                                   Also Read
+                                </div>
+                                <div>
+                                     <ul>
+                                        <%
+                                            String sql = "SELECT story_id as id,story_title as title FROM story LIMIT " + story_id + ",5";
+                                            preparedStatement = connection.prepareStatement(sql);
+                                            resultSet = preparedStatement.executeQuery();
+                                            while (resultSet.next()) {
+                                        %>
+                                        <li>  <a href="read_story.jsp?story=<%=resultSet.getString("title").replaceAll(" ", "-")%>&s_id=<%=resultSet.getInt("id")%>"><%=resultSet.getString("title")%></a></li>
+                                        <% }
+                                        %>
+                                    </ul>
+                                </div>
+
+                            </div>
+                            <div class="themeBox" style="height:auto;">
+                                <div class="boxHeading">
+                                    Fun Zone
+                                </div>
+                                <div>
+                                    <jsp:include page="funZoneList.jsp"></jsp:include>
+                                </div>
+
+                            </div>
+                            <div class="clear-fix"></div>
+                            
+                            <div class="themeBox" style="height:auto;">
+                                <div class="boxHeading">
+                                    Education Zone
+                                </div>
+                                <div>
+                                    <jsp:include page="eduZoneList.jsp"></jsp:include>
+                                </div>
+                            </div>
+                           
+                        </div>
+                        <div class="clear-fix"></div>
+                    </div>
+                    <div class="clear-fix"></div>
+                </div>
+                <div class="clear-fix"></div>
+            </div>
+                                 <%
                                             }
 
                                         } catch (Exception e) {
@@ -204,51 +259,13 @@
                                             }
                                         }
                                     %>
-                                    <div class="clear-fix"></div>
-
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
-                            <%
-                                if (session.getAttribute("email") != null) {
-                            %>
-                            <div class="themeBox" style="height:auto;">
-                                <div class="boxHeading">
-                                    <%=COMPLETE_YOUR_PROFILE%>
-                                </div>
-                                <div><jsp:include page="CompleteUserProfile.jsp" /></div>
-
-                            </div><% }%>
-                            <div class="clear-fix"></div>
-                            <%
-                                if (session.getAttribute("email") != null) {
-                            %>
-                            <div class="themeBox" style="height:auto;">
-                                <div class="boxHeading">
-                                    <%=TRENDING_QUUESTION%>
-                                </div>
-                                <div>
-                                    <jsp:include page="TrendingQuestion.jsp" />
-                                </div>
-                            </div><% }%>
-                            <div class="clear-fix"></div>
-
-                            <div class="clear-fix"></div>
-                        </div>
-                        <div class="clear-fix"></div>
-                    </div>
-                    <div class="clear-fix"></div>
-                </div>
-                <div class="clear-fix"></div>
-            </div>
             <div class="clear-fix"></div>
 
             <div class="modal fade" id="myModal" role="dialog">
                 <div class="modal-dialog">
                 </div>
             </div>
+            <%@include file="notificationhtml.jsp" %>
               <jsp:include page="footer.jsp">
                 <jsp:param name="sl" value="<%=sl%>"/>
             </jsp:include>

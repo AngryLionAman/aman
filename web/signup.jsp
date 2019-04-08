@@ -179,10 +179,10 @@
                                                                         <input type="password"  name="password" pattern=".{6,}" title="Six or more characters" required="">
                                                                     </div> 
                                                                     <br>
-                                                                    <button type="submit" class="button button1" data-toggle="modal" style="background-color: red;" ><%=CREATE_ACCOUNT%></button>
+                                                                    <button type="submit" class="button button1" data-toggle="modal"  ><%=CREATE_ACCOUNT%></button>
                                                                 </form>
                                                                     <form action="ForgotPassword.jsp?sl=<%=sl%>" method="post" name="forgetPassword">
-                                                                    <button class="button button1"><%=FORGET_PASSWORD%></button>
+                                                                    <button class="button button1" style="background-color: red;"><%=FORGET_PASSWORD%></button>
                                                                 </form>
                                                             </div>
                                                         </div>

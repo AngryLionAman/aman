@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <meta charset="UTF-8">
+<%@page language="java" %>
+<%@page import="java.sql.*" %> 
 <%!
     String EMAIL = "";
     String PASSWORD = "";
@@ -23,7 +25,7 @@
         EMAIL = "ईमेल";
         PASSWORD = "पासवर्ड";
         HOME = "होम";
-        LOGIN = "लॉग इन करें";
+        LOGIN = "Login";
         SIGNUP = "नया खाता बनाएँ";
         SEARCH = "खोजे";
         PROFILE = "प्रोफ़ाइल";
@@ -65,7 +67,7 @@
                 <form action="SearchBar.jsp">
                     <input type="hidden" name="sl" value="<%=sl%>">
                     <input type="text" style="width: 100%;" name="search" required="">
-                    <button type="submit" style="float: right;width: 50px;" /><%=SEARCH%></button>
+<!--                    <button type="submit" style="float: right;width: 50px;" /><%=SEARCH%></button>-->
                 </form>
             </div>
 
@@ -74,52 +76,36 @@
 
 
         <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12 float-right textalign-right">
-            <%if (session.getAttribute("email") == null) {%><a href="Login.jsp?sl=<%=sl%>" class="helpicon" style="color: white;padding-right: 50px; "><%=LOGIN%></a><% }%>
-            <a href="index.jsp?sl=<%=sl%>" class="helpicon" style="color: white;padding-right: 50px; "><%=HOME%></a>
-            <a href="help.jsp?sl=<%=sl%>"><img src="images/home/HelpIcon.png" class="helpicon " /></a>
-            <% if (session.getAttribute("email") != null && request.getParameter("page") != null) {%> 
-            <a href="#" class="notification" data-toggle="modal" data-target="#myModalN">
-                <span>Inbox</span>
-                <span class="badge">0</span>
-            </a> <% } %>
-
-
-        </div>
-        <div class="col-lg-1 col-md-1 col-sm-12 col-xs-12 float-right textalign-right">
-            <%@page language="java" %>
-            <%@page import="java.sql.*" %> 
-            <% // Database connection details 
+            <%  if (sl.equalsIgnoreCase("hi")) {    %>
+            <a href="index.jsp?sl=en" class="helpicon"  style="color: white;padding-left: 10px;padding-right: 40px;">English</a>
+            <% } else { %>
+            <a href="https://inquiryhere.com/index.jsp?sl=hi" class="helpicon"  style="color: white;padding-left: 10px;padding-right: 30px;">हिन्दी</a>
+            <% } %>
+             <% if (session.getAttribute("email") != null) {%> 
+            <a href="#" data-toggle="modal" class="helpicon" data-target="#myModalN" style="color: white;padding-left: 10px;padding-right: 10px;">
+<!--                <span></span>--> Inbox
+<!--                <span class="badge">0</span>-->
+            </a> 
+            <% }%>
+            
+            <a href="help.jsp?sl=<%=sl%>" class="helpicon"  style="color: white;padding-left: 10px;padding-right: 10px;">Help</a>
+            <a href="index.jsp?sl=<%=sl%>" class="helpicon" style="color: white;padding-left: 10px;padding-right: 30px;"><%=HOME%></a>
+            
+            <%if (session.getAttribute("email") == null) {%>
+            <a href="Login.jsp?sl=<%=sl%>" class="helpicon" style="color: white;padding-left: 10px;padding-right: 30px;"><%=LOGIN%></a>
+            <a href="signup.jsp?sl=<%=sl%>" class="helpicon"  style="color: white;padding-left: 10px;padding-right: 30px;">SIgnUp</a>
+            <% } else {
                 String DB_URL = "jdbc:mysql://localhost/bharat";
                 String DB_USERNAME = "root";
                 String DB_PASSWORD = null;
-            %>
-            <%
-                if (session.getAttribute("URL") != null) {
-                    session.setAttribute("URL", null);
-                }
-            %>
-            <%
-                 int id_of_user = 0;
-                String email = (String) session.getAttribute("email");
-                if (email == null) {
-            %><select class="helpicon w100 username" onchange="location = this.value;">
-                <option value="Login.jsp?sl=<%=sl%>"><%=SELECT%></option>
-                <option value="Login.jsp?sl=<%=sl%>"><%=LOGIN%></option>
-                <option value="AboutUs.jsp?sl=<%=sl%>"><%=ABOUT_US%></option>
-                <option value="ContactUs.jsp?sl=<%=sl%>"><%=CONTACT_US%></option>
-                <%  if(sl.equalsIgnoreCase("hi")){    %>
-                <option value="index.jsp?sl=en">English</option>
-                <% }else{ %>
-                <option value="index.jsp?sl=hi">हिन्दी</option> 
-                       <% } %>
-            </select><%
-            } else {
 
                 Statement stmt;
                 Connection con;
                 ResultSet rs;
                 String name = null;
-               
+                String email = (String) session.getAttribute("email");
+                int id_of_user = 0;
+
                 try {
                     Class.forName("com.mysql.jdbc.Driver");
                     con = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
@@ -128,7 +114,7 @@
                     rs = stmt.executeQuery(p);
                     while (rs.next()) {
                         id_of_user = rs.getInt("id");
-                        name = rs.getString("firstname").substring(0, 1).toUpperCase()+rs.getString("firstname").substring(1).toLowerCase();
+                        name = rs.getString("firstname").substring(0, 1).toUpperCase() + rs.getString("firstname").substring(1).toLowerCase();
                     }
                     stmt.close();
                     con.close();
@@ -137,20 +123,12 @@
                     out.println("Unable to retrieve!!" + e);
                 }
             %>
-            <select class="helpicon w100 username" onchange="location = this.value;">
-                <option value="index.jsp?sl=<%=sl%>"><%=name%></option>
-                <option value="profile.jsp?ID=<%=id_of_user%>&sl=<%=sl%>"><%=PROFILE%></option>
-                <option value="AboutUs.jsp?sl=<%=sl%>"><%=ABOUT_US%></option>
-                <option value="ContactUs.jsp?sl=<%=sl%>"><%=CONTACT_US%></option>
-                 <%  if(sl.equalsIgnoreCase("hi")){    %>
-                <option value="index.jsp?sl=en">English</option>
-                <% }else{ %>
-                <option value="index.jsp?sl=hi">हिन्दी</option> 
-                       <% } %>
-                <option value="Logout.jsp?sl=<%=sl%>"><%=LOGOUT%></option>
-            </select><%
-                }
-            %>
-        </div>
+            <a href="Logout.jsp?sl=<%=sl%>" class="helpicon" style="color: white;padding-left: 10px;padding-right: 30px;">Logout</a>
+            <a href="profile.jsp?ID=<%=id_of_user%>&sl=<%=sl%>" class="helpicon" style="color: white;padding-left: 10px;padding-right: 30px;"><b><%=name%></b></a>
+            <%
+                }%>            
+            
+    </div>
+
     </div>
 </header>

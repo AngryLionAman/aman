@@ -13,6 +13,13 @@
         <!-- responsive style sheet -->
         <link rel="stylesheet" type="text/css" href="css/responsive.css">
         <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+        <meta property="og:description" content="read jokes in Hindi and english" />
+        <meta property="og:image" content="https://www.inquiryhere.com/images/logo/inquiryhere_Logo.PNG" />
+        <meta property="og:type" content="website">
+        <meta property="og:locale" content="en_US">
+        <meta property="og:title" content="Read jokes in Hindi and english" />
+        <meta property="og:url" content="https://www.inquiryhere.com/">
+        <meta property="og:site_name" content="https://www.inquiryhere.com/" />
         <%@page import="java.sql.*" %> 
         <%@include file="site.jsp" %>
         <%@include file="validator.jsp" %>

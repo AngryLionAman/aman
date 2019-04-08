@@ -12,6 +12,13 @@
         <link rel="stylesheet" type="text/css" href="css/style.css">
         <!-- responsive style sheet -->
         <link rel="stylesheet" type="text/css" href="css/responsive.css">
+        <meta property="og:description" content="whatsapp status and sayari in hindi and english" />
+        <meta property="og:image" content="https://www.inquiryhere.com/images/logo/inquiryhere_Logo.PNG" />
+        <meta property="og:type" content="website">
+        <meta property="og:locale" content="en_US">
+        <meta property="og:title" content="whatsapp status and sayari in hindi and english" />
+        <meta property="og:url" content="https://www.inquiryhere.com/">
+        <meta property="og:site_name" content="https://www.inquiryhere.com/" />
         <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
         <%@page import="java.sql.*" %> 
         <%@include file="site.jsp" %>
@@ -78,8 +85,7 @@
                                     int totalRecords = 10;
                                     int totalRows = nullIntconvert(request.getParameter("totalRows"));
                                     int totalPages = nullIntconvert(request.getParameter("totalPages"));
-                                    int iPageNo;
-                                    iPageNo = nullIntconvert(request.getParameter("iPageNo"));
+                                    int iPageNo = nullIntconvert(request.getParameter("iPageNo"));
                                     int cPageNo = nullIntconvert(request.getParameter("cPageNo"));
                                     String category = nullStringconvert(request.getParameter("category"));
                                     String query1 = "";
@@ -269,7 +275,7 @@
                             out.println("Exception in closing connection " + e);
                         }
                     }
-                    /*if (resultSet != null || !resultSet.isClosed()) {
+                    if (resultSet != null || !resultSet.isClosed()) {
                         try {
                             resultSet.close();
                         } catch (Exception e) {
@@ -282,9 +288,10 @@
                         } catch (Exception e) {
                             out.println("Exception in closing preparedStatement " + e);
                         }
-                    }*/
+                    }
                 }
             %>
+            <%@include file="notificationhtml.jsp" %>
             <jsp:include page="footer.jsp">
                 <jsp:param name="sl" value="<%=sl%>"/>
             </jsp:include>

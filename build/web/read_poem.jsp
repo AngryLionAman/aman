@@ -68,8 +68,7 @@
         <%@page language="java" %>
         <%@page import="java.sql.*" %> 
         <%@include file="site.jsp" %>
-        <%            
-            Connection connection = null;
+        <%            Connection connection = null;
             ResultSet resultSet = null;
             PreparedStatement preparedStatement = null;
             try {
@@ -88,23 +87,23 @@
 //            String FirstName = "";
 //            String LastName = "";
 //            int UserID = 0;
-            if(poem_id != null){
-            try {
-                //String p = "SELECT b.blog_subject, substring(b.blog,1,500),user.firstname,user.lastname,user.id FROM blog b right join newuser user on b.blog_posted_by = user.Id  WHERE blog_id = '" + Question + "'";
-                String p = "select poem_title,substring(poem,1,100) from poem where poem_id = '" + poem_id + "'";
-                preparedStatement = connection.prepareStatement(p);
-                resultSet = preparedStatement.executeQuery();
-                while (resultSet.next()) {
-                    PoemTitle = resultSet.getString("poem_title");
-                    PoemDescription = resultSet.getString("substring(poem,1,100)");
+            if (poem_id != null) {
+                try {
+                    //String p = "SELECT b.blog_subject, substring(b.blog,1,500),user.firstname,user.lastname,user.id FROM blog b right join newuser user on b.blog_posted_by = user.Id  WHERE blog_id = '" + Question + "'";
+                    String p = "select poem_title,substring(poem,1,150) as des from poem where poem_id = '" + poem_id + "'";
+                    preparedStatement = connection.prepareStatement(p);
+                    resultSet = preparedStatement.executeQuery();
+                    while (resultSet.next()) {
+                        PoemTitle = resultSet.getString("poem_title");
+                        PoemDescription = resultSet.getString("des");
 //                    FirstName = resultSet.getString("firstname");
 //                    LastName = resultSet.getString("lastname");
 //                    UserID = resultSet.getInt("ID");
+                    }
+                } catch (Exception e) {
+                    out.println("Unable to retrieve!!" + e);
                 }
-            } catch (Exception e) {
-                out.println("Unable to retrieve!!" + e);
             }
-           }
         %>
         <title><%=PoemTitle%></title>
         <meta property="og:title" content="<%=PoemTitle%>" />
@@ -123,7 +122,7 @@
 
 
             <!-- Header _________________________________ -->
-           <jsp:include page="header.jsp">
+            <jsp:include page="header.jsp">
                 <jsp:param name="sl" value="<%=sl%>"/>
             </jsp:include>
             <div class="clear-fix"></div>
@@ -155,7 +154,7 @@
 <!--                                    <div class="boxHeading marginbot10"><%=DESCRIPTION%></div>-->
 
                                     <%
-                                        
+
                                         try {
                                             String p = "SELECT * FROM poem WHERE poem_id = '" + poem_id + "'";
                                             preparedStatement = connection.prepareStatement(p);
@@ -169,41 +168,7 @@
                                         </div>
 
                                     </div>
-                                    <%
-                                            }
 
-                                        } catch (Exception e) {
-                                            out.println("Unable to retrieve!!" + e);
-                                        } 
-                                    %>
-                                    <%
-                                        } catch (Exception e) {
-                                            out.println("Error in main try block:-" + e);
-                                        } finally {
-
-                                            if (connection != null || !connection.isClosed()) {
-                                                try {
-                                                    connection.close();
-                                                } catch (Exception e) {
-                                                    out.println("Exception in closing connection " + e);
-                                                }
-                                            }
-                                            if (resultSet != null || !resultSet.isClosed()) {
-                                                try {
-                                                    resultSet.close();
-                                                } catch (Exception e) {
-                                                    out.println("Exception in closing resulatset " + e);
-                                                }
-                                            }
-                                            if (preparedStatement != null || !preparedStatement.isClosed()) {
-                                                try {
-                                                    preparedStatement.close();
-                                                } catch (Exception e) {
-                                                    out.println("Exception in closing preparedStatement " + e);
-                                                }
-                                            }
-                                        }
-                                    %>
                                     <div class="clear-fix"></div>
 
                                 </div>
@@ -211,33 +176,79 @@
 
                         </div>
                         <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
-                            <%
-                                if (session.getAttribute("email") != null) {
-                            %>
                             <div class="themeBox" style="height:auto;">
                                 <div class="boxHeading">
-                                    <%=COMPLETE_YOUR_PROFILE%>
-                                </div>
-                                <div><jsp:include page="CompleteUserProfile.jsp" /></div>
-
-                            </div><% }%>
-                            <div class="clear-fix"></div>
-                            <%
-                                if (session.getAttribute("email") != null) {
-                            %>
-                            <div class="themeBox" style="height:auto;">
-                                <div class="boxHeading">
-                                    <%=TRENDING_QUUESTION%>
+                                    Also Read
                                 </div>
                                 <div>
-                                    <jsp:include page="TrendingQuestion.jsp" />
+                                    <ul>
+                                        <%
+                                            String sql = "SELECT poem_id,poem_title FROM poem LIMIT " + poem_id + ",5";
+                                            preparedStatement = connection.prepareStatement(sql);
+                                            resultSet = preparedStatement.executeQuery();
+                                            while (resultSet.next()) {
+                                        %>
+                                        <li> <a href="read_poem.jsp?story=<%=resultSet.getString("poem_title").replaceAll(" ", "-")%>&p_id=<%=resultSet.getInt("poem_id")%>"><%=resultSet.getString("poem_title")%></a></li>                            </li>
+                                            <% }
+                                            %>
+                                    </ul>
                                 </div>
-                            </div><% }%>
-                            <div class="clear-fix"></div>
-
-                            <div class="clear-fix"></div>
+                            </div>
                         </div>
-                        <div class="clear-fix"></div>
+                        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                            <div class="themeBox" style="height:auto;">
+                                <div class="boxHeading">
+                                    Fun Zone
+                                </div>
+                                <div>
+                                    <jsp:include page="funZoneList.jsp"></jsp:include>
+                                </div>
+                            </div>
+                            <div class="themeBox" style="height:auto;">
+                                <div class="boxHeading">
+                                    Education Zone
+                                </div>
+                                <div>
+                                <jsp:include page="eduZoneList.jsp"></jsp:include>
+                                </div>
+                            </div>
+                            </div>
+                            <div class="clear-fix"></div>
+                        <%
+                                }
+
+                            } catch (Exception e) {
+                                out.println("Unable to retrieve!!" + e);
+                            }
+                        %>
+                        <%
+                            } catch (Exception e) {
+                                out.println("Error in main try block:-" + e);
+                            } finally {
+
+                                if (connection != null || !connection.isClosed()) {
+                                    try {
+                                        connection.close();
+                                    } catch (Exception e) {
+                                        out.println("Exception in closing connection " + e);
+                                    }
+                                }
+                                if (resultSet != null || !resultSet.isClosed()) {
+                                    try {
+                                        resultSet.close();
+                                    } catch (Exception e) {
+                                        out.println("Exception in closing resulatset " + e);
+                                    }
+                                }
+                                if (preparedStatement != null || !preparedStatement.isClosed()) {
+                                    try {
+                                        preparedStatement.close();
+                                    } catch (Exception e) {
+                                        out.println("Exception in closing preparedStatement " + e);
+                                    }
+                                }
+                            }
+                        %>
                     </div>
                     <div class="clear-fix"></div>
                 </div>
@@ -249,7 +260,8 @@
                 <div class="modal-dialog">
                 </div>
             </div>
-              <jsp:include page="footer.jsp">
+            <%@include file="notificationhtml.jsp" %>
+            <jsp:include page="footer.jsp">
                 <jsp:param name="sl" value="<%=sl%>"/>
             </jsp:include>
             <script type="text/javascript" src="vendor/jquery-2.1.4.js"></script>

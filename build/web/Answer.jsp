@@ -7,8 +7,7 @@
         <meta charset="UTF-8">
         <meta http-equiv="content-type" content="text/html" charset="utf-8">
 
-        <%!            
-            String FOLLOWED_TOPIC = "";
+        <%!            String FOLLOWED_TOPIC = "";
             String QUESTION = "";
             String POSTED_BY = "";
             String ANSWER = "";
@@ -71,8 +70,7 @@
 
 
         %>
-        <%            
-            Connection connection = null;
+        <%            Connection connection = null;
             ResultSet resultSet = null;
             PreparedStatement preparedStatement = null;
             try {
@@ -157,7 +155,7 @@
             try {
                 //This statement not using because ,if a question having no result then it will not fetch the question also.
                 //It is only applicable on that which having the at least one answer;
-                
+
                 //Now usnig the left join for,if any question had no answer the it will show null value 
                 //but extra all function will work
                 String sql = " SELECT q.q_id AS q_id,q.question AS question,SUBSTRING(a.answer,1,500) AS answer"
@@ -193,8 +191,15 @@
             }
         %>
         <title><%=StoredQuestion%></title>
+        <link rel="icon" href="https://www.inquiryhere.com/images/inquiryhere_Logo.PNG" type="image/png">
         <meta property="og:title" content="<%=StoredQuestion%>" />
-        <meta property="og:description" content="<%=StoredAnswer%>"/>
+        <%
+            if (StoredAnswer != null) {
+        %><meta property="og:description" content="<%=StoredAnswer%>"/><%
+           } else {
+        %><meta property="og:description" content="<%=StoredQuestion%>"/><%
+                } %>
+
         <meta property="og:url" content="https://www.inquiryhere.com/">
         <meta property="og:site_name" content="https://www.inquiryhere.com/" />
         <meta property="og:image" content="https://www.inquiryhere.com/images/logo/inquiryhere_Logo.PNG" />
@@ -325,7 +330,7 @@
                                                 while (resultSet.next()) {
                                                     q_id = resultSet.getInt("q_id");
                                                     q_asked_by_user = resultSet.getInt("id");
-                                                    firstname_of_user_who_asked_the_question = resultSet.getString("firstname").substring(0, 1).toUpperCase()+resultSet.getString("firstname").substring(1).toLowerCase();
+                                                    firstname_of_user_who_asked_the_question = resultSet.getString("firstname").substring(0, 1).toUpperCase() + resultSet.getString("firstname").substring(1).toLowerCase();
                                                 }
                                             } catch (Exception e) {
                                                 out.println("Unable to retrieve!!" + e);
@@ -370,7 +375,7 @@
                                                 count++;
                                                 String answer = resultSet.getString("answer");
                                                 int who_gave_answer = resultSet.getInt("Answer_by_id");
-                                                String firstname = resultSet.getString("firstname").substring(0, 1).toUpperCase()+resultSet.getString("firstname").substring(1).toLowerCase();
+                                                String firstname = resultSet.getString("firstname").substring(0, 1).toUpperCase() + resultSet.getString("firstname").substring(1).toLowerCase();
                                                 int answer_id = resultSet.getInt("ans.a_id");
                                     %>
                                     <div class="themeBox" style="height:auto;">
@@ -427,9 +432,9 @@
                                     <form name="submitquestion" method="post" action="SubmitAnswer.jsp?_id_of_user=<%=id_of_user%>&q_id=<%=q_id%>&URL=<%=request.getRequestURL()%>?Id=<%=q_id%>&sl=<%=sl%>">
                                         <textarea class="ckeditor" name="answer" required="">
                                             <%
-                                            if(request.getParameter("ans")!= null){
-                                                out.println(request.getParameter("ans"));
-                                            }
+                                                if (request.getParameter("ans") != null) {
+                                                    out.println(request.getParameter("ans"));
+                                                }
                                             %>
                                         </textarea>
                                         <input type="submit" name="Post" value="<%=SUBMIT%>"> 
@@ -597,6 +602,7 @@
                 <div class="modal-dialog">
                 </div>
             </div>
+            <%@include file="notificationhtml.jsp" %>
             <jsp:include page="footer.jsp">
                 <jsp:param name="sl" value="<%=sl%>"/>
             </jsp:include>

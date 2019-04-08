@@ -7,8 +7,7 @@
         <%@include file="site.jsp" %>
         <%@include file="validator.jsp" %>
         <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-        <%!            
-            String TOPIC_MAY_YOU_LIKE = "";
+        <%!            String TOPIC_MAY_YOU_LIKE = "";
             String FOLLOW = "";
             String FOLLOWED = "";
         %>
@@ -43,23 +42,23 @@
             function take_value(el, _topic_id, id_of_user) {
             <% if (session.getAttribute("email") == null) { %>
                 alert("Please login first");<%
-                } else { %>
+                } else {%>
                 if (el.value === "follow") {
                     el.value = "followed";
                     var http = new XMLHttpRequest();
-                    http.open("POST", "<%=DB_AJAX_PATH%>/submit_follow_topic.jsp?val_topic=" + _topic_id + "&val2_topic=" + id_of_user+"&action=follow", true);
+                    http.open("POST", "<%=DB_AJAX_PATH%>/submit_follow_topic.jsp?val_topic=" + _topic_id + "&val2_topic=" + id_of_user + "&action=follow", true);
                     http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
                     http.send();
-                     
-                } else{
+
+                } else {
                     el.value = "follow";
                     var http = new XMLHttpRequest();
-                    http.open("POST", "<%=DB_AJAX_PATH%>/submit_follow_topic.jsp?val_topic=" + _topic_id + "&val2_topic=" + id_of_user+"&action=delete", true);
+                    http.open("POST", "<%=DB_AJAX_PATH%>/submit_follow_topic.jsp?val_topic=" + _topic_id + "&val2_topic=" + id_of_user + "&action=delete", true);
                     http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                    http.send(); 
-                    
+                    http.send();
+
                 }
-                
+
             <% }%>
             }
         </script>
@@ -156,10 +155,9 @@
                                                 rs_topic_followers.close();
                                             %>
                                             <%
-                                                if (Status == "present"){
-                                                    %> <input type="button" value="Unfollow" id="myButton1" onclick="return take_value(this, '<%=_topic_id%>', '<%=id_of_user%>');" /><%
-                                                }
-                                                else {%>
+                                                if (Status == "present") {
+                                            %> <input type="button" value="Unfollow" id="myButton1" onclick="return take_value(this, '<%=_topic_id%>', '<%=id_of_user%>');" /><%
+                                                    } else {%>
                                             <input type="button" value="follow" id="myButton1" onclick="return take_value(this, '<%=_topic_id%>', '<%=id_of_user%>');" />
                                             <% }
                                                         Status = null;
@@ -204,21 +202,17 @@
                                     </div>
 
                                 </div>
-
-
-                                <div class="row margintop10">
-
-
-                                </div>
-
+                                            <div class="row margintop10">
+                                            </div>
+                                                
                             </div>
-
                         </div>
                     </div>
                 </div>
+                <%@include file="notificationhtml.jsp" %>
                 <jsp:include page="footer.jsp">
-                <jsp:param name="sl" value="<%=sl%>"/>
-            </jsp:include>
+                    <jsp:param name="sl" value="<%=sl%>"/>
+                </jsp:include>
                 <script type="text/javascript" src="vendor/jquery-2.1.4.js"></script>
                 <script type="text/javascript" src="vendor/bootstrap/bootstrap.min.js"></script>
                 <script type="text/javascript" src="vendor/bootstrap-select/dist/js/bootstrap-select.js"></script>

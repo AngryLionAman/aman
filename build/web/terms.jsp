@@ -143,6 +143,7 @@
                 <div class="clear-fix"></div>
             </div>
             <div class="clear-fix"></div>
+            <%@include file="notificationhtml.jsp" %>
              <jsp:include page="footer.jsp">
                 <jsp:param name="sl" value="<%=sl%>"/>
             </jsp:include>

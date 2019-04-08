@@ -100,14 +100,19 @@
             gtag('config', 'UA-128307055-1');
         </script> 
         <title>Home Page</title>
+        <link rel="icon" href="https://www.inquiryhere.com/images/inquiryhere_Logo.PNG" type="image/png">
+
         <link rel="stylesheet" type="text/css" href="css/style.css">
         <!-- responsive style sheet -->
         <link rel="stylesheet" type="text/css" href="css/responsive.css">
-        <meta property="og:description" content="india first knowledge based social media where experts give you advise and suggestion related to your query .you can ask and share the information which you want to explore.our motive is to be specific according to your demand" />
+        <meta property="og:description" content="india first knowledge based social media where experts give 
+              you advise and suggestion related to your query .you can ask and share the 
+              information which you want to explore.our motive is to be specific according to your demand" />
         <meta property="og:image" content="https://www.inquiryhere.com/images/logo/inquiryhere_Logo.PNG" />
         <meta property="og:type" content="website">
         <meta property="og:locale" content="en_US">
-        <meta property="og:title" content="india first knowledge based social media platform where experts give you advise and suggestion related to your query" />
+        <meta property="og:title" content="india first knowledge based social media platform where experts give
+              you advise and suggestion related to your query" />
         <meta property="og:url" content="https://www.inquiryhere.com/">
         <meta property="og:site_name" content="https://www.inquiryhere.com/" />
 
@@ -307,7 +312,7 @@
                                         <div class="boxHeading">
                                             <%=POST_SOMETHING%>
                                         </div>
-                                        <div><textarea type="text" class="anstext" placeholder="<%=POST_YOUR_QUESTION_HERE%>" data-toggle="modal" data-target="#myModal"></textarea></div>
+                                            <div><textarea type="text" class="anstext" placeholder="<%=POST_YOUR_QUESTION_HERE%>" data-toggle="modal" data-target="#myModal" readonly=""></textarea></div>
 
                                         <div class="float-right margintop20" style="vertical-align:bottom">
                                             <button type="button" class="btn" data-toggle="modal" data-target="#myModal"><%=POST%></button>
@@ -329,9 +334,9 @@
 
                                     <h4><%=RECENT_POSTED_QUESTION%></h4>
                                     <%
-                                        String sql3 = "SELECT q.q_id,q.question,user.firstname,user.ID FROM question q "
-                                                + "RIGHT JOIN newuser user ON user.id = q.id WHERE q.q_id IS NOT NULL AND q.question IS NOT NULL "
-                                                + "ORDER BY q_id DESC LIMIT 5";
+                                        String sql3 = "SELECT q.q_id,(select count(*) from answer where q_id = q.q_id) as tac,"
+                                                + "q.question,q.vote,user.firstname,user.ID FROM question q RIGHT JOIN newuser user ON user.id = q.id "
+                                                + "WHERE q.q_id IS NOT NULL AND q.question IS NOT NULL ORDER BY q_id DESC LIMIT 10";
                                         String UserName_for_trending_question_T = null;
                                         try {
                                             preparedStatement = connection.prepareStatement(sql3);
@@ -340,6 +345,8 @@
                                                 String TrendingQuestion_T = resultSet.getString("question");
                                                 int question_id = resultSet.getInt("q.q_id");
                                                 int userID = resultSet.getInt("user.ID");
+                                                int tac = resultSet.getInt("tac");
+                                                int UpVote = resultSet.getInt("q.vote");
                                                 UserName_for_trending_question_T = resultSet.getString("firstname").substring(0, 1).toUpperCase()+resultSet.getString("firstname").substring(1).toLowerCase();
                                     %>
                                     <div class="themeBox" style="height:auto;">
@@ -359,9 +366,9 @@
                                                 <% }
                                                     }%>
                                             </div>
-                                            <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=question_id%>', '<%="upvote"%>');" >Upvote</a>&nbsp;&nbsp; 
+                                            <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=question_id%>', '<%="upvote"%>');" >Upvote(<%=UpVote%>)</a>&nbsp;&nbsp; 
                                             <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=question_id%>', '<%="downvote"%>');" >Downvote</a>&nbsp;&nbsp; 
-                                            <a href="Answer.jsp?q=<%=TrendingQuestion_T.replaceAll(" ", "-")%>&Id=<%=question_id%>&sl=<%=sl%>" >Answer</a>
+                                            <a href="Answer.jsp?q=<%=TrendingQuestion_T.replaceAll(" ", "-")%>&Id=<%=question_id%>&sl=<%=sl%>" >Answer(<%=tac%>)</a>
                                         </div>
 
                                     </div><%
@@ -394,31 +401,30 @@
 
                                     <h4><%=RELATED_QUESTION%></h4>  
                                     <%
-                                        Statement stmt2 = null;
-                                        ResultSet rs2 = null;
                                         String name1 = null;
                                         String question, fname = null;
+                                        int TotalAnswerCount = 0;
+                                        int VoteCount = 0;
                                         int ide = 0;
                                         try {
-                                            String sql4 = "select DISTINCT q.id,q.q_id,q.question from question q "
-                                                    + "right join question_topic_tag qtt on q.q_id = qtt.question_id "
-                                                    + "where tag_id IN (select t.unique_id from topic t "
-                                                    + "right join topic_followers_detail de on t.unique_id = de.topic_id "
-                                                    + "where user_or_followers_id= '" + id_of_user + "')";
+                                            //tac = Total answer count
+                                            //Migrated the join from right to inner. i don't know if any bug will create
+                                            //Please god help me
+                                            String sql4 = "select DISTINCT q.id,(SELECT firstname FROM newuser WHERE id= q.id) as firstname,"
+                                                    + "q.q_id,q.question,q.vote,(select count(*) from answer where q_id = q.q_id) as tac from question q "
+                                                    + "inner join question_topic_tag qtt on q.q_id = qtt.question_id where tag_id IN "
+                                                    + "(select t.unique_id from topic t inner join topic_followers_detail de on t.unique_id = de.topic_id "
+                                                    + "where user_or_followers_id = ?) and q.id is not null and q.q_id is not null "
+                                                    + "and q.question is not null and (SELECT firstname FROM newuser WHERE id= q.id) is not null";
                                             preparedStatement = connection.prepareStatement(sql4);
+                                            preparedStatement.setInt(1, id_of_user);
                                             resultSet = preparedStatement.executeQuery();
                                             while (resultSet.next()) {
                                                 question = resultSet.getString("question");
-                                                if (question != null) {
-                                                    ide = resultSet.getInt("id");
-                                                    stmt2 = connection.createStatement();
-                                                    String T = "SELECT firstname FROM newuser WHERE id='" + ide + "' ";
-                                                    rs2 = stmt2.executeQuery(T);
-                                                    while (rs2.next()) {
-                                                        fname = rs2.getString("firstname").substring(0, 1).toUpperCase()+rs2.getString("firstname").substring(1).toLowerCase();
-                                                    }
-
-                                    %>
+                                                fname = resultSet.getString("firstname");
+                                                TotalAnswerCount = resultSet.getInt("tac");
+                                                VoteCount = resultSet.getInt("q.vote");
+                                                %>
                                     <div class="themeBox" style="height:auto;">
 
                                         <div class="boxHeading marginbot10">
@@ -427,19 +433,17 @@
                                         <div class="questionArea">
                                             <div class="postedBy"><%=POSTED_BY%> : <a href="profile.jsp?ID=<%=ide%>&sl=<%=sl%>"><%=fname%></a></div>
                                         </div>
-                                        <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=resultSet.getInt("q.q_id")%>', '<%="upvote"%>');" >Upvote</a>&nbsp;&nbsp; 
+                                        <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=resultSet.getInt("q.q_id")%>', '<%="upvote"%>');" >Upvote(<%=VoteCount%>)</a>&nbsp;&nbsp; 
                                         <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=resultSet.getInt("q.q_id")%>', '<%="downvote"%>');" >Downvote</a>&nbsp;&nbsp; 
-                                        <a href="Answer.jsp?q=<%=question.replaceAll(" ", "-")%>&Id=<%=resultSet.getInt("q.q_id")%>&sl=<%=sl%>" >Answer</a>
+                                        <a href="Answer.jsp?q=<%=question.replaceAll(" ", "-")%>&Id=<%=resultSet.getInt("q.q_id")%>&sl=<%=sl%>" >Answer(<%=TotalAnswerCount%>)</a>
 
                                     </div>
 
 
-                                    <%             }
+                                    <%             
                                         }
-                                        stmt2.close();
-                                        rs2.close();
                                     } catch (Exception e) {
-                                        out.println("<b style=color:red;>No question found related to your selected topic</b>");
+                                        out.println("<b style=color:red;>No question found related to your selected topic</b>Ex:"+e);
                                         if (session.getAttribute("email") == null) {
                                             email = "Anonuous";
                                         } else {
@@ -493,8 +497,7 @@
                                         int totalRecords = 5;
                                         int totalRows = nullIntconvert(request.getParameter("totalRows"));
                                         int totalPages = nullIntconvert(request.getParameter("totalPages"));
-                                        int iPageNo;
-                                        iPageNo = nullIntconvert(request.getParameter("iPageNo"));
+                                        int iPageNo = nullIntconvert(request.getParameter("iPageNo"));
                                         int cPageNo = nullIntconvert(request.getParameter("cPageNo"));
 
                                         int startResult = 0;
@@ -508,7 +511,9 @@
                                             Class.forName("com.mysql.jdbc.Driver");
                                             connection = DriverManager.getConnection(DB_URL_, DB_USERNAME_, DB_PASSWORD_);
 
-                                            String query1 = "SELECT SQL_CALC_FOUND_ROWS * FROM question limit " + iPageNo + "," + showRows + "";
+                                            String query1 = "SELECT SQL_CALC_FOUND_ROWS id,(SELECT firstname FROM newuser "
+                                                    + "WHERE id = question.id)AS firstname,q_id,(SELECT COUNT(*) FROM answer WHERE q_id = question.q_id) AS tac,"
+                                                    + "question,vote FROM question LIMIT " + iPageNo + "," + showRows + "";
                                             ps1 = connection.prepareStatement(query1);
                                             rs1 = ps1.executeQuery();
 
@@ -524,6 +529,8 @@
                                             }
                                             String Username = null;
                                             int userId = 0;
+                                            int Vote = 0;
+                                            int TotoalAnswerCount = 0;
                                     %>
                                     <form>
 
@@ -532,32 +539,24 @@
                                         <input type="hidden" name="showRows" value="<%=showRows%>">
                                         <%
                                             while (rs1.next()) {
+                                                Username = rs1.getString("firstname");
+                                                userId = rs1.getInt("id");
+                                                Vote = rs1.getInt("vote");
+                                                TotoalAnswerCount = rs1.getInt("tac");
                                         %>
                                         <div class="themeBox" style="height:auto;">
 
                                             <div class="boxHeading marginbot10">
                                                 <a href="Answer.jsp?q=<%=rs1.getString("question").replaceAll(" ", "-")%>&Id=<%=rs1.getInt("q_id")%>&sl=<%=sl%>" ><%=rs1.getString("question")%> ?</a>
                                             </div>
-                                            <%
-                                                String query3 = "SELECT ID,firstname FROM newuser WHERE id='" + rs1.getString("id") + "' ";
-                                                ps3 = connection.prepareStatement(query3);
-                                                rs3 = ps3.executeQuery();
-
-                                                while (rs3.next()) {
-                                                    Username = rs3.getString("firstname").substring(0, 1).toUpperCase()+rs3.getString("firstname").substring(1).toLowerCase();
-                                                    userId = rs3.getInt("ID");
-                                                    //out.println(fname);
-                                                }
-                                                rs3.close();
-                                                ps3.close();%>
                                             <div class="questionArea">
 
                                                 <div class="postedBy"><%=POSTED_BY%> :<a href="profile.jsp?user=<%=Username%>&ID=<%=userId%>&sl=<%=sl%>"> <%=Username%></a></div>
 
                                             </div>
-                                            <a href="javascript:void(0)" onclick="return take_value(this, '<%=rs1.getInt("q_id")%>', 'upvote');">Upvote</a>&nbsp;&nbsp;
+                                            <a href="javascript:void(0)" onclick="return take_value(this, '<%=rs1.getInt("q_id")%>', 'upvote');">Upvote(<%=Vote%>)</a>&nbsp;&nbsp;
                                             <a href="javascript:void(0)" onclick="return take_value(this, '<%=rs1.getInt("q_id")%>', 'upvote');">Downvote</a>&nbsp;&nbsp;
-                                            <a href="Answer.jsp?q=<%=rs1.getString("question").replaceAll(" ", "-")%>&Id=<%=rs1.getInt("q_id")%>&sl=<%=sl%>">Answer</a>
+                                            <a href="Answer.jsp?q=<%=rs1.getString("question").replaceAll(" ", "-")%>&Id=<%=rs1.getInt("q_id")%>&sl=<%=sl%>">Answer(<%=TotoalAnswerCount%>)</a>
 
                                         </div>
 
@@ -812,28 +811,7 @@
 
                 </div>
             </div>
-
-
-            <div class="modal fade" id="myModalN" role="dialog">
-                <div class="modal-dialog">
-
-                    <!-- Modal content-->
-                    <div class="modal-content">
-
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title"><%=YOUR_CURRENT_NODIFICATION%></h4>
-                        </div>
-                        <div class="modal-body">
-                            <div>
-                                <jsp:include page="NodificationScript.jsp" />
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
+            <%@include file="notificationhtml.jsp" %>
             <jsp:include page="footer.jsp">
                 <jsp:param name="sl" value="<%=sl%>"/>
             </jsp:include>

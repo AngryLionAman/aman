@@ -12,6 +12,16 @@
         <link rel="stylesheet" type="text/css" href="css/style.css">
         <!-- responsive style sheet -->
         <link rel="stylesheet" type="text/css" href="css/responsive.css">
+        <meta property="og:description" content="india first knowledge based social media where experts give 
+              you advise and suggestion related to your query .you can ask and share the 
+              information which you want to explore.our motive is to be specific according to your demand" />
+        <meta property="og:image" content="https://www.inquiryhere.com/images/logo/inquiryhere_Logo.PNG" />
+        <meta property="og:type" content="website">
+        <meta property="og:locale" content="en_US">
+        <meta property="og:title" content="india first knowledge based social media platform where experts give
+              you advise and suggestion related to your query" />
+        <meta property="og:url" content="https://www.inquiryhere.com/">
+        <meta property="og:site_name" content="https://www.inquiryhere.com/" />
         <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
         <%@page import="java.sql.*" %> 
         <%@include file="site.jsp" %>
@@ -277,6 +287,7 @@
                     }*/
                 }
             %>
+            <%@include file="notificationhtml.jsp" %>
             <jsp:include page="footer.jsp">
                 <jsp:param name="sl" value="<%=sl%>"/>
             </jsp:include>
