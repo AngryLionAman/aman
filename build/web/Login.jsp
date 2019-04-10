@@ -111,13 +111,12 @@
                                         <div style="overflow: hidden; padding-right: .5em;">
                                             <form action="SearchBar.jsp">
                                                 <div class="col-md-9">
-
                                                     <input type="text" style="width: 100%;"  name="search" required="" >
                                                     <input type="hidden" name="sl" value="<%=sl%>">
                                                 </div>
-                                                <div class="col-md-3">
+<!--                                                <div class="col-md-3">
                                                     <button type="submit"  /><%=SEARCH%></button>
-                                                </div>
+                                                </div>-->
                                             </form>
                                         </div>
 
@@ -125,13 +124,13 @@
                                     </div>
 
                                     <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12 float-right textalign-right">
-                                        <a  href="index.jsp?sl=<%=sl%>" class="helpicon" style="color: white; width: 50px;"><%=HOME%></a>
-                                        <a  href="signup.jsp?sl=<%=sl%>" class="helpicon" style="color: white; width: 50px;"><%=SIGNUP%></a>
+                                        <a href="index.jsp?sl=<%=sl%>" class="helpicon" style="color: white;padding-left: 10px;padding-right: 30px;"><%=HOME%></a>
+                                        <a  href="signup.jsp?sl=<%=sl%>" class="helpicon" style="color: white;padding-left: 10px;padding-right: 30px;"><%=SIGNUP%></a>
                                         <%  if (sl.equalsIgnoreCase("hi")) {%>
-                                        <a  href="Login.jsp" class="helpicon" style="color: white; width: 50px;">English</a>
+                                        <a  href="Login.jsp" class="helpicon" style="color: white;padding-left: 10px;padding-right: 30px;">English</a>
                                         <%  } else {
                                         %>
-                                        <a  href="Login.jsp?sl=hi" class="helpicon" style="color: white; width: 50px;">हिन्दी</a>
+                                        <a  href="Login.jsp?sl=hi" class="helpicon" style="color: white;padding-left: 10px;padding-right: 30px;">हिन्दी</a>
                                         <%}%>
 
                                     </div>

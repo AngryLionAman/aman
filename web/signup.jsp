@@ -25,7 +25,7 @@
                 FIRST_NAME = "पहला नाम";
                 LAST_NAME = "उपनाम";
                 EMAIL = "ईमेल";
-                PASSWORD = "पासवर्ड";
+                PASSWORD = "नया पासवर्ड";
                 CREATE_ACCOUNT = "खाता बनाएं";
                 FORGET_PASSWORD = "पासवर्ड भूल गए";
 
@@ -36,7 +36,7 @@
                 FIRST_NAME = "First Name";
                 LAST_NAME = "Last Name";
                 EMAIL = "Email";
-                PASSWORD = "Password";
+                PASSWORD = "New Password";
                 CREATE_ACCOUNT = "Create Account";
                 FORGET_PASSWORD = "Forgot Password";
             }
@@ -124,7 +124,7 @@
                                             <form action="SearchBar.jsp">
                                                 <input type="hidden" name="sl" value="<%=sl%>">
                                                 <input type="text" style="width: 100%;" name="search" required="" >
-                                                <button type="submit" style="float: right;width: 50px;" /><%=SEARCH%></button>
+<!--                                                <button type="submit" style="float: right;width: 50px;" /><%=SEARCH%></button>-->
                                             </form>
                                         </div>
 

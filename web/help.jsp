@@ -12,7 +12,7 @@
         <link rel="stylesheet" type="text/css" href="css/style.css">
         <!-- responsive style sheet -->
         <link rel="stylesheet" type="text/css" href="css/responsive.css">
-         <%!            
+        <%!
             String WELCOME_NOTES = "";
             String WELCOME_NOTES_DESCRIPTION = "";
         %>
@@ -55,7 +55,7 @@
                                                 <%=WELCOME_NOTES%>
                                             </div><BR>
                                             <div class="boxHeading">
-                                            <%=WELCOME_NOTES_DESCRIPTION%>    
+                                                <%=WELCOME_NOTES_DESCRIPTION%>    
                                             </div>
                                         </div>
                                     </div>
@@ -88,8 +88,8 @@
                 <div class="clear-fix"></div>
             </div>
             <div class="clear-fix"></div>
-
-             <jsp:include page="footer.jsp">
+            <%@include file="notificationhtml.jsp" %>
+            <jsp:include page="footer.jsp">
                 <jsp:param name="sl" value="<%=sl%>"/>
             </jsp:include>
             <script type="text/javascript" src="vendor/jquery-2.1.4.js"></script>

@@ -462,7 +462,7 @@
                                         <jsp:param name="ExceptionMessage" value="<%=e%>"></jsp:param>
                                     </jsp:include><%
                                         }
-                                    } else {
+                                    } 
                                     %>
 
                                     <h4><%=QUESTION_YOU_MAY_LIKE%></h4>
@@ -659,7 +659,7 @@
                                             } catch (Exception e) {
                                                 e.printStackTrace();
                                             }
-                                        }%>
+                                        %>
                                     <div class="clear-fix"></div>
 
 

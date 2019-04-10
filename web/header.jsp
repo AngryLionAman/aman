@@ -79,7 +79,7 @@
             <%  if (sl.equalsIgnoreCase("hi")) {    %>
             <a href="index.jsp?sl=en" class="helpicon"  style="color: white;padding-left: 10px;padding-right: 40px;">English</a>
             <% } else { %>
-            <a href="https://inquiryhere.com/index.jsp?sl=hi" class="helpicon"  style="color: white;padding-left: 10px;padding-right: 30px;">हिन्दी</a>
+            <a href="index.jsp?sl=hi" class="helpicon"  style="color: white;padding-left: 10px;padding-right: 30px;">हिन्दी</a>
             <% } %>
              <% if (session.getAttribute("email") != null) {%> 
             <a href="#" data-toggle="modal" class="helpicon" data-target="#myModalN" style="color: white;padding-left: 10px;padding-right: 10px;">
