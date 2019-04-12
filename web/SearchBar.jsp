@@ -5,6 +5,7 @@
         <%@page language="java" %>
         <%@page import="java.sql.*" %> 
         <%@include file="site.jsp" %>
+        <%@include file="validator.jsp" %>
         <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
         <%!             String YOUR_ACTIVITY = "";
             String QUESTION = "";
@@ -138,7 +139,7 @@
                                         <div class="themeBox" style="height:auto;margin-bottom:0px;">
                                             <p id="demo"></p>
                                             <%
-                                                String SearchValue = request.getParameter("search");
+                                                String SearchValue = convertStringUpperToLower(request.getParameter("search"));
                                                 String ParametrVariable = request.getParameter("value");
                                                 if (ParametrVariable == null) {
                                                     ParametrVariable = "Question";

@@ -3,6 +3,7 @@
         <%@page language="java" %>
         <%@page import="java.sql.*" %> 
         <%@include file="site.jsp" %>
+        <%@include file="validator.jsp" %>
         <meta charset="UTF-8">
         <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
         <%!            
@@ -90,7 +91,15 @@
         <!-- For Resposive Device -->
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="content-type" content="text/html" charset="utf-8">
-        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-128307055-1"></script>
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-8778688755733551",
+    enable_page_level_ads: true
+  });
+</script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-128307055-1"></script>
         <script>
             window.dataLayer = window.dataLayer || [];
             function gtag() {
@@ -268,7 +277,7 @@
                                                 resultSet = preparedStatement.executeQuery();
                                                 boolean status = true;
                                                 while (resultSet.next()) {
-                                                    topic_name = resultSet.getString("topic_name").substring(0, 1).toUpperCase() + resultSet.getString("topic_name").substring(1).toLowerCase();
+                                                    topic_name = convertStringUpperToLower(resultSet.getString("topic_name"));
                                                     topic_id = resultSet.getInt("unique_id");
                                                     int count = resultSet.getInt("count");
                                                     if (topic_id != 0) {
@@ -467,23 +476,6 @@
 
                                     <h4><%=QUESTION_YOU_MAY_LIKE%></h4>
 
-                                    <%!
-                                        public int nullIntconvert(String str) {
-                                            int num = 0;
-                                            if (str == null) {
-                                                str = "0";
-                                            } else if ((str.trim()).equals("null")) {
-                                                str = "0";
-                                            } else if (str.equals("")) {
-                                                str = "0";
-                                            }
-                                            try {
-                                                num = Integer.parseInt(str);
-                                            } catch (Exception e) {
-                                            }
-                                            return num;
-                                        }
-                                    %>
                                     <%
                                         ResultSet rs1 = null;
                                         ResultSet rs2 = null;

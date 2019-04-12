@@ -56,7 +56,15 @@
         <link rel="stylesheet" type="text/css" href="css/style.css">
         <!-- responsive style sheet -->
         <link rel="stylesheet" type="text/css" href="css/responsive.css">
-        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-128307055-1"></script>
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-8778688755733551",
+    enable_page_level_ads: true
+  });
+</script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-128307055-1"></script>
         <script>
             window.dataLayer = window.dataLayer || [];
             function gtag() {

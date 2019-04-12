@@ -130,7 +130,7 @@
             BEST_ACHIEVEMENT = "Best Achievement";
             BIO = "Bio ";
             COMPLETE_YOUR_PROFILE = "Complete your profile";
-            YOUR_ACTIVITY = "Your Activity ";
+            YOUR_ACTIVITY = "User Activity ";
             QUESTION = "Question";
             ANSWER = "Answer";
             TOPIC_FOLLOWED = "Topic Followed";
@@ -458,13 +458,13 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+<!--                        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
                             <div class="themeBox" style="min-height:430px;">
                                 <div class="boxHeading">
                                     User having same interest
                                 </div>
                                 <div>
-                                    <%
+                                    <%--
                                         String suggestedUser = "select DISTINCT user.id, user.firstname,user.lastname,user.imagepath from newuser user "
                                                 + "right join topic_followers_detail tfd  on user.id=tfd.user_or_followers_id where topic_id IN "
                                                 + "(select t.unique_id from topic t right join topic_followers_detail de on t.unique_id = de.topic_id "
@@ -496,10 +496,10 @@
                                         }
                                         out.println("<br><a href=UserProfile.jsp?sl=" + sl + ">" + FOLLOW_MORE_USER + "</a>");
 
-                                    %>
+                                    --%>
                                 </div>
                             </div>
-                        </div>
+                        </div>-->
                     </div>
                     <div class="row">
                         <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">

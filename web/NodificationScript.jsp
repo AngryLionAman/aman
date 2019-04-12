@@ -3,6 +3,7 @@
 <%@include file="site.jsp" %>
 <% //Got the id from Here only
     if (session.getAttribute("email") != null && session.getAttribute("Session_id_of_user") != null) {
+        int CurrentUserId = (Integer) session.getAttribute("Session_id_of_user");
         Connection connection = null;
         ResultSet resultSet = null;
         PreparedStatement preparedStatement = null;
@@ -16,16 +17,16 @@
                 connection = DriverManager.getConnection(DB_URL_, DB_USERNAME_, DB_PASSWORD_);
             }
 
-            /*Display the stored notification to the user*/
- /*Limited the user notification to five(5)*/
+            /* Display the stored notification to the user*/
+ /* Limited the user notification to five(5)*/
             try {
-                int CurrentUserId = (Integer) session.getAttribute("Session_id_of_user");
+
                 String sql = "SELECT unique_id,user_id,user_email,notification_type,followers_id,"
                         + "(SELECT firstname FROM newuser WHERE id = notification.followers_id)AS firstname,"
                         + "(SELECT lastname FROM newuser WHERE id = notification.followers_id)AS lastname,question_id,"
                         + "(SELECT question FROM question WHERE q_id = notification.question_id)AS QUESTION,ans_id,"
                         + "(SELECT answer FROM answer WHERE a_id = notification.ans_id)AS answer,time FROM notification "
-                        + "WHERE user_id = ? ORDER BY unique_id DESC";
+                        + "WHERE user_id = ? OR user_id IS NULL ORDER BY unique_id DESC";
                 preparedStatement = connection.prepareStatement(sql);
                 preparedStatement.setInt(1, CurrentUserId);
                 resultSet = preparedStatement.executeQuery();
@@ -35,8 +36,8 @@
         status = false;
         int question_id = resultSet.getInt("question_id");
         String question = resultSet.getString("question");
-        String answer = resultSet.getString("answer");
-        int userId = resultSet.getInt("followers_id");
+        //String answer = resultSet.getString("answer");
+        int userId = resultSet.getInt("followers_id");//who created the notification
         String userFirstName = resultSet.getString("firstname");
         String userLastName = resultSet.getString("lastname");
         String notification_type = resultSet.getString("notification_type");
@@ -44,17 +45,41 @@
 
 %>
 <a href="Answer.jsp?q=<%=question.replaceAll(" ", "-")%>&Id=<%=question_id%>"><b><%=userFirstName%> <%=userLastName%></b> give you an answer of <b><%=question%></b></a>
-<br>---------------------------------------------<br>
+<br>-------------------------------------------------<br>
 <%
 } else if (notification_type.equalsIgnoreCase("followed_by")) {
 
 %>
 <a href="profile.jsp?user=<%=userFirstName%>&ID=<%=userId%>"> <b><%=userFirstName%> <%=userLastName%></b> started following you</a>
-<br>---------------------------------------------<br>
+<br>-------------------------------------------------<br>
 <%
+} else if (notification_type.equalsIgnoreCase("submit_question")) {
+    //Notification for submit a question
+    try {
+        String sql_for_q_notify = "SELECT * FROM ak_follower_detail WHERE followers_id = ? AND user_id = ?";
+        preparedStatement = connection.prepareStatement(sql_for_q_notify);
+        preparedStatement.setInt(1, CurrentUserId);// CurrentUserId -> who is about to get the notifiation 
+        preparedStatement.setInt(2, userId);//userId -> who created the notification
+        ResultSet rs = preparedStatement.executeQuery();
+        boolean foundValue = false;
+        while (rs.next()) {
+            //int id = resultSet.getInt("user_id");
+            foundValue = true;
+        }
+        rs.close();
+        if (foundValue) {
+%>
+<a href="profile.jsp?user=<%=userFirstName%>&value=Question&ID=<%=userId%>"> <b><%=userFirstName%> <%=userLastName%></b> posted a new question</a>
+<br>-------------------------------------------------<br>
+<%
+                        foundValue = false;
+                    }
+
+                } catch (Exception msg) {
+                    out.println("got some error in featchig the uploaded question notification" + msg);
+                }
             }
         }
-
         if (status) {
             out.println("You don't have any notification");
         }

@@ -42,8 +42,8 @@
                     /***End of the script***/
                 }
                 preparedStatement = connection.prepareStatement(sql);
-                preparedStatement.setString(1, user_id);
-                preparedStatement.setString(2, followers_id);
+                preparedStatement.setString(1, user_id); //Whome session user start following 
+                preparedStatement.setString(2, followers_id); // The current session user , who start follow
                 preparedStatement.executeUpdate();
             } catch (Exception e) {
                 out.println("Error in main try block:-" + e);

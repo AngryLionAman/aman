@@ -40,6 +40,17 @@
                         preparedStatement.setString(2, Question);
                         preparedStatement.setInt(3, 0);
                         preparedStatement.executeUpdate();
+                        //Storing the data for the notification
+                        try{
+                        String save_notification = "INSERT INTO notification(notification_type,followers_id)VALUES(?,?)";
+                        preparedStatement = connection.prepareStatement(save_notification);
+                        preparedStatement.setString(1, "submit_question");
+                        preparedStatement.setInt(2, UserId);
+                        preparedStatement.execute();
+                        }catch(Exception msg){
+                            out.println("Error in saving the notification about uploading a question "+msg);
+                        }
+                        // End of the saving notification script
                     } catch (Exception e1) {
                         out.print("Error:-" + e1);
                         String URL = request.getRequestURL() + "?" + request.getQueryString();
@@ -88,7 +99,7 @@
 
     for (int i = 0; i < arrSplit.length; i++) {
 
-        if (arrSplit[i].length() >= 1) {//If topic name having the extra space
+        if (arrSplit[i].length() >= 1) {/*If topic name having the extra space*/
             firstStep = true;
             for (; true;) {
                 try {

@@ -1,49 +1,68 @@
 <%@page language="java" %>
 <%@page import="java.sql.*" %>  
 <%@include file="site.jsp" %>
+<%@include file="validator.jsp" %>
+<%@page import="java.util.regex.Matcher"%>
+<%@page import="java.util.regex.Pattern"%>
 <%
-    Statement stmt1, stmt6, stmt5 = null;
-    Connection con1 = null;
-    ResultSet rs1, rs6, rs5 = null;
-    int q_id = 0;
-    int q_asked_by_user = 0;
-    String StoredQuestion = "";
-    String StoredAnswer = "";
-    int StoredQuestionId = 0;
-    String firstname_of_user_who_asked_the_question = null;
-    String Question = "What are the Interesting Facts About Eva Green";
-
     try {
         Class.forName("com.mysql.jdbc.Driver");
-        con1 = DriverManager.getConnection(DB_URL_, DB_USERNAME_, DB_PASSWORD_);
-        stmt1 = con1.createStatement();
-        String p = "SELECT * FROM question WHERE question = '" + Question + "'";
-        rs1 = stmt1.executeQuery(p);
-        while (rs1.next()) {
-            StoredQuestion = rs1.getString("question");
-            StoredQuestionId = rs1.getInt("q_id");
+        String Question_asked_by_user;
+        String SearchValue = convertStringUpperToLower("Mobile Network is");
+        out.println(SearchValue);
+        out.println("<br>");
+        SearchValue = SearchValue.toLowerCase();
+        //out.println(SearchValue_Case_Converted);
+        Connection connection = DriverManager.getConnection(DB_URL_, DB_USERNAME_, DB_PASSWORD_);
+
+        //Pattern matcher is start working from here
+        boolean oneTimeexecuation = false;
+        boolean elseOneTIme = true;
+
+        while (true) {
+            Pattern pattern = Pattern.compile("\\s");
+            Matcher matcher = pattern.matcher(SearchValue);
+            boolean found = matcher.find();
+            if (found || oneTimeexecuation) {
+                out.println("<br>Inside the loop quary for ->"+SearchValue + "<br>");
+                //All the searching logic
+
+                String Q = "SELECT * FROM question WHERE lower(question) LIKE '%" + SearchValue + "%'";
+                PreparedStatement preparedStatement = connection.prepareStatement(Q);
+                ResultSet resultSet = preparedStatement.executeQuery();
+                boolean value = false;
+                while (resultSet.next()) {
+                    value = true;
+                    Question_asked_by_user = resultSet.getString("question");
+                    int question_id = resultSet.getInt("q_id");
+                    out.println("<br>" + question_id + " " + Question_asked_by_user);
+                }
+                if (!value) {
+                    out.println("<br>No content found<br>");
+                }
+                //End of the main login
+
+                if (oneTimeexecuation) {
+                    oneTimeexecuation = false;
+                } else {
+                    String sentence = SearchValue.substring(0, SearchValue.lastIndexOf(" "));
+                    SearchValue = sentence;
+                }
+            } else {
+                if (elseOneTIme) {
+                    oneTimeexecuation = true;
+                    elseOneTIme = false;
+                    continue;
+
+                } else {
+                    break;
+                }
+            }
         }
-        stmt1.close();
-        //con1.close();
-        rs1.close();
-    } catch (Exception e) {
-        out.println("Unable to retrieve!!" + e);
-    }
-    out.println("id -> " + StoredQuestionId);
-    try{
-    stmt6 = con1.createStatement();
-    String p6 = "SELECT SUBSTRING(answer,1,200) FROM answer WHERE q_id = '" + StoredQuestionId + "'";
-    rs6 = stmt6.executeQuery(p6);
-    while (rs6.next()) {
-        StoredAnswer = rs6.getString("SUBSTRING(answer,1,200)");
-    }
-    stmt6.close();
-    rs6.close();
-    con1.close();
-    }catch(Exception ex){
-        out.println("Error: "+ex);
+
+    } catch (Exception e1) {
+        out.println(e1);
+
     }
 
-    out.println("<br>Title : " + StoredQuestion);
-    out.println("<br>Dscription :" + StoredAnswer);
 %>
