@@ -22,7 +22,7 @@
                 LOGIN = "लॉग इन करें";
                 SEARCH = "खोजे";
                 HOME = "होम";
-                FIRST_NAME = "पहला नाम";
+                FIRST_NAME = "पूरा नाम";
                 LAST_NAME = "उपनाम";
                 EMAIL = "ईमेल";
                 PASSWORD = "नया पासवर्ड";
@@ -33,7 +33,7 @@
                 LOGIN = "Login";
                 SEARCH = "Search";
                 HOME = "Home";
-                FIRST_NAME = "First Name";
+                FIRST_NAME = "Full Name";
                 LAST_NAME = "Last Name";
                 EMAIL = "Email";
                 PASSWORD = "New Password";
@@ -92,7 +92,7 @@
                     } else {
                         return true;
                     }
-                    if ((charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123))
+                    if ((charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123) || (charCode === 32))
                         return true;
                     else
                         return false;
@@ -166,10 +166,10 @@
                                                                     <div class="boxHeading">
                                                                         <input type="text" id="fname" name="firstname" onkeypress="return onlyAlphabets(event, this);" required="">
                                                                     </div>
-                                                                    <label for="lname"><%=LAST_NAME%></label>
+<!--                                                                    <label for="lname"><%=LAST_NAME%></label>
                                                                     <div class="boxHeading">
                                                                         <input type="text" id="lname" name="lastname" onkeypress="return onlyAlphabets(event, this);" required="">
-                                                                    </div>
+                                                                    </div>-->
                                                                     <label for="fname"><%=EMAIL%></label>
                                                                     <div class="boxHeading">
                                                                         <input type="email"  name="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required="">

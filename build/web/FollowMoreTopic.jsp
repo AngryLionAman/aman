@@ -7,7 +7,8 @@
         <%@include file="site.jsp" %>
         <%@include file="validator.jsp" %>
         <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-        <%!            String TOPIC_MAY_YOU_LIKE = "";
+        <%!            
+            String TOPIC_MAY_YOU_LIKE = "";
             String FOLLOW = "";
             String FOLLOWED = "";
         %>
@@ -99,8 +100,8 @@
                                         <div class="boxHeading">
                                             <%=TOPIC_MAY_YOU_LIKE%>
                                         </div>
-                                        <%
-                                            int id_of_user = 0;
+                                        <%--
+                                            
                                             if (session.getAttribute("email") != null) {
                                                 String email = (String) session.getAttribute("email");
                                                 try {
@@ -114,9 +115,17 @@
                                                     out.println("Unable to retrieve!!" + e);
                                                 }
                                             }
-                                        %>
+                                        --%>
 
                                         <%
+                                            int id_of_user = 0;
+                                            try{
+                                                if(session.getAttribute("Session_id_of_user") != null){
+                                                   id_of_user = (Integer) session.getAttribute("Session_id_of_user"); 
+                                                }                       
+                                            }catch(Exception msg){
+                                                out.println(msg);
+                                            }
                                             try {
                                                 //Connection con_topic = null;
                                                 String name_topic = null;
@@ -132,7 +141,7 @@
                                                     name_topic = convertStringUpperToLower(resultSet.getString("t.topic_name"));
                                         %>   
                                         <div style="width:auto;height:52px;border:1px solid #000;float: left; margin-right: 5px; margin-bottom: 5px;" class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                                            <span title="Totoal followers of <%=name_topic%> is <%=count%>"><a href=topic.jsp?t=<%=name_topic.replaceAll(" ", "-")%>&id=<%=_topic_id%>&sl=<%=sl%>><%=name_topic%></a> (<%=count%>)</span>
+                                            <span title="Totoal followers of <%=name_topic%> is <%=count%>"><a href=topic.jsp?t=<%=name_topic.replaceAll(" ", "+")%>&id=<%=_topic_id%>&sl=<%=sl%>><%=name_topic%></a> (<%=count%>)</span>
                                             <%
                                                 Statement stmt_topic_followers;
                                                 ResultSet rs_topic_followers;

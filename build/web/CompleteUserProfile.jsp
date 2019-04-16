@@ -21,12 +21,17 @@
                 }
                 connection = DriverManager.getConnection(DB_URL_, DB_USERNAME_, DB_PASSWORD_);
             }
-            String firstname = null;
-            String lastname = null;
+            //String firstname = null;
+            //String lastname = null;
             String higher_edu = null;
             String best_achievement = null;
             String ImagePath = null;
             String bio = null;
+            
+            boolean b_higher_edu = true;
+            boolean b_best_achievement = true;
+            boolean b_bio = true;
+            
             int userId = 0;
             int TotalQuestionCount = 0;
             int TotalAnswerCount = 0;
@@ -36,23 +41,26 @@
                 resultSet = preparedStatement.executeQuery();
                 while (resultSet.next()) {
                     userId = resultSet.getInt("ID");
-                    firstname = resultSet.getString("firstname");
-                    lastname = resultSet.getString("lastname");
+                    //firstname = resultSet.getString("firstname");
+                    //lastname = resultSet.getString("lastname");
                     higher_edu = resultSet.getString("higher_edu");
                     best_achievement = resultSet.getString("best_achievement");
                     bio = resultSet.getString("bio");
                     ImagePath = resultSet.getString("imagepath");
                 }
                 //out.println("<br>");
-                if (higher_edu == null) {
+                if (higher_edu == null || higher_edu.length() <= 0) {
                     out.println("<br><a href=UpdateUserProfile.jsp?sl=" + sl + ">Insert your higher_edu</a>");
+                    b_higher_edu = false;
                 }
               
-                if (best_achievement == null) {
+                if (best_achievement == null || best_achievement.length() <= 0) {
                     out.println("<br><a href=UpdateUserProfile.jsp?sl=" + sl + ">Insert your best_achievement</a>");
+                    b_best_achievement = false;
                 }
-                if (bio == null) {
+                if (bio == null || bio.length() <= 0) {
                     out.println("<br><a href=UpdateUserProfile.jsp?sl=" + sl + ">Insert your bio</a>");
+                    b_bio = false;
                 }
                  if (ImagePath == null) {
                     out.println("<br><a href=UpdateUserProfile.jsp?sl=" + sl + ">Update your image profile</a>");
@@ -91,7 +99,7 @@
                 out.println(error);
             }
              
-              if ( higher_edu != null && best_achievement != null && bio != null && ImagePath != null && TotalAnswerCount != 0 && TotalQuestionCount != 0 ) {
+              if ( b_higher_edu && b_best_achievement && b_bio && ImagePath != null && TotalAnswerCount != 0 && TotalQuestionCount != 0 ) {
                     out.println("<br><a href=UpdateUserProfile.jsp?sl=" + sl + ">Your profile is up to date</a>");
                 }
 

@@ -1,4 +1,20 @@
 <%!
+    public String firstName(String str) {
+        try {
+            if (str != null && str.length() > 0 && !(str.trim()).equals("null") && !str.equals("") && !str.equals(" ")) {
+
+                String[] final_word = str.split("\\s");
+                return final_word[0].substring(0, 1).toUpperCase() + final_word[0].substring(1).toLowerCase();
+            } else {
+                return null;
+            }
+
+        } catch (Exception msg) {
+            return msg.toString();
+        }
+    }
+%>
+<%!
     public String convertStringUpperToLower(String sentence) {
         String finalSentenct = "";
         try {
@@ -37,6 +53,17 @@
                 word[i] = word[i].substring(0, 1).toUpperCase() + word[i].substring(1).toLowerCase();
                 finalSentenct += word[i] + " ";
             }
+
+//Remove the last white space if having
+//in my case , last char is defenetaly has a white space,just look at the two line up
+            while (true) {
+                if (finalSentenct.charAt(finalSentenct.length() - 1) == 32) {
+                    finalSentenct = finalSentenct.substring(0, finalSentenct.length() - 1);
+                } else {
+                    break;
+                }
+            }
+//end of the script
         } catch (Exception msg) {
             finalSentenct = msg.toString();
         }

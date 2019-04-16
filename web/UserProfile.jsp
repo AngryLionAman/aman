@@ -1,6 +1,7 @@
 <%@page language="java"%>
 <%@page import="java.sql.*"%>
 <%@include file="site.jsp" %>
+<%@include file="validator.jsp" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -111,33 +112,35 @@
                                         <div class="userProfiles">
                                             <%
                                                 int id_of_user = 0;
-                                                if (session.getAttribute("email") != null) {
-                                                    String email = (String) session.getAttribute("email");
-                                                    try {
-                                                        String sql = "SELECT * FROM newuser WHERE email = '" + email + "'";
-                                                        preparedStatement = connection.prepareStatement(sql);
-                                                        resultSet = preparedStatement.executeQuery();
-                                                        while (resultSet.next()) {
-                                                            id_of_user = resultSet.getInt("id");
-                                                        }
-                                                    } catch (Exception e) {
-                                                        out.println("Unable to retrieve!!" + e);
-                                                    }
+                                                if(session.getAttribute("Session_id_of_user") != null){
+                                                    id_of_user = (Integer) session.getAttribute("Session_id_of_user");
                                                 }
+//                                                if (session.getAttribute("email") != null) {
+//                                                    String email = (String) session.getAttribute("email");
+//                                                    try {
+//                                                        String sql = "SELECT * FROM newuser WHERE email = '" + email + "'";
+//                                                        preparedStatement = connection.prepareStatement(sql);
+//                                                        resultSet = preparedStatement.executeQuery();
+//                                                        while (resultSet.next()) {
+//                                                            id_of_user = resultSet.getInt("id");
+//                                                        }
+//                                                    } catch (Exception e) {
+//                                                        out.println("Unable to retrieve!!" + e);
+//                                                    }
+//                                                }
                                             %>
 
                                             <%
-                                                String firstname, lastname, imagepath;
+                                                String firstname, imagepath;
                                                 int user_id = 0;
                                                 String Status = null;
                                                 try {
-                                                    String sql = "SELECT ID,firstname,lastname,imagepath FROM newuser";
+                                                    String sql = "SELECT ID,firstname,imagepath FROM newuser";
                                                     preparedStatement = connection.prepareStatement(sql);
                                                     resultSet = preparedStatement.executeQuery();
                                                     while (resultSet.next()) {
                                                         user_id = resultSet.getInt("ID");
-                                                        firstname = resultSet.getString("firstname").substring(0, 1).toUpperCase()+resultSet.getString("firstname").substring(1).toLowerCase();
-                                                        lastname = resultSet.getString("lastname").substring(0, 1).toUpperCase()+resultSet.getString("lastname").substring(1).toLowerCase();
+                                                        firstname = resultSet.getString("firstname");
                                                         imagepath = resultSet.getString("imagepath");
                                                         Statement stmt_topic_followers;
 
@@ -160,7 +163,7 @@
                                             <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
 
                                                 <img src="images/<%=imagepath%>" alt="" style="width:100%; border:1px solid #ddd;margin-top:20px;">
-                                                <a href="profile.jsp?ID=<%=user_id%>&sl=<%=sl%>"><%=firstname + " " + lastname%></a>
+                                                <a href="profile.jsp?user=<%=convertStringUpperToLower(firstname).replaceAll(" ", "+")%>&ID=<%=user_id%>&sl=<%=sl%>"><%=convertStringUpperToLower(firstname)%></a>
                                                 <%
                                                     if (Status == "present") {
                                                         %><input type="button" class="float-right" value="unfollow" id="myButton1" onclick="return take_value(this,'<%=user_id%>', '<%=id_of_user%>');" /><%
@@ -221,7 +224,7 @@
                             </div>
 
                         </div>
-                        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+<!--                        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
 
                             <div class="themeBox" style="min-height:320px;">
                                 <div class="boxHeading">
@@ -247,7 +250,7 @@
 
 
                             <div class="clear-fix"></div>
-                        </div>
+                        </div>-->
                     </div>
                 </div>
             </div>

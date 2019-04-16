@@ -23,7 +23,7 @@
 
                 String sql = "SELECT unique_id,user_id,user_email,notification_type,followers_id,"
                         + "(SELECT firstname FROM newuser WHERE id = notification.followers_id)AS firstname,"
-                        + "(SELECT lastname FROM newuser WHERE id = notification.followers_id)AS lastname,question_id,"
+                        + "question_id,"
                         + "(SELECT question FROM question WHERE q_id = notification.question_id)AS QUESTION,ans_id,"
                         + "(SELECT answer FROM answer WHERE a_id = notification.ans_id)AS answer,time FROM notification "
                         + "WHERE user_id = ? OR user_id IS NULL ORDER BY unique_id DESC";
@@ -39,18 +39,17 @@
         //String answer = resultSet.getString("answer");
         int userId = resultSet.getInt("followers_id");//who created the notification
         String userFirstName = resultSet.getString("firstname");
-        String userLastName = resultSet.getString("lastname");
         String notification_type = resultSet.getString("notification_type");
         if (notification_type.equalsIgnoreCase("got_answer_of_a_question")) {
 
 %>
-<a href="Answer.jsp?q=<%=question.replaceAll(" ", "-")%>&Id=<%=question_id%>"><b><%=userFirstName%> <%=userLastName%></b> give you an answer of <b><%=question%></b></a>
+<a href="Answer.jsp?q=<%=question.replaceAll(" ", "-")%>&Id=<%=question_id%>"><b><%=userFirstName%></b> give you an answer of <b><%=question%></b></a>
 <br>-------------------------------------------------<br>
 <%
 } else if (notification_type.equalsIgnoreCase("followed_by")) {
 
 %>
-<a href="profile.jsp?user=<%=userFirstName%>&ID=<%=userId%>"> <b><%=userFirstName%> <%=userLastName%></b> started following you</a>
+<a href="profile.jsp?user=<%=userFirstName%>&ID=<%=userId%>"> <b><%=userFirstName%></b> started following you</a>
 <br>-------------------------------------------------<br>
 <%
 } else if (notification_type.equalsIgnoreCase("submit_question")) {
@@ -69,7 +68,7 @@
         rs.close();
         if (foundValue) {
 %>
-<a href="profile.jsp?user=<%=userFirstName%>&value=Question&ID=<%=userId%>"> <b><%=userFirstName%> <%=userLastName%></b> posted a new question</a>
+<a href="profile.jsp?user=<%=userFirstName%>&value=Question&ID=<%=userId%>"> <b><%=userFirstName%></b> posted a new question</a>
 <br>-------------------------------------------------<br>
 <%
                         foundValue = false;

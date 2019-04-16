@@ -86,18 +86,16 @@
             String StoredQuestion = "";
             String StoredAnswer = "";
             String FirstName = "";
-            String LastName = "";
             int UserID = 0;
             if(Question != null){
             try {
-                String p = "SELECT b.blog_subject, substring(b.blog,1,500),user.firstname,user.lastname,user.id FROM blog b right join newuser user on b.blog_posted_by = user.Id  WHERE blog_id = '" + Question + "'";
+                String p = "SELECT b.blog_subject, substring(b.blog,1,500),user.firstname,user.id FROM blog b right join newuser user on b.blog_posted_by = user.Id  WHERE blog_id = '" + Question + "'";
                 preparedStatement = connection.prepareStatement(p);
                 resultSet = preparedStatement.executeQuery();
                 while (resultSet.next()) {
                     StoredQuestion = resultSet.getString("blog_subject");
                     StoredAnswer = resultSet.getString("substring(b.blog,1,500)");
                     FirstName = resultSet.getString("firstname");
-                    LastName = resultSet.getString("lastname");
                     UserID = resultSet.getInt("ID");
                 }
             } catch (Exception e) {
@@ -151,7 +149,7 @@
                                         </div>
                                         <div class="questionArea">
 
-                                            <div class="postedBy"><%=POSTED_BY%> :<a href="profile.jsp?ID=<%=UserID%>&sl=<%=sl%>"><%=FirstName + " " + LastName%></a></div>
+                                            <div class="postedBy"><%=POSTED_BY%> :<a href="profile.jsp?user=<%=FirstName.replaceAll(" ", "+")%>&ID=<%=UserID%>&sl=<%=sl%>"><%=FirstName%></a></div>
 
                                         </div>
                                     </div>

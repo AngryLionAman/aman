@@ -217,26 +217,29 @@
                 <jsp:param name="sl" value="<%=sl%>"/>
             </jsp:include>
             <%
-                String name = null; // initilazing
+                //String name = null; // initilazing
                 int id_of_user = 0;// initilazing
                 int topic_id = 0;// initilazing
                 int q_id = 0;// initilazing
                 int q_asked_by_user = 0;// initilazing
-                String firstname_of_user_who_asked_the_question = null;
-                if (session.getAttribute("email") != null) {
-                    email = (String) session.getAttribute("email");
-                    try {
-                        String sql = "SELECT * FROM newuser WHERE email = '" + email + "'";
-                        preparedStatement = connection.prepareCall(sql);
-                        resultSet = preparedStatement.executeQuery();
-                        while (resultSet.next()) {
-                            id_of_user = resultSet.getInt("id");
-                            name = resultSet.getString("firstname");
-                        }
-                    } catch (Exception e) {
-                        out.println("Unable to retrieve!!" + e);
-                    }
+                
+                if( session.getAttribute("Session_id_of_user") != null){
+                    id_of_user = (Integer) session.getAttribute("Session_id_of_user");
                 }
+//                if (session.getAttribute("email") != null) {
+//                    email = (String) session.getAttribute("email");
+//                    try {
+//                        String sql = "SELECT * FROM newuser WHERE email = '" + email + "'";
+//                        preparedStatement = connection.prepareCall(sql);
+//                        resultSet = preparedStatement.executeQuery();
+//                        while (resultSet.next()) {
+//                            id_of_user = resultSet.getInt("id");
+//                            name = resultSet.getString("firstname");
+//                        }
+//                    } catch (Exception e) {
+//                        out.println("Unable to retrieve!!" + e);
+//                    }
+//                }
             %>
             <div class="clear-fix"></div>
             <div class="bodydata">
@@ -277,7 +280,7 @@
                                                     topic_name = resultSet.getString("topic_name").substring(0, 1).toUpperCase() + resultSet.getString("topic_name").substring(1).toLowerCase();
                                                     topic_id = resultSet.getInt("unique_id");
                                                     if (topic_id != 0) {%>
-                                        <li><a href="topic.jsp?t=<%=topic_name.replaceAll(" ", "-")%>&id=<%=topic_id%>&sl=<%=sl%>"><%=topic_name%></a></li>
+                                        <li><a href="topic.jsp?t=<%=topic_name.replaceAll(" ", "+")%>&id=<%=topic_id%>&sl=<%=sl%>"><%=topic_name%></a></li>
                                             <% }
                                                 }
                                             } catch (Exception e) {
@@ -322,6 +325,7 @@
                                         </div>
 
                                         <%
+                                            String fullName_of_user_who_asked_the_question = null;
                                             try {
                                                 String sql_p = "SELECT user.firstname,q.q_id,q.id FROM newuser user RIGHT JOIN question q on user.id=q.id where q_id= (?)";
                                                 preparedStatement = connection.prepareStatement(sql_p);
@@ -330,7 +334,7 @@
                                                 while (resultSet.next()) {
                                                     q_id = resultSet.getInt("q_id");
                                                     q_asked_by_user = resultSet.getInt("id");
-                                                    firstname_of_user_who_asked_the_question = resultSet.getString("firstname").substring(0, 1).toUpperCase() + resultSet.getString("firstname").substring(1).toLowerCase();
+                                                    fullName_of_user_who_asked_the_question = resultSet.getString("firstname").substring(0, 1).toUpperCase() + resultSet.getString("firstname").substring(1).toLowerCase();
                                                 }
                                             } catch (Exception e) {
                                                 out.println("Unable to retrieve!!" + e);
@@ -355,11 +359,12 @@
                                         %>
                                         <div class="questionArea">
 
-                                            <div class="postedBy"><%=POSTED_BY%> :<a href="profile.jsp?user=<%=firstname_of_user_who_asked_the_question%>&ID=<%=q_asked_by_user%>&sl=<%=sl%>"><%=firstname_of_user_who_asked_the_question%></a> </div>
+                                            <div class="postedBy"><%=POSTED_BY%> :<a href="profile.jsp?user=<%=fullName_of_user_who_asked_the_question%>&ID=<%=q_asked_by_user%>&sl=<%=sl%>"><%=firstname_of_user_who_asked_the_question%></a> </div>
 
                                         </div>
                                         <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=q_id%>', 'upvote', 'question');" >Upvote</a> &nbsp;&nbsp; 
-                                        <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=q_id%>', 'downvote', 'question');" >Downvote</a>
+                                        <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=q_id%>', 'downvote', 'question');" >Downvote</a> &nbsp;&nbsp;
+                                        <a href="#">Comment</a>
 
                                     </div>
                                     <div class="boxHeading marginbot10"><%=ANSWER%>:</div>

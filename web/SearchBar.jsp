@@ -189,7 +189,7 @@
                                                     out.println("<center><div class=boxHeading>" + ANSWER + "</div></center>");
                                                     try {
                                                         String Answer_given_by_user;
-                                                        int Question_id = 0;
+                                                        //int Question_id = 0;
                                                         String SearchValue_Case_Converted = SearchValue.toLowerCase();
                                                         String Q_a = "Select q.question,q.q_id, substring(ans.answer,1,500) from question q right join answer ans on ans.q_id = q.q_id where lower(answer) LIKE '%" + SearchValue_Case_Converted + "%'";
                                                         preparedStatement = connection.prepareCall(Q_a);
@@ -201,7 +201,7 @@
                                                             Answer_given_by_user = resultSet.getString("substring(ans.answer,1,500)");
                                                             String Question_by_user = resultSet.getString("question");
                                                             int question_id = resultSet.getInt("q.q_id");
-                                            %><br> Q. <a href="Answer.jsp?Id=<%=question_id%>" ><%=Question_by_user%> ?</a><%
+                                            %><br> Q. <a href="Answer.jsp?q=<%=Question_by_user.replaceAll(" ", "-") %>&Id=<%=question_id%>" ><%=Question_by_user%> ?</a><%
                                                     out.println("<br>Ans.</b>&nbsp;&nbsp;&nbsp;&nbsp;" + Answer_given_by_user);
 
                                                 }
@@ -242,9 +242,9 @@
                                                         boolean count = true;
                                                         while (resultSet.next()) {
                                                             count = false;
-                                                            String Topic_assgned_by_user = resultSet.getString("topic_name").substring(0, 1).toUpperCase() + resultSet.getString("topic_name").substring(1).toLowerCase();
+                                                            String Topic_assgned_by_user = convertStringUpperToLower(resultSet.getString("topic_name"));
                                                             int selected_topic_id = resultSet.getInt("unique_id");
-                                                            out.print("<br><br>" + count_++ + "<b>&nbsp;&nbsp;<a href=topic.jsp?id=" + selected_topic_id + ">" + Topic_assgned_by_user + "</a></b>");
+                                                            out.print("<br><br>" + count_++ + "<b>&nbsp;&nbsp;<a href=topic.jsp?t="+Topic_assgned_by_user.replaceAll(" ", "+")+"&id=" + selected_topic_id + ">" + Topic_assgned_by_user + "</a></b>");
 
                                                         }
                                                         if (count) {
@@ -276,10 +276,10 @@
                                                 if (ParametrVariable.equals("UserProfile")) {
                                                     out.println("<center><div class=boxHeading> " + USER_PROFILE + " </div></center>");
                                                     try {
-                                                        String StoredUserFirstName, StoredUserLatName;
+                                                        String StoredUserFirstName;
                                                         int StoredUserID;
                                                         String SearchValue_Case_Converted = SearchValue.toLowerCase();
-                                                        String SQL_T = "SELECT * FROM newuser WHERE lower(firstname) LIKE '%" + SearchValue_Case_Converted + "%' OR lower(lastname) LIKE '%" + SearchValue_Case_Converted + "%'";
+                                                        String SQL_T = "SELECT * FROM newuser WHERE lower(firstname) LIKE '%" + SearchValue_Case_Converted + "%' ";
                                                         preparedStatement = connection.prepareStatement(SQL_T);
                                                         resultSet = preparedStatement.executeQuery();
                                                         int count_ = 1;
@@ -287,10 +287,8 @@
                                                         while (resultSet.next()) {
                                                             count = false;
                                                             StoredUserID = resultSet.getInt("ID");
-                                                            StoredUserFirstName = resultSet.getString("firstname").substring(0, 1).toUpperCase() + resultSet.getString("firstname").substring(1).toLowerCase();
-                                                            StoredUserLatName = resultSet.getString("lastname").substring(0, 1).toUpperCase() + resultSet.getString("lastname").substring(1).toLowerCase();
-
-                                                            out.print("<br><br>" + count_++ + "<b>&nbsp;&nbsp;<a href=profile.jsp?ID=" + StoredUserID + ">" + StoredUserFirstName + " " + StoredUserLatName + "</a></b>");
+                                                            StoredUserFirstName =  convertStringUpperToLower(resultSet.getString("firstname"));
+                                                           out.print("<br><br>" + count_++ + "<b>&nbsp;&nbsp;<a href=profile.jsp?user="+StoredUserFirstName.replaceAll(" ", "+") +"&ID=" + StoredUserID + ">" + StoredUserFirstName + " </a></b>");
 
                                                         }
                                                         if (count) {

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <%@page language="java" %>
     <%@page import="java.sql.*" %> 
+    <%@include file="validator.jsp" %>
     <%
         String EMAIL = "";
         String PASSWORD = "";
@@ -240,6 +241,35 @@
             <div class="bodydata">
                 <div class="container clear-fix">
                     <%
+
+                        String email = null;
+                        int session_id_of_user = 0;
+                        if (session.getAttribute("email") != null) {
+                            email = (String) session.getAttribute("email");
+                        }
+
+                        if (session.getAttribute("Session_id_of_user") != null) {
+                            session_id_of_user = (Integer) session.getAttribute("Session_id_of_user");
+                        }
+//                        if (email == null) {
+//
+//                        } else {
+//                            try {
+//                                String p = "SELECT * FROM newuser WHERE email = '" + email + "'";
+//                                preparedStatement = connection.prepareStatement(p);
+//                                resultSet = preparedStatement.executeQuery();
+//                                while (resultSet.next()) {
+//                                    id_of_user = resultSet.getInt("id");
+//                                    //session_id_of_user = resultSet.getInt("id");
+//                                    //fullName = firstName(resultSet.getString("firstname"));
+//                                }
+//                            } catch (Exception e) {
+//                                out.println("Unable to retrieve!!" + e);
+//                            }
+//
+//                        }
+                    %>
+                    <%
                         Connection connection = null;
                         ResultSet resultSet = null;
                         PreparedStatement preparedStatement = null;
@@ -253,44 +283,15 @@
                                 connection = DriverManager.getConnection(DB_URL_, DB_USERNAME_, DB_PASSWORD_);
                             }
                     %>
-                    <%
-                        String firstname = null;
-                        String higher_colification = null;
-                        String lastname = null;
-                        String bio = null;
-                        String mail = null;
-                        String BestAchievement = null;
-                        String ImagePath = null;
-                        int id_of_user = 0;
-                        int topic_id = 0;
-                        int session_id_of_user = 0;
-                        int email_status = 0;
-                        String email = (String) session.getAttribute("email");
-                        if (email == null) {
 
-                        } else {
-                            try {
-                                String p = "SELECT * FROM newuser WHERE email = '" + email + "'";
-                                preparedStatement = connection.prepareStatement(p);
-                                resultSet = preparedStatement.executeQuery();
-                                while (resultSet.next()) {
-                                    id_of_user = resultSet.getInt("id");
-                                    session_id_of_user = resultSet.getInt("id");
-                                    firstname = resultSet.getString("firstname").substring(0, 1).toUpperCase() + resultSet.getString("firstname").substring(1).toLowerCase();
-                                }
-                            } catch (Exception e) {
-                                out.println("Unable to retrieve!!" + e);
-                            }
-
-                        }
-                    %>
                     <%
                         //String ID = request.getParameter("ID");
                         String str = request.getParameter("ID");
                         String ID = "";
                         if (str == null) {
-                            if (id_of_user != 0) { //if user trying to access this page directly without login
-                                ID = Integer.toString(id_of_user);
+                            if (session.getAttribute("Session_id_of_user") != null) {//if user trying to access this page directly without login
+                                ID =String.valueOf(session.getAttribute("Session_id_of_user"));//We can directly convert object to string 
+                                //or you cast the object into integer and then cast to String
                             } else {
                                 response.sendRedirect("UserProfile.jsp?sl=" + sl);
                             }
@@ -301,14 +302,26 @@
                                 }
                             }
                         }
+                    %>
+                    <%
+                        String fullName = null;
+                        String higher_colification = null;
+                        String bio = null;
+                        String mail = null;
+                        String BestAchievement = null;
+                        String ImagePath = null;
+                        int id_of_user = 0;
+                        int topic_id = 0;
+                        int email_status = 0;
+                        boolean userFound = true;
                         try {
                             String p = "SELECT * FROM newuser WHERE ID = '" + ID + "'";
                             preparedStatement = connection.prepareStatement(p);
                             resultSet = preparedStatement.executeQuery();
                             while (resultSet.next()) {
+                                userFound = false;
                                 id_of_user = resultSet.getInt("id");
-                                firstname = resultSet.getString("firstname").substring(0, 1).toUpperCase() + resultSet.getString("firstname").substring(1).toLowerCase();
-                                lastname = resultSet.getString("lastname").substring(0, 1).toUpperCase() + resultSet.getString("lastname").substring(1).toLowerCase();
+                                fullName = resultSet.getString("firstname");
                                 mail = resultSet.getString("email");
                                 higher_colification = resultSet.getString("higher_edu");
                                 bio = resultSet.getString("bio");
@@ -318,6 +331,9 @@
                             }
                         } catch (Exception e) {
                             out.println("Unable to retrieve!!" + e);
+                        }
+                        if(userFound){
+                            response.sendRedirect("UserProfile.jsp");
                         }
                     %>
                     <div class="row">
@@ -342,7 +358,7 @@
                                         if (session.getAttribute("email") != null) {
                                             if (session_id_of_user != id_of_user) { //If user watching there own profile they will not get the follow button
                                                 int StoredUserId;
-                                                int user_id = 0;
+                                                //int user_id = 0;
                                                 String Status = null;
                                                 try {
                                                     String v_follow = "SELECT * FROM ak_follower_detail where followers_id ='" + session_id_of_user + "'";
@@ -356,7 +372,7 @@
                                                     }
                                                     if (Status == "present") {
                                     %><input type="button" class="float-right" value="UnFollow" id="myButton1" onclick="return take_value(this, '<%=id_of_user%>', '<%=session_id_of_user%>');" /><%
-                                                            } else {%>
+                                    } else {%>
                                     <input type="button" class="float-right" value="follow" id="myButton1" onclick="return take_value(this, '<%=id_of_user%>', '<%=session_id_of_user%>');" />
                                     <%
                                                     }
@@ -376,7 +392,7 @@
                                     <table class="profiledetails">
                                         <tr>
                                             <td><%=NAME%> </td>
-                                            <td>: <%=firstname + " " + lastname%></td>
+                                            <td>: <%=convertStringUpperToLower(fullName)%></td>
                                         </tr>
                                         <tr>
                                             <td><%=MAIL_ID%> </td>
@@ -458,22 +474,22 @@
                                 </div>
                             </div>
                         </div>
-<!--                        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
-                            <div class="themeBox" style="min-height:430px;">
-                                <div class="boxHeading">
-                                    User having same interest
-                                </div>
-                                <div>
-                                    <%--
-                                        String suggestedUser = "select DISTINCT user.id, user.firstname,user.lastname,user.imagepath from newuser user "
-                                                + "right join topic_followers_detail tfd  on user.id=tfd.user_or_followers_id where topic_id IN "
-                                                + "(select t.unique_id from topic t right join topic_followers_detail de on t.unique_id = de.topic_id "
-                                                + "where user_or_followers_id=?) and user.id is not null limit 11";
-                                        preparedStatement = connection.prepareStatement(suggestedUser);
-                                        preparedStatement.setInt(1, id_of_user);
-                                        resultSet = preparedStatement.executeQuery();
-                                        boolean found = true;
-                                        while (resultSet.next()) {
+                        <!--                        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                                    <div class="themeBox" style="min-height:430px;">
+                                                        <div class="boxHeading">
+                                                            User having same interest
+                                                        </div>
+                                                        <div>
+                        <%--
+                            String suggestedUser = "select DISTINCT user.id, user.firstname,user.lastname,user.imagepath from newuser user "
+                                    + "right join topic_followers_detail tfd  on user.id=tfd.user_or_followers_id where topic_id IN "
+                                    + "(select t.unique_id from topic t right join topic_followers_detail de on t.unique_id = de.topic_id "
+                                    + "where user_or_followers_id=?) and user.id is not null limit 11";
+                            preparedStatement = connection.prepareStatement(suggestedUser);
+                            preparedStatement.setInt(1, id_of_user);
+                            resultSet = preparedStatement.executeQuery();
+                            boolean found = true;
+                            while (resultSet.next()) {
 
                                             int UserId = resultSet.getInt("user.ID");
                                             if (UserId != id_of_user) {
@@ -496,10 +512,10 @@
                                         }
                                         out.println("<br><a href=UserProfile.jsp?sl=" + sl + ">" + FOLLOW_MORE_USER + "</a>");
 
-                                    --%>
-                                </div>
-                            </div>
-                        </div>-->
+                        --%>
+                    </div>
+                </div>
+            </div>-->
                     </div>
                     <div class="row">
                         <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
@@ -550,11 +566,10 @@
                                         %> <br>Q. <a href="Answer.jsp?Id=<%=question_id%>&sl=<%=sl%>" ><%=Question_asked_by_user%> ?</a>
                                         &nbsp;&nbsp;&nbsp;&nbsp; 
                                         <%  if (session.getAttribute("Session_id_of_user") != null) {
-                                                int Session_id_of_user = (Integer) session.getAttribute("Session_id_of_user");
-                                                if (userId_of_this_question == Session_id_of_user) {%>
+                                                if (userId_of_this_question == session_id_of_user) {%>
                                         <a href="edit_q.jsp?Id=<%=question_id%>&sl=<%=sl%>">edit</a>
                                         <% }
-                                                                    }%>
+                                            }%>
                                         <%
                                             }
                                             if (count == 0) {
@@ -603,12 +618,11 @@
                                         %><br> Q. <a href="Answer.jsp?Id=<%=Question_id%>&sl=<%=sl%>" ><%=Question_by_user%> ?</a>
                                         &nbsp;&nbsp;&nbsp;&nbsp;
                                         <%  if (session.getAttribute("Session_id_of_user") != null) {
-                                                int Session_id_of_user = (Integer) session.getAttribute("Session_id_of_user");
-                                                if (ans_by_id == Session_id_of_user) {%>
+                                                if (ans_by_id == session_id_of_user) {%>
 
                                         <a href="edit_a.jsp?q_id=<%=Question_id%>&ans_id=<%=ans_id%>&ans_by_id=<%=ans_by_id%>">Edit your answer</a>
                                         <% }
-                                                                    }%>
+                                            }%>
                                         <%
                                                     out.println("<br>Ans.</b>&nbsp;&nbsp;&nbsp;&nbsp;" + Answer_given_by_user + " <a href=Answer.jsp?Id=" + Question_id + "> Continue Reading</a>");
                                                 }
@@ -630,7 +644,7 @@
 
                                                     while (resultSet.next()) {
                                                         count++;
-                                                        topic_name = resultSet.getString("topic_name").substring(0, 1).toUpperCase() + resultSet.getString("topic_name").substring(1).toLowerCase();
+                                                        topic_name = convertStringUpperToLower(resultSet.getString("topic_name"));
                                                         topic_id = resultSet.getInt("unique_id");
                                                         if (topic_name != null) {
                                         %><br> <a href="topic.jsp?id=<%=topic_id%>&sl=<%=sl%>" >&nbsp;&nbsp;&nbsp;&nbsp;<%=topic_name%> </a><%
@@ -654,27 +668,26 @@
                                             }
                                             if (ParametrVariable.equals("Following")) {
                                                 out.println("<center><div class=boxHeading>" + FOLLOWING + "</div></center>");
-                                                String topic_name;
+                                                //String topic_name;
                                                 try {
-                                                    String p_fetch_topic = "select user.ID,user.firstname,user.lastname,user.imagepath from newuser user right join ak_follower_detail ak on ak.user_id=user.ID where followers_id = '" + id_of_user + "'";
+                                                    String p_fetch_topic = "select user.ID,user.firstname,user.imagepath from newuser user right join ak_follower_detail ak on ak.user_id=user.ID where followers_id = '" + id_of_user + "'";
                                                     preparedStatement = connection.prepareStatement(p_fetch_topic);
                                                     resultSet = preparedStatement.executeQuery();
-                                                    int count = 0;
+                                                    boolean count = true;
                                                     while (resultSet.next()) {
-                                                        count++;
+                                                        count = false;
                                                         int userid = resultSet.getInt("ID");
-                                                        String UserFirstName = resultSet.getString("firstname");
-                                                        String UserLastName = resultSet.getString("lastname");
+                                                        String UserFullName = resultSet.getString("firstname");
                                                         String Image_Path = resultSet.getString("imagepath");
                                         %>
                                         <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
 
                                             <img src="images/<%=Image_Path%>" alt="" style="width:100%; border:1px solid #ddd;margin-top:20px;">
-                                            <a href="profile.jsp?ID=<%=userid%>&sl=<%=sl%>"> <%=UserFirstName + " " + UserLastName%></a>
+                                            <a href="profile.jsp?user=<%=convertStringUpperToLower(UserFullName).replaceAll(" ", "+")%>&ID=<%=userid%>&sl=<%=sl%>"> <%=convertStringUpperToLower(UserFullName)%></a>
                                         </div>                
                                         <%
                                                     }
-                                                    if (count == 0) {
+                                                    if (count) {
                                                         out.println("<b style=color:red;>" + NOT_FOLLOWING_ANY_USER + "!!</b>");
                                                     }
                                                     try {
@@ -692,23 +705,22 @@
                                             }
                                             if (ParametrVariable.equals("Followers")) {
                                                 out.println("<center><div class=boxHeading>" + FOLLOWERS + "</div></center>");
-                                                String topic_name;
+                                                //String topic_name;
                                                 try {
-                                                    String p_fetch_topic = "select user.ID,user.firstname,user.lastname,user.imagepath from newuser user right join ak_follower_detail ak on ak.followers_id=user.ID where user_id = '" + id_of_user + "'";
+                                                    String p_fetch_topic = "select user.ID,user.firstname,user.imagepath from newuser user right join ak_follower_detail ak on ak.followers_id=user.ID where user_id = '" + id_of_user + "'";
                                                     preparedStatement = connection.prepareStatement(p_fetch_topic);
                                                     resultSet = preparedStatement.executeQuery();
                                                     int count = 0;
                                                     while (resultSet.next()) {
                                                         count++;
                                                         int userid = resultSet.getInt("ID");
-                                                        String UserFirstName = resultSet.getString("firstname");
-                                                        String UserLastName = resultSet.getString("lastname");
+                                                        fullName = resultSet.getString("firstname");
                                                         String Image_Path = resultSet.getString("imagepath");
                                         %>
                                         <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
 
                                             <img src="images/<%=Image_Path%>" alt="" style="width:100%; border:1px solid #ddd;margin-top:20px;">
-                                            <a href="profile.jsp?ID=<%=userid%>&sl=<%=sl%>"> <%=UserFirstName + " " + UserLastName%></a>
+                                            <a href="profile.jsp?user=<%=convertStringUpperToLower(fullName).replaceAll(" ", "+")%>&ID=<%=userid%>&sl=<%=sl%>"> <%=convertStringUpperToLower(fullName)%></a>
                                         </div>                
                                         <%
                                                     }
@@ -782,27 +794,31 @@
                                             } catch (Exception e) {
                                                 out.println("Error in main try block:-" + e);
                                             } finally {
+                                                try {
 
-                                                if (connection != null || !connection.isClosed()) {
-                                                    try {
-                                                        connection.close();
-                                                    } catch (Exception e) {
-                                                        out.println("Exception in closing connection " + e);
+                                                    if (connection != null || !connection.isClosed()) {
+                                                        try {
+                                                            connection.close();
+                                                        } catch (Exception e) {
+                                                            out.println("Exception in closing connection " + e);
+                                                        }
                                                     }
-                                                }
-                                                if (resultSet != null || !resultSet.isClosed()) {
-                                                    try {
-                                                        resultSet.close();
-                                                    } catch (Exception e) {
-                                                        out.println("Exception in closing resulatset " + e);
+                                                    if (resultSet != null || !resultSet.isClosed()) {
+                                                        try {
+                                                            resultSet.close();
+                                                        } catch (Exception e) {
+                                                            out.println("Exception in closing resulatset " + e);
+                                                        }
                                                     }
-                                                }
-                                                if (preparedStatement != null || !preparedStatement.isClosed()) {
-                                                    try {
-                                                        preparedStatement.close();
-                                                    } catch (Exception e) {
-                                                        out.println("Exception in closing preparedStatement " + e);
+                                                    if (preparedStatement != null || !preparedStatement.isClosed()) {
+                                                        try {
+                                                            preparedStatement.close();
+                                                        } catch (Exception e) {
+                                                            out.println("Exception in closing preparedStatement " + e);
+                                                        }
                                                     }
+                                                } catch (Exception msg) {
+                                                    out.println(msg);
                                                 }
                                             }
                                         %>
@@ -868,7 +884,7 @@
 
                 </div>
             </div>
-                        <%@include file="notificationhtml.jsp" %>
+            <%@include file="notificationhtml.jsp" %>
             <jsp:include page="footer.jsp">
                 <jsp:param name="sl" value="<%=sl%>"/>
             </jsp:include>

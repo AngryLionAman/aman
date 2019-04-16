@@ -209,7 +209,7 @@
                     }
             %>
 
-            <%
+            <%--
                 if (session.getAttribute("email") != null) {
                     email = (String) session.getAttribute("email");
                     try {
@@ -240,7 +240,7 @@
             </jsp:include><%
                     }
                 }
-            %>
+            --%>
             <div class="clear-fix"></div>
             <div class="bodydata">
                 <div class="container clear-fix">
@@ -259,6 +259,12 @@
                                 <div>
                                     <ul>
                                         <%
+                                            
+                                            if(session.getAttribute("Session_id_of_user") != null){
+                                                id_of_user = (Integer) session.getAttribute("Session_id_of_user");
+                                            }else{
+                                                id_of_user = 0;
+                                            }
                                             String sql = "";
                                             String topic_name;
                                             try {
@@ -266,7 +272,7 @@
                                                     sql = "select t.unique_id,t.topic_name,(select count(topic_id) "
                                                             + "from topic_followers_detail where topic_id = t.unique_id)as count"
                                                             + " from topic t right join topic_followers_detail de on t.unique_id = de.topic_id "
-                                                            + "where user_or_followers_id ='" + id_of_user + "' and t.unique_id is not null and t.topic_name is not null";
+                                                            + "where user_or_followers_id ='" + id_of_user + "' and t.unique_id is not null and t.topic_name is not null LIMIT 5";
                                                 } else {
                                                     sql = "SELECT t.unique_id AS unique_id,t.topic_name AS topic_name,"
                                                             + "(SELECT COUNT(user_or_followers_id) FROM topic_followers_detail "
@@ -282,7 +288,7 @@
                                                     int count = resultSet.getInt("count");
                                                     if (topic_id != 0) {
                                                         status = false;%>
-                                        <li><span title="Totoal followers of <%=topic_name%> is <%=count%>"><a href="topic.jsp?t=<%=topic_name.replaceAll(" ", "-")%>&id=<%=topic_id%>&sl=<%=sl%>"><%=topic_name%></a> (<%=count%>)</span></li>
+                                        <li><span title="Totoal followers of <%=topic_name%> is <%=count%>"><a href="topic.jsp?t=<%=topic_name.replaceAll(" ", "+")%>&id=<%=topic_id%>&sl=<%=sl%>"><%=topic_name%></a> (<%=count%>)</span></li>
                                             <% }
                                                 }
                                                 if (status) {
@@ -366,7 +372,7 @@
                                         </div>
                                         <div class="questionArea">
 
-                                            <div class="postedBy"><%=POSTED_BY%> :<a href="profile.jsp?user=<%=UserName_for_trending_question_T%>&ID=<%=userID%>&sl=<%=sl%>"> <%=UserName_for_trending_question_T%></a>
+                                            <div class="postedBy"><%=POSTED_BY%> :<a href="profile.jsp?user=<%=UserName_for_trending_question_T.replaceAll(" ", "+")%>&ID=<%=userID%>&sl=<%=sl%>"> <%=UserName_for_trending_question_T%></a>
                                                 &nbsp;&nbsp;&nbsp;&nbsp; 
                                                 <%  if (session.getAttribute("Session_id_of_user") != null) {
                                                         int Session_id_of_user = (Integer) session.getAttribute("Session_id_of_user");
@@ -410,7 +416,7 @@
 
                                     <h4><%=RELATED_QUESTION%></h4>  
                                     <%
-                                        String name1 = null;
+                                        //String name1 = null;
                                         String question, fname = null;
                                         int TotalAnswerCount = 0;
                                         int VoteCount = 0;
@@ -440,7 +446,7 @@
                                             <a href="Answer.jsp?q=<%=question.replaceAll(" ", "-")%>&Id=<%=resultSet.getInt("q.q_id")%>&sl=<%=sl%>" ><%=question%> ?</a>
                                         </div>
                                         <div class="questionArea">
-                                            <div class="postedBy"><%=POSTED_BY%> : <a href="profile.jsp?ID=<%=ide%>&sl=<%=sl%>"><%=fname%></a></div>
+                                            <div class="postedBy"><%=POSTED_BY%> : <a href="profile.jsp?user=<%=fname.replaceAll(" ", "+")%>&ID=<%=ide%>&sl=<%=sl%>"><%=fname%></a></div>
                                         </div>
                                         <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=resultSet.getInt("q.q_id")%>', '<%="upvote"%>');" >Upvote(<%=VoteCount%>)</a>&nbsp;&nbsp; 
                                         <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=resultSet.getInt("q.q_id")%>', '<%="downvote"%>');" >Downvote</a>&nbsp;&nbsp; 
@@ -479,14 +485,14 @@
                                     <%
                                         ResultSet rs1 = null;
                                         ResultSet rs2 = null;
-                                        ResultSet rs3 = null;
+                                        // ResultSet rs3 = null;
                                         PreparedStatement ps1 = null;
                                         PreparedStatement ps2 = null;
-                                        PreparedStatement ps3 = null;
+                                        // PreparedStatement ps3 = null;
                                         // Connection connection2 = null;
 
                                         int showRows = 10;
-                                        int totalRecords = 5;
+                                        int totalRecords = 1;
                                         int totalRows = nullIntconvert(request.getParameter("totalRows"));
                                         int totalPages = nullIntconvert(request.getParameter("totalPages"));
                                         int iPageNo = nullIntconvert(request.getParameter("iPageNo"));
@@ -543,7 +549,7 @@
                                             </div>
                                             <div class="questionArea">
 
-                                                <div class="postedBy"><%=POSTED_BY%> :<a href="profile.jsp?user=<%=Username%>&ID=<%=userId%>&sl=<%=sl%>"> <%=Username%></a></div>
+                                                <div class="postedBy"><%=POSTED_BY%> :<a href="profile.jsp?user=<%=Username.replaceAll(" ", "+")%>&ID=<%=userId%>&sl=<%=sl%>"> <%=Username%></a></div>
 
                                             </div>
                                             <a href="javascript:void(0)" onclick="return take_value(this, '<%=rs1.getInt("q_id")%>', 'upvote');">Upvote(<%=Vote%>)</a>&nbsp;&nbsp;

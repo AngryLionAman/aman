@@ -25,6 +25,7 @@
         <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
         <%@page import="java.sql.*" %> 
         <%@include file="site.jsp" %>
+        <%@include file="validator.jsp" %>
         <%!            
             String WELCOME_NOTES = "";
         %>
@@ -74,22 +75,6 @@
 
                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <div class="row">
-                                <%!    public int nullIntconvert(String str) {
-                                        int num = 0;
-                                        if (str == null) {
-                                            str = "0";
-                                        } else if ((str.trim()).equals("null")) {
-                                            str = "0";
-                                        } else if (str.equals("")) {
-                                            str = "0";
-                                        }
-                                        try {
-                                            num = Integer.parseInt(str);
-                                        } catch (Exception e) {
-                                        }
-                                        return num;
-                                    }
-                                %>
                                 <%
                                     ResultSet rs1 = null;
                                     ResultSet rs2 = null;
@@ -103,8 +88,7 @@
                                     int totalRecords = 5;
                                     int totalRows = nullIntconvert(request.getParameter("totalRows"));
                                     int totalPages = nullIntconvert(request.getParameter("totalPages"));
-                                    int iPageNo;
-                                    iPageNo = nullIntconvert(request.getParameter("iPageNo"));
+                                    int iPageNo = nullIntconvert(request.getParameter("iPageNo"));
                                     int cPageNo = nullIntconvert(request.getParameter("cPageNo"));
 
                                     int startResult = 0;
@@ -149,7 +133,7 @@
                                         </div>
                                         <div class="questionArea">
 
-                                            <div class="postedBy">Published BY :<a href="profile.jsp?user=<%=rs1.getString("firstname")%>&ID=<%=rs1.getString("blog_posted_by")%>&sl=<%=sl%>"> <%=rs1.getString("firstname") + " " + rs1.getString("lastname")%></a></div>
+                                            <div class="postedBy">Published BY :<a href="profile.jsp?user=<%=convertStringUpperToLower(rs1.getString("firstname")).replaceAll(" ", "+")%>&ID=<%=rs1.getString("blog_posted_by")%>&sl=<%=sl%>"> <%=convertStringUpperToLower(rs1.getString("firstname"))%></a></div>
 
                                         </div>
                                     </div>

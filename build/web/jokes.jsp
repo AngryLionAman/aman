@@ -84,8 +84,7 @@
                                     int totalRecords = 5;
                                     int totalRows = nullIntconvert(request.getParameter("totalRows"));
                                     int totalPages = nullIntconvert(request.getParameter("totalPages"));
-                                    int iPageNo;
-                                    iPageNo = nullIntconvert(request.getParameter("iPageNo"));
+                                    int iPageNo = nullIntconvert(request.getParameter("iPageNo"));
                                     int cPageNo = nullIntconvert(request.getParameter("cPageNo"));
                                     String category = nullStringconvert(request.getParameter("category"));
                                     String query1 = "";

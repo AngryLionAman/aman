@@ -2,6 +2,8 @@
 <meta charset="UTF-8">
 <%@page language="java" %>
 <%@page import="java.sql.*" %> 
+<%@include file="validator.jsp"%>
+<%@include file="site.jsp"%>
 <%!
     String EMAIL = "";
     String PASSWORD = "";
@@ -95,27 +97,27 @@
             <a href="Login.jsp?sl=<%=sl%>" class="helpicon" style="color: white;padding-left: 10px;padding-right: 30px;"><%=LOGIN%></a>
             <a href="signup.jsp?sl=<%=sl%>" class="helpicon"  style="color: white;padding-left: 10px;padding-right: 30px;">SIgnUp</a>
             <% } else {
-                String DB_URL = "jdbc:mysql://localhost/bharat";
-                String DB_USERNAME = "root";
-                String DB_PASSWORD = null;
+               // String DB_URL = "jdbc:mysql://localhost/bharat";
+               // String DB_USERNAME = "root";
+               // String DB_PASSWORD = null;
 
                 Statement stmt;
                 Connection con;
                 ResultSet rs;
-                String name = null;
+                String fullName = null;
                 String email = (String) session.getAttribute("email");
                 int id_of_user = 0;
 
                 try {
                     Class.forName("com.mysql.jdbc.Driver");
-                    con = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+                    con = DriverManager.getConnection(DB_URL_, DB_USERNAME_, DB_PASSWORD_);
                     stmt = con.createStatement();
                     String p = "SELECT * FROM newuser WHERE email = '" + email + "'";
                     rs = stmt.executeQuery(p);
                     while (rs.next()) {
                         id_of_user = rs.getInt("id");
-                        name = rs.getString("firstname").substring(0, 1).toUpperCase() + rs.getString("firstname").substring(1).toLowerCase();
-                    }
+                        fullName = rs.getString("firstname");
+                    } 
                     stmt.close();
                     con.close();
                     rs.close();
@@ -124,7 +126,7 @@
                 }
             %>
             <a href="Logout.jsp?sl=<%=sl%>" class="helpicon" style="color: white;padding-left: 10px;padding-right: 30px;">Logout</a>
-            <a href="profile.jsp?ID=<%=id_of_user%>&sl=<%=sl%>" class="helpicon" style="color: white;padding-left: 10px;padding-right: 30px;"><b><%=name%></b></a>
+            <a href="profile.jsp?user=<%=fullName.replaceAll(" ", "+")%>&ID=<%=id_of_user%>&sl=<%=sl%>" class="helpicon" style="color: white;padding-left: 10px;padding-right: 30px;"><b><%=firstName(fullName)%></b></a>
             <%
                 }%>            
             

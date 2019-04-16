@@ -12,22 +12,21 @@
     if (sl == null) {
         sl = "eng";
     }
-    String firstname, lastname, password, email;
+    String firstname,password, email;
     firstname = request.getParameter("firstname");
-    lastname = request.getParameter("lastname");
     email = request.getParameter("email");
     password = request.getParameter("password");
 
-    if (firstname == null || lastname == null || email == null || password == null) {
+    if (firstname == null || email == null || password == null) {
         out.println("you can't access this page direcitly");
     } else {
         //Form validation
         /*Email validation*/
         boolean validFirstName = false;
-        boolean validLastName = false;
+        //boolean validLastName = false;
         boolean validPassword = false;
         boolean emailValid = false;
-
+        //Regular expression for validating email from server side
         String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
         if (email.matches(ePattern)) {
             //out.println("<b>"+email+"</b> email is valid");
@@ -38,8 +37,8 @@
          */
         /*Firstname validation*/
         int length = firstname.length();
-        if (length < 25) {
-            Pattern p = Pattern.compile("[^A-Za-z0-9]");
+        if (length < 25) { //If the name length is too long
+            Pattern p = Pattern.compile("[^A-Za-z0-9\\s]");
             Matcher m = p.matcher(firstname);
             // boolean b = m.matches();
             boolean b = m.find();
@@ -52,16 +51,16 @@
          * *****************
          */
         /*LastName validation*/
-        length = lastname.length();
-        if (length < 25) {
-            Pattern p = Pattern.compile("[^A-Za-z0-9]");
-            Matcher m = p.matcher(lastname);
-            // boolean b = m.matches();
-            boolean b = m.find();
-            if (b != true) {
-                validLastName = true;
-            }
-        }
+ //       length = lastname.length();
+//        if (length < 25) {
+//            Pattern p = Pattern.compile("[^A-Za-z0-9]");
+//            Matcher m = p.matcher(lastname);
+//            // boolean b = m.matches();
+//            boolean b = m.find();
+//            if (b != true) {
+//                validLastName = true;
+//            }
+//        }
 
         /**
          * *****************
@@ -75,7 +74,7 @@
         /**
          * *****************
          */
-        if (validFirstName == true && validLastName == true && validPassword == true && emailValid == true) {
+        if (validFirstName &&  validPassword && emailValid ) {
             String Email = request.getParameter("email");
             Connection connection = null;
             ResultSet resultSet = null;
@@ -101,16 +100,30 @@
                     }
                 }
                 if (i == 1) {
-                    response.sendRedirect("signup.jsp?sl=" + sl + "&Error=This email is already registered please choose another one");
+                    response.sendRedirect("signup.jsp?sl=" + sl + "&Error=This email is already registered with this site, please choose another one");
                 } else {
                     try {
 
-                        Statement statement = connection.createStatement();
-                        String p = "insert into newuser(firstname,lastname,email,email_s,password,imagepath) values('" + firstname + "','" + lastname + "','" + email + "','0','" + password + "','inquiryhere_Logo.PNG')";
-                        statement.execute(p);
-                        if (statement != null) {
-                            statement.close();
-                        }
+                        //Statement statement = connection.createStatement();
+                        String insert_user = "insert into newuser(firstname,email,email_s,password,imagepath) values(?,?,?,?,?)";
+                        
+                        //'" + firstname + "','" + lastname + "','" + email + "','0','" + password + "','inquiryhere_Logo.PNG'
+                        //Email_s represent the security of gmail
+                        // i can make this value as default but when i thought about this, i did't know about how to set default value in database
+                        // and when i got to know that time i feel lazy thats why i leave it as it was
+                        
+                         preparedStatement = connection.prepareStatement(insert_user);
+                         preparedStatement.setString(1, firstname);
+                         preparedStatement.setString(2, email);
+                         preparedStatement.setInt(3, 0);
+                         preparedStatement.setString(4, password);
+                         preparedStatement.setString(5, "inquiryhere_Logo.PNG");
+                         preparedStatement.execute();
+                        
+//                        statement.execute(p);
+//                        if (statement != null) {
+//                            statement.close();
+//                        }
                         String fetch_user_id = "SELECT id FROM newuser WHERE email = '" + Email + "'";
                         preparedStatement = connection.prepareStatement(fetch_user_id);
                         resultSet = preparedStatement.executeQuery();

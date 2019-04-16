@@ -14,6 +14,108 @@ String DB_USERNAME_ = "root";
 String DB_PASSWORD_ = null;
 String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
 
+
+    public String firstName(String str) {
+        try {
+            if (str != null && str.length() > 0 && !(str.trim()).equals("null") && !str.equals("") && !str.equals(" ")) {
+
+                String[] final_word = str.split("\\s");
+                return final_word[0].substring(0, 1).toUpperCase() + final_word[0].substring(1).toLowerCase();
+            } else {
+                return null;
+            }
+
+        } catch (Exception msg) {
+            return msg.toString();
+        }
+    }
+
+
+    public String convertStringUpperToLower(String sentence) {
+        String finalSentenct = "";
+        try {
+            //To remove white space before word start, if having
+            while (true) {
+                if (sentence.charAt(0) == 32) {
+                    sentence = sentence.substring(1);
+                } else {
+                    break;
+                }
+            }
+            //To remove white space at the end of the sentence, if having
+            while (true) {
+                if (sentence.charAt(sentence.length() - 1) == 32) {
+                    sentence = sentence.substring(0, sentence.length() - 1);
+                } else {
+                    break;
+                }
+            }
+            //If sentence having the multiple space
+            //To remive the middle sentence white space if having
+            //This can also remove the pre word and post word white spaces but
+            // removies the last char of the sentence
+            char[] c = sentence.toCharArray();
+            String str1 = "";
+            //If you don't use the '=' (equals) then will missed the last char
+            for (int i = 0; i < sentence.length(); i++) {
+                if ((c[i] == ' ' && c[i + 1] != ' ') || (c[i] != ' ')) {
+                    str1 += c[i];
+                }
+            }
+            //Splitin the sentence into words
+            String[] word = str1.split(" ");
+            //Captlizing the every word
+            for (int i = 0; i < word.length; i++) {
+                word[i] = word[i].substring(0, 1).toUpperCase() + word[i].substring(1).toLowerCase();
+                finalSentenct += word[i] + " ";
+            }
+
+//Remove the last white space if having
+//in my case , last char is defenetaly has a white space,just look at the two line up
+            while (true) {
+                if (finalSentenct.charAt(finalSentenct.length() - 1) == 32) {
+                    finalSentenct = finalSentenct.substring(0, finalSentenct.length() - 1);
+                } else {
+                    break;
+                }
+            }
+//end of the script
+        } catch (Exception msg) {
+            finalSentenct = msg.toString();
+        }
+        return finalSentenct;
+    }
+
+    public int nullIntconvert(String str) {
+        int num = 0;
+        if (str == null) {
+            str = "0";
+        } else if ((str.trim()).equals("null")) {
+            str = "0";
+        } else if (str.equals("")) {
+            str = "0";
+        }
+        try {
+            num = Integer.parseInt(str);
+        } catch (Exception e) {
+        }
+        return num;
+    }
+
+    public String nullStringconvert(String category) {
+        String cat = "All";
+
+        if (category == null) {
+            category = "All";
+        } else if ((category.trim()).equals("null")) {
+            category = "All";
+        } else if (category.equals("")) {
+            category = "All";
+        }
+        cat = category;
+        return cat;
+    }
+
             
             String name = null;
             int id_of_user = 0;
@@ -40,30 +142,14 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
             String RELATED_QUESTION = "";
             String YOUR_CURRENT_NODIFICATION = "";
         
-
-                                        public int nullIntconvert(String str) {
-                                            int num = 0;
-                                            if (str == null) {
-                                                str = "0";
-                                            } else if ((str.trim()).equals("null")) {
-                                                str = "0";
-                                            } else if (str.equals("")) {
-                                                str = "0";
-                                            }
-                                            try {
-                                                num = Integer.parseInt(str);
-                                            } catch (Exception e) {
-                                            }
-                                            return num;
-                                        }
-                                    
   private static final JspFactory _jspxFactory = JspFactory.getDefaultFactory();
 
   private static java.util.List<String> _jspx_dependants;
 
   static {
-    _jspx_dependants = new java.util.ArrayList<String>(2);
+    _jspx_dependants = new java.util.ArrayList<String>(3);
     _jspx_dependants.add("/site.jsp");
+    _jspx_dependants.add("/validator.jsp");
     _jspx_dependants.add("/notificationhtml.jsp");
   }
 
@@ -102,6 +188,10 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("        \r\n");
       out.write("         \r\n");
       out.write("        ");
+      out.write("\r\n");
+      out.write("        ");
+      out.write('\n');
+      out.write('\n');
       out.write("\r\n");
       out.write("        <meta charset=\"UTF-8\">\r\n");
       out.write("        \r\n");
@@ -168,7 +258,15 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("        <!-- For Resposive Device -->\r\n");
       out.write("        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\r\n");
       out.write("        <meta http-equiv=\"content-type\" content=\"text/html\" charset=\"utf-8\">\r\n");
-      out.write("        <script async src=\"https://www.googletagmanager.com/gtag/js?id=UA-128307055-1\"></script>\r\n");
+      out.write("        <script async src=\"//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js\"></script>\r\n");
+      out.write("<script>\r\n");
+      out.write("  (adsbygoogle = window.adsbygoogle || []).push({\r\n");
+      out.write("    google_ad_client: \"ca-pub-8778688755733551\",\r\n");
+      out.write("    enable_page_level_ads: true\r\n");
+      out.write("  });\r\n");
+      out.write("</script>\r\n");
+      out.write("\r\n");
+      out.write("<script async src=\"https://www.googletagmanager.com/gtag/js?id=UA-128307055-1\"></script>\r\n");
       out.write("        <script>\r\n");
       out.write("            window.dataLayer = window.dataLayer || [];\r\n");
       out.write("            function gtag() {\r\n");
@@ -178,6 +276,8 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("            gtag('config', 'UA-128307055-1');\r\n");
       out.write("        </script> \r\n");
       out.write("        <title>Home Page</title>\r\n");
+      out.write("        <link rel=\"icon\" href=\"https://www.inquiryhere.com/images/inquiryhere_Logo.PNG\" type=\"image/png\">\r\n");
+      out.write("\r\n");
       out.write("        <link rel=\"stylesheet\" type=\"text/css\" href=\"css/style.css\">\r\n");
       out.write("        <!-- responsive style sheet -->\r\n");
       out.write("        <link rel=\"stylesheet\" type=\"text/css\" href=\"css/responsive.css\">\r\n");
@@ -289,35 +389,6 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("\r\n");
       out.write("\r\n");
       out.write("            ");
-
-                if (session.getAttribute("email") != null) {
-                    email = (String) session.getAttribute("email");
-                    try {
-                        String sql1 = "SELECT * FROM newuser WHERE email = '" + email + "'";
-                        preparedStatement = connection.prepareStatement(sql1);
-                        resultSet = preparedStatement.executeQuery();
-                        while (resultSet.next()) {
-                            id_of_user = resultSet.getInt("id");
-                            name = resultSet.getString("firstname");
-                        }
-                    } catch (Exception Exceptionmsg) {
-                        if (session.getAttribute("email") == null) {
-                            email = "Anonuous";
-                        } else {
-                            email = (String) session.getAttribute("email");
-                        }
-                        if (session.getAttribute("Session_id_of_user") == null) {
-                            CurrentuserId = 0;
-                        } else {
-                            CurrentuserId = (Integer) session.getAttribute("Session_id_of_user");
-                        }
-                        String URL = request.getRequestURL() + "?" + request.getQueryString();
-            
-      org.apache.jasper.runtime.JspRuntimeLibrary.include(request, response, "ExceptionCollector.jsp" + "?" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("userName", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(email), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("userID", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(CurrentuserId), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("URLParameter", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(URL), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("ExceptionMessage", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(Exceptionmsg), request.getCharacterEncoding()), out, false);
-
-                    }
-                }
-            
       out.write("\r\n");
       out.write("            <div class=\"clear-fix\"></div>\r\n");
       out.write("            <div class=\"bodydata\">\r\n");
@@ -350,6 +421,12 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("                                    <ul>\r\n");
       out.write("                                        ");
 
+                                            
+                                            if(session.getAttribute("Session_id_of_user") != null){
+                                                id_of_user = (Integer) session.getAttribute("Session_id_of_user");
+                                            }else{
+                                                id_of_user = 0;
+                                            }
                                             String sql = "";
                                             String topic_name;
                                             try {
@@ -357,7 +434,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                                     sql = "select t.unique_id,t.topic_name,(select count(topic_id) "
                                                             + "from topic_followers_detail where topic_id = t.unique_id)as count"
                                                             + " from topic t right join topic_followers_detail de on t.unique_id = de.topic_id "
-                                                            + "where user_or_followers_id ='" + id_of_user + "' and t.unique_id is not null and t.topic_name is not null";
+                                                            + "where user_or_followers_id ='" + id_of_user + "' and t.unique_id is not null and t.topic_name is not null LIMIT 5";
                                                 } else {
                                                     sql = "SELECT t.unique_id AS unique_id,t.topic_name AS topic_name,"
                                                             + "(SELECT COUNT(user_or_followers_id) FROM topic_followers_detail "
@@ -368,7 +445,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                                 resultSet = preparedStatement.executeQuery();
                                                 boolean status = true;
                                                 while (resultSet.next()) {
-                                                    topic_name = resultSet.getString("topic_name").substring(0, 1).toUpperCase() + resultSet.getString("topic_name").substring(1).toLowerCase();
+                                                    topic_name = convertStringUpperToLower(resultSet.getString("topic_name"));
                                                     topic_id = resultSet.getInt("unique_id");
                                                     int count = resultSet.getInt("count");
                                                     if (topic_id != 0) {
@@ -581,16 +658,17 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("</h4>  \r\n");
       out.write("                                    ");
 
-                                        String name1 = null;
+                                        //String name1 = null;
                                         String question, fname = null;
                                         int TotalAnswerCount = 0;
+                                        int VoteCount = 0;
                                         int ide = 0;
                                         try {
                                             //tac = Total answer count
                                             //Migrated the join from right to inner. i don't know if any bug will create
                                             //Please god help me
                                             String sql4 = "select DISTINCT q.id,(SELECT firstname FROM newuser WHERE id= q.id) as firstname,"
-                                                    + "q.q_id,q.question,(select count(*) from answer where q_id = q.q_id) as tac from question q "
+                                                    + "q.q_id,q.question,q.vote,(select count(*) from answer where q_id = q.q_id) as tac from question q "
                                                     + "inner join question_topic_tag qtt on q.q_id = qtt.question_id where tag_id IN "
                                                     + "(select t.unique_id from topic t inner join topic_followers_detail de on t.unique_id = de.topic_id "
                                                     + "where user_or_followers_id = ?) and q.id is not null and q.q_id is not null "
@@ -602,6 +680,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                                 question = resultSet.getString("question");
                                                 fname = resultSet.getString("firstname");
                                                 TotalAnswerCount = resultSet.getInt("tac");
+                                                VoteCount = resultSet.getInt("q.vote");
                                                 
       out.write("\r\n");
       out.write("                                    <div class=\"themeBox\" style=\"height:auto;\">\r\n");
@@ -633,7 +712,9 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.print(resultSet.getInt("q.q_id"));
       out.write("', '");
       out.print("upvote");
-      out.write("');\" >Upvote</a>&nbsp;&nbsp; \r\n");
+      out.write("');\" >Upvote(");
+      out.print(VoteCount);
+      out.write(")</a>&nbsp;&nbsp; \r\n");
       out.write("                                        <a href=\"javascript:void(0)\" onclick=\"this.style.color = 'red';return take_value(this, '");
       out.print(resultSet.getInt("q.q_id"));
       out.write("', '");
@@ -672,15 +753,13 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       org.apache.jasper.runtime.JspRuntimeLibrary.include(request, response, "ExceptionCollector.jsp" + "?" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("userName", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(email), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("userID", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(CurrentuserId), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("URLParameter", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(URL), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("ExceptionMessage", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(e), request.getCharacterEncoding()), out, false);
 
                                         }
-                                    } else {
+                                    } 
                                     
       out.write("\r\n");
       out.write("\r\n");
       out.write("                                    <h4>");
       out.print(QUESTION_YOU_MAY_LIKE);
       out.write("</h4>\r\n");
-      out.write("\r\n");
-      out.write("                                    ");
       out.write("\r\n");
       out.write("                                    ");
 
@@ -693,7 +772,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                         // Connection connection2 = null;
 
                                         int showRows = 10;
-                                        int totalRecords = 5;
+                                        int totalRecords = 1;
                                         int totalRows = nullIntconvert(request.getParameter("totalRows"));
                                         int totalPages = nullIntconvert(request.getParameter("totalPages"));
                                         int iPageNo = nullIntconvert(request.getParameter("iPageNo"));
@@ -728,6 +807,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                             }
                                             String Username = null;
                                             int userId = 0;
+                                            int Vote = 0;
                                             int TotoalAnswerCount = 0;
                                     
       out.write("\r\n");
@@ -747,6 +827,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                             while (rs1.next()) {
                                                 Username = rs1.getString("firstname");
                                                 userId = rs1.getInt("id");
+                                                Vote = rs1.getInt("vote");
                                                 TotoalAnswerCount = rs1.getInt("tac");
                                         
       out.write("\r\n");
@@ -763,8 +844,6 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.print(rs1.getString("question"));
       out.write(" ?</a>\r\n");
       out.write("                                            </div>\r\n");
-      out.write("                                        ");
-      out.write("\r\n");
       out.write("                                            <div class=\"questionArea\">\r\n");
       out.write("\r\n");
       out.write("                                                <div class=\"postedBy\">");
@@ -782,7 +861,9 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("                                            </div>\r\n");
       out.write("                                            <a href=\"javascript:void(0)\" onclick=\"return take_value(this, '");
       out.print(rs1.getInt("q_id"));
-      out.write("', 'upvote');\">Upvote</a>&nbsp;&nbsp;\r\n");
+      out.write("', 'upvote');\">Upvote(");
+      out.print(Vote);
+      out.write(")</a>&nbsp;&nbsp;\r\n");
       out.write("                                            <a href=\"javascript:void(0)\" onclick=\"return take_value(this, '");
       out.print(rs1.getInt("q_id"));
       out.write("', 'upvote');\">Downvote</a>&nbsp;&nbsp;\r\n");
@@ -940,7 +1021,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                             } catch (Exception e) {
                                                 e.printStackTrace();
                                             }
-                                        }
+                                        
       out.write("\r\n");
       out.write("                                    <div class=\"clear-fix\"></div>\r\n");
       out.write("\r\n");

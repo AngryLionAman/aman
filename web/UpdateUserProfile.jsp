@@ -140,14 +140,13 @@
                         </div>
                         <%
                             String name = null;
-                            String lastname = null;
                             String Storedemail = null;
                             String bio = null;
                             String BestAchievement = null;
                             String higher_colification = null;
                             String ImagePath = null;
-                            int id_of_user = 0;
-                            int topic_id = 0;
+                            //int id_of_user = 0;
+                            //int topic_id = 0;
                             String email = (String) session.getAttribute("email");
                             Statement stmt;
                             Connection con;
@@ -159,10 +158,9 @@
                                 String p = "SELECT * FROM newuser WHERE email = '" + email + "'";
                                 rs = stmt.executeQuery(p);
                                 while (rs.next()) {
-                                    id_of_user = rs.getInt("id");
+                                   // id_of_user = rs.getInt("id");
                                     name = rs.getString("firstname");
-                                    lastname = rs.getString("lastname");
-                                    Storedemail = rs.getString("email");
+                                    //Storedemail = rs.getString("email");
                                     higher_colification = rs.getString("higher_edu");
                                     bio = rs.getString("bio");
                                     BestAchievement = rs.getString("best_achievement");
@@ -196,7 +194,7 @@
                                                 <input type="hidden" name="sl" value="<%=sl%>">
                                                 <label for="fname"><%=FULL_NAME%> (<%=NOT_EDITABLE%>)</label>
                                                 <div class="boxHeading">
-                                                    <input type="text" id="fname" name="fullname" value="<%=name%> <%=lastname%>" readonly="" required="">
+                                                    <input type="text" id="fname" name="fullname" value="<%=name%>" readonly="" required="">
                                                 </div>
                                                 <label for="fname"><%=EMAIL%> (<%=NOT_EDITABLE%>)</label>
                                                 <div class="boxHeading">

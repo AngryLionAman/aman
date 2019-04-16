@@ -1,9 +1,12 @@
-<html lang="en"><head>
+<html lang="en">
+    <head>
+        <%@page language="java"%>
+        <%@page import="java.sql.*"%>
         <%@include file="site.jsp" %>
+        <%@include file="validator.jsp" %>
         <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-        <%!            
-            String SELECT_AT_LEAST_FIVE_TOPIC = "";
+        <%!            String SELECT_AT_LEAST_FIVE_TOPIC = "";
             String FOLLOW = "";
             String NOTE = "";
             String SEARCH = "";
@@ -28,9 +31,9 @@
             }
         %>
         <%
-        if(session.getAttribute("email")==null){
-                response.sendRedirect("signup.jsp?sl="+sl);
-        }
+            if (session.getAttribute("email") == null) {
+                response.sendRedirect("signup.jsp?sl=" + sl);
+            }
         %>
         <meta charset="UTF-8">
         <!-- For IE -->
@@ -89,8 +92,7 @@
                                                                     <form action="SubmitProfileFollowTopic.jsp" method="get" name="dropdown_selection">  
                                                                         <input type="hidden" name="sl" value="<%=sl%>">
                                                                         <select id="s5" multiple="multiple" name="MultipleSelectedTopic" >
-                                                                            <%@page language="java"%>
-                                                                            <%@page import="java.sql.*"%>
+
                                                                             <%
                                                                                 Connection connection = null;
                                                                                 ResultSet resultSet = null;
@@ -112,10 +114,10 @@
                                                                                     preparedStatement = connection.prepareStatement(sql_v);
                                                                                     resultSet = preparedStatement.executeQuery();
                                                                                     while (resultSet.next()) {
-                                                                                        TopicName = resultSet.getString("topic_name").substring(0, 1).toUpperCase()+resultSet.getString("topic_name").substring(1).toLowerCase();
+                                                                                        TopicName = resultSet.getString("topic_name").substring(0, 1).toUpperCase() + resultSet.getString("topic_name").substring(1).toLowerCase();
                                                                                         out.println("<option>" + TopicName + "</option>");
                                                                                     }
-                                                                                    
+
                                                                                 } catch (Exception e) {
                                                                                     out.println(e.getMessage());
                                                                                 }
@@ -178,4 +180,5 @@
                                     <script type="text/javascript" src="vendor/bootstrap-select/dist/js/bootstrap-select.js"></script>
 
                                     </div> 
-                                    </body></html>
+                                    </body>
+                                    </html>

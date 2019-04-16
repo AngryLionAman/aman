@@ -99,11 +99,11 @@
                                             <form action="SearchBars.jsp">
                                                 <input type="hidden" name="sl" value="<%=sl%>">
                                                 <input type="text" style="width: 100%;" name="search" >
-                                                <button type="submit" style="float: right;width: 50px;" /><%=SEARCH%></button>
                                             </form>
                                         </div>
                                     </div>
                                     <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12 float-right textalign-right">
+                                        <a href="index.jsp?sl=<%=sl%>" class="helpicon" style="color: white;padding-left: 10px;padding-right: 50px;">Home</a>
                                         <a  href="Login.jsp?sl=<%=sl%>" class="helpicon" style="color: white; width: 50px;"><%=LOGIN%></a>
                                         <a  href="signup.jsp?sl=<%=sl%>" class="helpicon" style="color: white; width: 50px;"><%=SIGN_UP%></a>
                                     </div>
@@ -117,7 +117,8 @@
 
                                                 </div>
                                                 <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                                                    <div class="row"><center>
+                                                    <div class="row">
+                                                        <center>
                                                             <%
                                                                 String ErrorMsg = request.getParameter("Error");
                                                                 if (ErrorMsg != null) {
@@ -142,7 +143,8 @@
                                                         String UserEmail = request.getParameter("email");
                                                         if (UserEmail != null) {
                                                             int i = 0;
-                                                            String StoredEmail = null, FirstName = null;
+                                                            String StoredEmail = null;
+                                                            String FirstName = null;
                                                             String UserPassword = null;
                                                             Connection connection = null;
                                                             ResultSet resultSet = null;
@@ -254,7 +256,8 @@
                                                                             out.println("<b><a href=Login.html?sl=" + sl + ">Click here to visit Login page</a></b>");
                                                                             //response.sendRedirect("Login.html");
                                                                         } catch (Exception e) {
-                                                                            out.println("<br>Error:" + e);
+                                                                            //out.println("<br>Error:" + e);
+                                                                            out.println("<center><b style=color:red;>May be: -> Your registred Mail Id is not valid or some netword problem</b></center>");
                                                                         }
                                                                     }
                                                                 } else {

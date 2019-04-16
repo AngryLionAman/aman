@@ -1,4 +1,5 @@
-<html lang="en"><head>
+<html lang="en">
+    <head>
         <script src="ckeditor/ckeditor.js"></script>
 
         <meta charset="UTF-8">
@@ -7,8 +8,7 @@
         <%@include file="site.jsp" %>
         <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-        <%!            
-            String WRITE_BLOG_SUBJECT = "";
+        <%!            String WRITE_BLOG_SUBJECT = "";
             String WRITE_BLOG_DESCRIPTION = "";
             String SUBMIT = "";
             String COMPLETE_YOUR_PROFILE = "";
@@ -36,7 +36,7 @@
         %>
         <%
             if (session.getAttribute("email") == null) {
-                response.sendRedirect("Login.jsp?sl=" + sl + "&msg=valid");
+                response.sendRedirect("Login.jsp?sl=" + sl + "&msg=submitAns");
             }
         %>
 
@@ -78,65 +78,10 @@
                                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 
                                     <%
-                                        Connection connection = null;
-                                        ResultSet resultSet = null;
-                                        PreparedStatement preparedStatement = null;
                                         int id_of_user = 0;
-                                        try {
-                                            if (connection == null || connection.isClosed()) {
-                                                try {
-                                                    Class.forName("com.mysql.jdbc.Driver");
-                                                } catch (ClassNotFoundException ex) {
-                                                    out.println("Exception in loading the class forname Driver" + ex);
-                                                }
-                                                connection = DriverManager.getConnection(DB_URL_, DB_USERNAME_, DB_PASSWORD_);
-                                            }
-                                            if (session.getAttribute("email") != null) {
-                                                String email = (String) session.getAttribute("email");
-                                                try {
-                                                    String sql1 = "SELECT * FROM newuser WHERE email = '" + email + "'";
-                                                    preparedStatement = connection.prepareStatement(sql1);
-                                                    resultSet = preparedStatement.executeQuery();
-                                                    while (resultSet.next()) {
-                                                        id_of_user = resultSet.getInt("id");
-                                                    }
-                                                } catch (Exception e) {
-                                                    out.println("Unable to retrieve!!" + e);
-                                                }
-                                            }
-                                        } catch (Exception e) {
-                                            out.println("Error in main try block:-" + e);
-                                        } finally {
-                                            if (connection != null || !connection.isClosed()) {
-                                                try {
-                                                    connection.close();
-                                                } catch (Exception e) {
-                                                    out.println("Exception in closing connection " + e);
-                                                }
-                                            }
-                                            try {
-                                                if (resultSet != null || !resultSet.isClosed()) {
-                                                    try {
-                                                        resultSet.close();
-                                                    } catch (Exception e) {
-                                                        out.println("Exception in closing resulatset " + e);
-                                                    }
-                                                }
-                                            } catch (Exception e) {
-                                                out.println(e);
-                                            }
-                                            try {
-                                                if (preparedStatement != null || !preparedStatement.isClosed()) {
-                                                    try {
-                                                        preparedStatement.close();
-                                                    } catch (Exception e) {
-                                                        out.println("Exception in closing preparedStatement " + e);
-                                                    }
-                                                }
-                                            } catch (Exception e) {
-                                                out.println(e);
-                                            }
-                                        }
+                                        if (session.getAttribute("Session_id_of_user") != null) {
+                                            id_of_user = (Integer) session.getAttribute("Session_id_of_user");
+                                        } 
                                     %>
                                     <form name="submitquestion" method="post" action="Submitblog.jsp?id=<%=id_of_user%>">
 
@@ -201,7 +146,7 @@
                 </div>
             </div>
             <%@include file="notificationhtml.jsp" %>
-             <jsp:include page="footer.jsp">
+            <jsp:include page="footer.jsp">
                 <jsp:param name="sl" value="<%=sl%>"/>
             </jsp:include>
             <script type="text/javascript" src="vendor/jquery-2.1.4.js"></script>
