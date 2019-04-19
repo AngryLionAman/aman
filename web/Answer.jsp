@@ -3,9 +3,49 @@
         <%@page language="java" %>
         <%@page import="java.sql.*" %> 
         <%@include file="site.jsp" %>
+        <%@include file="validator.jsp" %>
         <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
         <meta charset="UTF-8">
         <meta http-equiv="content-type" content="text/html" charset="utf-8">
+        <style type="text/css">
+            div.hidden{
+                display: none;
+            }
+            div.visible{
+                display: block;
+            }
+            .comment_box{
+                border-style:solid;
+                border-width:1px;
+                float:left;
+                background-color:#d4d4cb;
+                width:280px;
+                padding-left:20px;
+                padding-top:25px;
+                padding-bottom:10px;
+            }
+        </style>
+        <script type="text/javascript">
+           
+             function showCommentBox() {
+                 <% if(session.getAttribute("Session_id_of_user") != null){ %>
+                var div = document.getElementById('comment');
+                div.className = 'visible';
+                <% }else{ %>alert("Please login first to comment");
+                <%  }  %>
+            }
+                
+          
+           
+
+        </script>
+        <!--        <script type="text/javascript">
+                    function showAnsCommentBox() {
+                        var div = document.getElementById('Anscomment');
+                        div.className = 'visible';
+                    }
+                </script>-->
+
 
         <%!            String FOLLOWED_TOPIC = "";
             String QUESTION = "";
@@ -196,9 +236,9 @@
         <%
             if (StoredAnswer != null) {
         %><meta property="og:description" content="<%=StoredAnswer%>"/><%
-           } else {
+        } else {
         %><meta property="og:description" content="<%=StoredQuestion%>"/><%
-                } %>
+            }%>
 
         <meta property="og:url" content="https://www.inquiryhere.com/">
         <meta property="og:site_name" content="https://www.inquiryhere.com/" />
@@ -222,8 +262,8 @@
                 int topic_id = 0;// initilazing
                 int q_id = 0;// initilazing
                 int q_asked_by_user = 0;// initilazing
-                
-                if( session.getAttribute("Session_id_of_user") != null){
+
+                if (session.getAttribute("Session_id_of_user") != null) {
                     id_of_user = (Integer) session.getAttribute("Session_id_of_user");
                 }
 //                if (session.getAttribute("email") != null) {
@@ -334,7 +374,7 @@
                                                 while (resultSet.next()) {
                                                     q_id = resultSet.getInt("q_id");
                                                     q_asked_by_user = resultSet.getInt("id");
-                                                    fullName_of_user_who_asked_the_question = resultSet.getString("firstname").substring(0, 1).toUpperCase() + resultSet.getString("firstname").substring(1).toLowerCase();
+                                                    fullName_of_user_who_asked_the_question = convertStringUpperToLower(resultSet.getString("firstname"));
                                                 }
                                             } catch (Exception e) {
                                                 out.println("Unable to retrieve!!" + e);
@@ -359,14 +399,51 @@
                                         %>
                                         <div class="questionArea">
 
-                                            <div class="postedBy"><%=POSTED_BY%> :<a href="profile.jsp?user=<%=fullName_of_user_who_asked_the_question%>&ID=<%=q_asked_by_user%>&sl=<%=sl%>"><%=firstname_of_user_who_asked_the_question%></a> </div>
+                                            <div class="postedBy"><%=POSTED_BY%> :<a href="profile.jsp?user=<%=fullName_of_user_who_asked_the_question.replaceAll(" ", "+")%>&ID=<%=q_asked_by_user%>&sl=<%=sl%>"><%=firstName(fullName_of_user_who_asked_the_question)%></a> </div>
 
                                         </div>
                                         <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=q_id%>', 'upvote', 'question');" >Upvote</a> &nbsp;&nbsp; 
                                         <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=q_id%>', 'downvote', 'question');" >Downvote</a> &nbsp;&nbsp;
-                                        <a href="#">Comment</a>
+                                        <a href="javascript:void(0)" value="Comment" onclick="showCommentBox()">Comment</a>
+                                        <form action="SubmitQuestionComment.jsp" method="get">
+                                            <div class="hidden" id="comment">
+                                                <input type="hidden" name="question_id" value="<%=q_id%>">
+                                                <input type="hidden" name="question" value="<%=StoredQuestion%>">
+                                                <textarea name="comments" rows="3" cols="30" required=""></textarea>
+                                                <input type="submit" name="sub" value="Send Comment">
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <!-- Comment on question -->
+                                    <div align="right">
+
+                                        <%
+                                            try {
+                                                String sql_question_comment = "SELECT unique_id,user_id,"
+                                                        + "(SELECT firstname FROM newuser WHERE id = comments.user_id )AS fullname,"
+                                                        + "q_id,comments,time FROM comments WHERE q_id = ? AND user_id IS NOT NULL AND q_id IS NOT NULL";
+                                                preparedStatement = connection.prepareStatement(sql_question_comment);
+                                                preparedStatement.setInt(1, q_id);
+                                                resultSet = preparedStatement.executeQuery();
+                                                while (resultSet.next()) {
+                                                    String question_comments = resultSet.getString("comments");
+                                                    String userName = resultSet.getString("fullname");
+                                                    String time = resultSet.getString("time");
+                                                    int user_id = resultSet.getInt("user_id");
+                                                    out.println("(" + time + ") " + question_comments + ":- ");
+                                        %>
+                                        <a href="profile.jsp?user=<%=userName.replaceAll(" ", "+")%>&ID=<%=user_id%>&sl=<%=sl%>"><%=convertStringUpperToLower(userName)%></a><br>
+                                        <%
+                                                }
+
+                                            } catch (Exception msg) {
+                                                out.println("Error in loading question comment: -" + msg);
+                                            }
+                                        %>
 
                                     </div>
+
+
                                     <div class="boxHeading marginbot10"><%=ANSWER%>:</div>
 
                                     <%
@@ -380,7 +457,7 @@
                                                 count++;
                                                 String answer = resultSet.getString("answer");
                                                 int who_gave_answer = resultSet.getInt("Answer_by_id");
-                                                String firstname = resultSet.getString("firstname").substring(0, 1).toUpperCase() + resultSet.getString("firstname").substring(1).toLowerCase();
+                                                String firstname = convertStringUpperToLower(resultSet.getString("firstname"));
                                                 int answer_id = resultSet.getInt("ans.a_id");
                                     %>
                                     <div class="themeBox" style="height:auto;">
@@ -388,7 +465,7 @@
                                             <%=answer%> 
                                         </div>
                                         <div class="questionArea">
-                                            <div class="postedBy"><%=ANSWERED_BY%> :<a href="profile.jsp?user=<%=firstname%>&ID=<%=who_gave_answer%>&sl=<%=sl%>"><%=firstname%></a> 
+                                            <div class="postedBy"><%=ANSWERED_BY%> :<a href="profile.jsp?user=<%=firstname.replaceAll(" ", "+")%>&ID=<%=who_gave_answer%>&sl=<%=sl%>"><%=firstName(firstname)%></a> 
                                                 &nbsp;&nbsp;&nbsp;&nbsp;
                                                 <%  if (session.getAttribute("Session_id_of_user") != null) {
                                                         int Session_id_of_user = (Integer) session.getAttribute("Session_id_of_user");
@@ -400,6 +477,55 @@
                                         </div>
                                         <a href="javascript:void(0)" onclick="this.style.color = 'red'; return take_value(this, '<%=answer_id%>', 'upvote', 'answer');" >Upvote</a>&nbsp;&nbsp; 
                                         <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=answer_id%>', 'downvote', 'answer');" >Downvote</a>
+                                        <a href="javascript:void(0)" value="Comment" onclick="showAns<%=answer_id%>CommentBox()">Comment</a>
+                                        <form action="SubmitAnswerComment.jsp" method="get">
+                                            <div class="hidden" id="Anscomment<%=answer_id%>">
+                                                <input type="hidden" name="answer_id" value="<%=answer_id%>">
+                                                <input type="hidden" name="question_id" value="<%=q_id%>">
+                                                <input type="hidden" name="question" value="<%=StoredQuestion%>">
+                                                <textarea name="comments" rows="3" cols="30" required=""></textarea>
+                                                <input type="submit" name="sub" value="Send Comment">
+                                            </div>
+                                        </form>
+
+                                        <script type="text/javascript">
+                                            function showAns<%=answer_id%>CommentBox() {
+                                            <% if(session.getAttribute("Session_id_of_user") != null){ %>
+                                                var div = document.getElementById('Anscomment<%=answer_id%>');
+                                                div.className = 'visible';
+                                                <% }else { %>
+                                                    alert("Please Login First to comment!!!");
+                                                    <% } %>
+                                            }
+                                        </script>
+                                    </div>
+                                    <!-- Comment on question -->
+                                    <div align="right">
+
+                                        <%
+                                            try {
+                                                String sql_question_comment = "SELECT unique_id,user_id,"
+                                                        + "(SELECT firstname FROM newuser WHERE id = comments.user_id )AS fullname,"
+                                                        + "ans_id,comments,time FROM comments WHERE ans_id = ? AND user_id IS NOT NULL AND ans_id IS NOT NULL";
+                                                preparedStatement = connection.prepareStatement(sql_question_comment);
+                                                preparedStatement.setInt(1, answer_id);
+                                                ResultSet result = preparedStatement.executeQuery();
+                                                while (result.next()) {
+                                                    String question_comments = result.getString("comments");
+                                                    String userName = result.getString("fullname");
+                                                    String time = result.getString("time");
+                                                    int user_id = result.getInt("user_id");
+                                                    out.println("(" + time + ") " + question_comments + ":- ");
+                                        %>
+                                        <a href="profile.jsp?user=<%=userName.replaceAll(" ", "+")%>&ID=<%=user_id%>&sl=<%=sl%>"><%=convertStringUpperToLower(userName)%></a><br>
+                                        <%
+                                                }
+                                                result.close();
+
+                                            } catch (Exception msg) {
+                                                out.println("Error in loading question comment: -" + msg);
+                                            }
+                                        %>
 
                                     </div>
                                     <%
@@ -435,6 +561,7 @@
                                         }
                                     %>
                                     <form name="submitquestion" method="post" action="SubmitAnswer.jsp?_id_of_user=<%=id_of_user%>&q_id=<%=q_id%>&URL=<%=request.getRequestURL()%>?Id=<%=q_id%>&sl=<%=sl%>">
+                                        <input type="hidden" name="question" value="<%=StoredQuestion%>">
                                         <textarea class="ckeditor" name="answer" required="">
                                             <%
                                                 if (request.getParameter("ans") != null) {
@@ -603,10 +730,10 @@
             </div>
             <div class="clear-fix"></div>
 
-            <div class="modal fade" id="myModal" role="dialog">
-                <div class="modal-dialog">
-                </div>
-            </div>
+            <!--            <div class="modal fade" id="myModal" role="dialog">
+                            <div class="modal-dialog">
+                            </div>
+                        </div>-->
             <%@include file="notificationhtml.jsp" %>
             <jsp:include page="footer.jsp">
                 <jsp:param name="sl" value="<%=sl%>"/>

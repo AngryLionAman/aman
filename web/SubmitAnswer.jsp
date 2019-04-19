@@ -15,6 +15,7 @@
         //String firstname, lastname, password, email;
         String v = request.getParameter("q_id");
         String v2 = request.getParameter("_id_of_user");
+        String question = request.getParameter("question");
         
         if (answer != null && v != null && v2 != null) {
             Connection connection = null;
@@ -68,7 +69,7 @@
                         out.println("Error in Saving the notifiation"+msg);
                     }
                     //End of the script to saving the notification to display of got the answer of a question
-                    response.sendRedirect("Answer.jsp?Id=" + Q_id);
+                    response.sendRedirect("Answer.jsp?q="+question.replaceAll(" ", "-")+"&Id=" + Q_id);
                 } catch (Exception e1) {
                     out.print("Error:-" + e1);
                     String email = (String)session.getAttribute("email");
@@ -100,7 +101,7 @@
                 }
             }
         } else {
-            out.println("It seem Like you are logedin but tryin to access this page directly");
+            out.println("It seem Like you are loggedIn but trying to access this page directly");
         }
     } else {
         response.sendRedirect("Login.jsp?sl=" + sl + "&msg=submitAns&URL=" + URL+"&ans="+answer);

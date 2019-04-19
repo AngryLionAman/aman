@@ -14,7 +14,108 @@ String DB_USERNAME_ = "root";
 String DB_PASSWORD_ = null;
 String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
 
-            
+
+    public String firstName(String str) {
+        try {
+            if (str != null && str.length() > 0 && !(str.trim()).equals("null") && !str.equals("") && !str.equals(" ")) {
+
+                String[] final_word = str.split("\\s");
+                return final_word[0].substring(0, 1).toUpperCase() + final_word[0].substring(1).toLowerCase();
+            } else {
+                return null;
+            }
+
+        } catch (Exception msg) {
+            return msg.toString();
+        }
+    }
+
+
+    public String convertStringUpperToLower(String sentence) {
+        String finalSentenct = "";
+        try {
+            //To remove white space before word start, if having
+            while (true) {
+                if (sentence.charAt(0) == 32) {
+                    sentence = sentence.substring(1);
+                } else {
+                    break;
+                }
+            }
+            //To remove white space at the end of the sentence, if having
+            while (true) {
+                if (sentence.charAt(sentence.length() - 1) == 32) {
+                    sentence = sentence.substring(0, sentence.length() - 1);
+                } else {
+                    break;
+                }
+            }
+            //If sentence having the multiple space
+            //To remive the middle sentence white space if having
+            //This can also remove the pre word and post word white spaces but
+            // removies the last char of the sentence
+            char[] c = sentence.toCharArray();
+            String str1 = "";
+            //If you don't use the '=' (equals) then will missed the last char
+            for (int i = 0; i < sentence.length(); i++) {
+                if ((c[i] == ' ' && c[i + 1] != ' ') || (c[i] != ' ')) {
+                    str1 += c[i];
+                }
+            }
+            //Splitin the sentence into words
+            String[] word = str1.split(" ");
+            //Captlizing the every word
+            for (int i = 0; i < word.length; i++) {
+                word[i] = word[i].substring(0, 1).toUpperCase() + word[i].substring(1).toLowerCase();
+                finalSentenct += word[i] + " ";
+            }
+
+//Remove the last white space if having
+//in my case , last char is defenetaly has a white space,just look at the two line up
+            while (true) {
+                if (finalSentenct.charAt(finalSentenct.length() - 1) == 32) {
+                    finalSentenct = finalSentenct.substring(0, finalSentenct.length() - 1);
+                } else {
+                    break;
+                }
+            }
+//end of the script
+        } catch (Exception msg) {
+            finalSentenct = msg.toString();
+        }
+        return finalSentenct;
+    }
+
+    public int nullIntconvert(String str) {
+        int num = 0;
+        if (str == null) {
+            str = "0";
+        } else if ((str.trim()).equals("null")) {
+            str = "0";
+        } else if (str.equals("")) {
+            str = "0";
+        }
+        try {
+            num = Integer.parseInt(str);
+        } catch (Exception e) {
+        }
+        return num;
+    }
+
+    public String nullStringconvert(String category) {
+        String cat = "All";
+
+        if (category == null) {
+            category = "All";
+        } else if ((category.trim()).equals("null")) {
+            category = "All";
+        } else if (category.equals("")) {
+            category = "All";
+        }
+        cat = category;
+        return cat;
+    }
+
             String FOLLOWED_TOPIC = "";
             String QUESTION = "";
             String POSTED_BY = "";
@@ -34,8 +135,10 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
   private static java.util.List<String> _jspx_dependants;
 
   static {
-    _jspx_dependants = new java.util.ArrayList<String>(1);
+    _jspx_dependants = new java.util.ArrayList<String>(3);
     _jspx_dependants.add("/site.jsp");
+    _jspx_dependants.add("/validator.jsp");
+    _jspx_dependants.add("/notificationhtml.jsp");
   }
 
   private org.glassfish.jsp.api.ResourceInjector _jspx_resourceInjector;
@@ -73,6 +176,10 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("        \r\n");
       out.write("         \r\n");
       out.write("        ");
+      out.write("\r\n");
+      out.write("        ");
+      out.write('\n');
+      out.write('\n');
       out.write("\r\n");
       out.write("        \r\n");
       out.write("        <meta charset=\"UTF-8\">\r\n");
@@ -134,7 +241,6 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
         
       out.write("\r\n");
       out.write("        ");
-            
             Connection connection = null;
             ResultSet resultSet = null;
             PreparedStatement preparedStatement = null;
@@ -236,7 +342,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
             try {
                 //This statement not using because ,if a question having no result then it will not fetch the question also.
                 //It is only applicable on that which having the at least one answer;
-                
+
                 //Now usnig the left join for,if any question had no answer the it will show null value 
                 //but extra all function will work
                 String sql = " SELECT q.q_id AS q_id,q.question AS question,SUBSTRING(a.answer,1,500) AS answer"
@@ -272,12 +378,27 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("        <title>");
       out.print(StoredQuestion);
       out.write("</title>\r\n");
+      out.write("        <link rel=\"icon\" href=\"https://www.inquiryhere.com/images/inquiryhere_Logo.PNG\" type=\"image/png\">\r\n");
       out.write("        <meta property=\"og:title\" content=\"");
       out.print(StoredQuestion);
       out.write("\" />\r\n");
-      out.write("        <meta property=\"og:description\" content=\"");
+      out.write("        ");
+
+            if (StoredAnswer != null) {
+        
+      out.write("<meta property=\"og:description\" content=\"");
       out.print(StoredAnswer);
-      out.write("\"/>\r\n");
+      out.write("\"/>");
+
+        } else {
+        
+      out.write("<meta property=\"og:description\" content=\"");
+      out.print(StoredQuestion);
+      out.write("\"/>");
+
+            }
+      out.write("\r\n");
+      out.write("\r\n");
       out.write("        <meta property=\"og:url\" content=\"https://www.inquiryhere.com/\">\r\n");
       out.write("        <meta property=\"og:site_name\" content=\"https://www.inquiryhere.com/\" />\r\n");
       out.write("        <meta property=\"og:image\" content=\"https://www.inquiryhere.com/images/logo/inquiryhere_Logo.PNG\" />\r\n");
@@ -297,26 +418,29 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("\r\n");
       out.write("            ");
 
-                String name = null; // initilazing
+                //String name = null; // initilazing
                 int id_of_user = 0;// initilazing
                 int topic_id = 0;// initilazing
                 int q_id = 0;// initilazing
                 int q_asked_by_user = 0;// initilazing
-                String firstname_of_user_who_asked_the_question = null;
-                if (session.getAttribute("email") != null) {
-                    email = (String) session.getAttribute("email");
-                    try {
-                        String sql = "SELECT * FROM newuser WHERE email = '" + email + "'";
-                        preparedStatement = connection.prepareCall(sql);
-                        resultSet = preparedStatement.executeQuery();
-                        while (resultSet.next()) {
-                            id_of_user = resultSet.getInt("id");
-                            name = resultSet.getString("firstname");
-                        }
-                    } catch (Exception e) {
-                        out.println("Unable to retrieve!!" + e);
-                    }
+
+                if (session.getAttribute("Session_id_of_user") != null) {
+                    id_of_user = (Integer) session.getAttribute("Session_id_of_user");
                 }
+//                if (session.getAttribute("email") != null) {
+//                    email = (String) session.getAttribute("email");
+//                    try {
+//                        String sql = "SELECT * FROM newuser WHERE email = '" + email + "'";
+//                        preparedStatement = connection.prepareCall(sql);
+//                        resultSet = preparedStatement.executeQuery();
+//                        while (resultSet.next()) {
+//                            id_of_user = resultSet.getInt("id");
+//                            name = resultSet.getString("firstname");
+//                        }
+//                    } catch (Exception e) {
+//                        out.println("Unable to retrieve!!" + e);
+//                    }
+//                }
             
       out.write("\r\n");
       out.write("            <div class=\"clear-fix\"></div>\r\n");
@@ -358,7 +482,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                                     if (topic_id != 0) {
       out.write("\r\n");
       out.write("                                        <li><a href=\"topic.jsp?t=");
-      out.print(topic_name.replaceAll(" ", "-"));
+      out.print(topic_name.replaceAll(" ", "+"));
       out.write("&id=");
       out.print(topic_id);
       out.write("&sl=");
@@ -420,6 +544,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("\r\n");
       out.write("                                        ");
 
+                                            String fullName_of_user_who_asked_the_question = null;
                                             try {
                                                 String sql_p = "SELECT user.firstname,q.q_id,q.id FROM newuser user RIGHT JOIN question q on user.id=q.id where q_id= (?)";
                                                 preparedStatement = connection.prepareStatement(sql_p);
@@ -428,7 +553,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                                 while (resultSet.next()) {
                                                     q_id = resultSet.getInt("q_id");
                                                     q_asked_by_user = resultSet.getInt("id");
-                                                    firstname_of_user_who_asked_the_question = resultSet.getString("firstname").substring(0, 1).toUpperCase()+resultSet.getString("firstname").substring(1).toLowerCase();
+                                                    fullName_of_user_who_asked_the_question = convertStringUpperToLower(resultSet.getString("firstname"));
                                                 }
                                             } catch (Exception e) {
                                                 out.println("Unable to retrieve!!" + e);
@@ -454,14 +579,14 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("                                            <div class=\"postedBy\">");
       out.print(POSTED_BY);
       out.write(" :<a href=\"profile.jsp?user=");
-      out.print(firstname_of_user_who_asked_the_question);
+      out.print(fullName_of_user_who_asked_the_question.replaceAll(" ", "+"));
       out.write("&ID=");
       out.print(q_asked_by_user);
       out.write("&sl=");
       out.print(sl);
       out.write('"');
       out.write('>');
-      out.print(firstname_of_user_who_asked_the_question);
+      out.print(fullName_of_user_who_asked_the_question);
       out.write("</a> </div>\r\n");
       out.write("\r\n");
       out.write("                                        </div>\r\n");
@@ -470,9 +595,15 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("', 'upvote', 'question');\" >Upvote</a> &nbsp;&nbsp; \r\n");
       out.write("                                        <a href=\"javascript:void(0)\" onclick=\"this.style.color = 'red';return take_value(this, '");
       out.print(q_id);
-      out.write("', 'downvote', 'question');\" >Downvote</a>\r\n");
+      out.write("', 'downvote', 'question');\" >Downvote</a> &nbsp;&nbsp;\r\n");
+      out.write("                                        <a href=\"#\" data-toggle=\"modal\" data-target=\"#myModal_q_comment\">Comment</a>\r\n");
       out.write("\r\n");
       out.write("                                    </div>\r\n");
+      out.write("                                    <!-- **************If having the comment on the question****************** -->\r\n");
+      out.write("\r\n");
+      out.write("                                    <p align=\"right\"><a href=\"\">user profile</a>&nbsp;&nbsp;This is first comment</p>\r\n");
+      out.write("                                    <p align=\"right\"><a href=\"\">user profile</a>&nbsp;&nbsp;This is second comment</p>\r\n");
+      out.write("                                    <!-- **************End of the programm****************** -->\r\n");
       out.write("                                    <div class=\"boxHeading marginbot10\">");
       out.print(ANSWER);
       out.write(":</div>\r\n");
@@ -489,7 +620,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                                 count++;
                                                 String answer = resultSet.getString("answer");
                                                 int who_gave_answer = resultSet.getInt("Answer_by_id");
-                                                String firstname = resultSet.getString("firstname").substring(0, 1).toUpperCase()+resultSet.getString("firstname").substring(1).toLowerCase();
+                                                String firstname = convertStringUpperToLower(resultSet.getString("firstname"));
                                                 int answer_id = resultSet.getInt("ans.a_id");
                                     
       out.write("\r\n");
@@ -503,7 +634,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("                                            <div class=\"postedBy\">");
       out.print(ANSWERED_BY);
       out.write(" :<a href=\"profile.jsp?user=");
-      out.print(firstname);
+      out.print(firstname.replaceAll(" ", "+"));
       out.write("&ID=");
       out.print(who_gave_answer);
       out.write("&sl=");
@@ -539,6 +670,11 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("', 'downvote', 'answer');\" >Downvote</a>\r\n");
       out.write("\r\n");
       out.write("                                    </div>\r\n");
+      out.write("                                        <!-- **************If having the comment on the question****************** -->\r\n");
+      out.write("\r\n");
+      out.write("                                    <p align=\"right\"><a href=\"\">user profile</a>&nbsp;&nbsp;This is first comment</p>\r\n");
+      out.write("                                    <p align=\"right\"><a href=\"\">user profile</a>&nbsp;&nbsp;This is second comment</p>\r\n");
+      out.write("                                    <!-- **************End of the programm****************** -->\r\n");
       out.write("                                    ");
 
                                         }
@@ -588,9 +724,9 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("                                        <textarea class=\"ckeditor\" name=\"answer\" required=\"\">\r\n");
       out.write("                                            ");
 
-                                            if(request.getParameter("ans")!= null){
-                                                out.println(request.getParameter("ans"));
-                                            }
+                                                if (request.getParameter("ans") != null) {
+                                                    out.println(request.getParameter("ans"));
+                                                }
                                             
       out.write("\r\n");
       out.write("                                        </textarea>\r\n");
@@ -768,6 +904,86 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("                <div class=\"modal-dialog\">\r\n");
       out.write("                </div>\r\n");
       out.write("            </div>\r\n");
+      out.write("            \r\n");
+      out.write("<!--  Comment dialog box   -->\r\n");
+      out.write("\r\n");
+      out.write("            <div class=\"modal fade\" id=\"myModal_q_comment\" role=\"dialog\">\r\n");
+      out.write("                <div class=\"modal-dialog\">\r\n");
+      out.write("\r\n");
+      out.write("                    <!-- Modal content-->\r\n");
+      out.write("                    <div class=\"modal-content\">\r\n");
+      out.write("\r\n");
+      out.write("                        <div class=\"modal-header\">\r\n");
+      out.write("                            <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\r\n");
+      out.write("                            <h4 class=\"modal-title\">Comment Box</h4>\r\n");
+      out.write("                        </div>\r\n");
+      out.write("                        ");
+if (session.getAttribute("email") != null) {
+      out.write("\r\n");
+      out.write("                        <form name=\"submitquestioncomment\" method=\"post\" action=\"SubmitQuestionComment.jsp\">\r\n");
+      out.write("                            <div class=\"modal-body\">\r\n");
+      out.write("                                <div>\r\n");
+      out.write("                                    <div>Put Your Comment Here</div>\r\n");
+      out.write("                                    <textarea type=\"text\" class=\"anstext\" name=\"questionComment\" placeholder=\"Type comment here.\"  required=\"\"></textarea\r\n");
+      out.write("                                </div>\r\n");
+      out.write("\r\n");
+      out.write("                                <!-- <p>Some text in the modal.</p> -->\r\n");
+      out.write("                            </div>\r\n");
+      out.write("                            <div class=\"modal-footer\">\r\n");
+      out.write("                                <button type=\"submit\" class=\"btn\" name=\"submit\" value=\"submit_question_commit\">post</button>\r\n");
+      out.write("                                <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">close</button>\r\n");
+      out.write("                            </div>\r\n");
+      out.write("                        </form>\r\n");
+      out.write("                        ");
+} else {
+      out.write("\r\n");
+      out.write("                        <div class=\"modal-body\">\r\n");
+      out.write("                            <div>\r\n");
+      out.write("                                <div><h4 style=\"color: red;\">Please Login first!!!</h4></div>\r\n");
+      out.write("                                <div><a href=\"Login.jsp?sl=");
+      out.print(sl);
+      out.write("\">Click here to login</a></div>\r\n");
+      out.write("                            </div>\r\n");
+      out.write("                        </div>\r\n");
+      out.write("                        <div class=\"modal-footer\">                                                    \r\n");
+      out.write("                            <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">close</button>\r\n");
+      out.write("                        </div>\r\n");
+      out.write("\r\n");
+      out.write("                        ");
+ }
+      out.write("\r\n");
+      out.write("\r\n");
+      out.write("                    </div>\r\n");
+      out.write("\r\n");
+      out.write("                </div>\r\n");
+      out.write("            </div>\r\n");
+      out.write("\r\n");
+      out.write("\r\n");
+      out.write("\r\n");
+      out.write("            ");
+      out.write("<div class=\"modal fade\" id=\"myModalN\" role=\"dialog\">\n");
+      out.write("    <div class=\"modal-dialog\">\n");
+      out.write("        <!-- Modal content-->\n");
+      out.write("        <div class=\"modal-content\">\n");
+      out.write("\n");
+      out.write("            <div class=\"modal-header\">\n");
+      out.write("                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n");
+      out.write("                <h4 class=\"modal-title\">Your current notification</h4>\n");
+      out.write("            </div>\n");
+      out.write("            <div class=\"modal-body\">\n");
+      out.write("                <div>\n");
+      out.write("                    ");
+      org.apache.jasper.runtime.JspRuntimeLibrary.include(request, response, "NodificationScript.jsp", out, false);
+      out.write("\n");
+      out.write("                </div>\n");
+      out.write("            </div>\n");
+      out.write("            <div class=\"modal-footer\">                                                    \n");
+      out.write("                <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">close</button>\n");
+      out.write("            </div>\n");
+      out.write("        </div>\n");
+      out.write("    </div>\n");
+      out.write("</div>");
+      out.write("\r\n");
       out.write("            ");
       org.apache.jasper.runtime.JspRuntimeLibrary.include(request, response, "footer.jsp" + "?" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("sl", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(sl), request.getCharacterEncoding()), out, false);
       out.write("\r\n");

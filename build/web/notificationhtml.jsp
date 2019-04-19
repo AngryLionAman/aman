@@ -12,6 +12,9 @@
                     <jsp:include page="NodificationScript.jsp"></jsp:include>
                 </div>
             </div>
+            <div class="modal-footer">                                                    
+                <button type="button" class="btn btn-default" data-dismiss="modal">close</button>
+            </div>
         </div>
     </div>
 </div>

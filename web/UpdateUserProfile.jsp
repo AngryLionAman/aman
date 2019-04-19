@@ -160,7 +160,7 @@
                                 while (rs.next()) {
                                    // id_of_user = rs.getInt("id");
                                     name = rs.getString("firstname");
-                                    //Storedemail = rs.getString("email");
+                                    Storedemail = rs.getString("email");
                                     higher_colification = rs.getString("higher_edu");
                                     bio = rs.getString("bio");
                                     BestAchievement = rs.getString("best_achievement");

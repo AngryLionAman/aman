@@ -35,7 +35,7 @@
         <%
             String sl = request.getParameter("sl");
             if (sl == null) {
-                sl = "eng";
+                sl = "en";
             }
 
             if (sl.equalsIgnoreCase("hi")) {
@@ -372,7 +372,7 @@
                                         </div>
                                         <div class="questionArea">
 
-                                            <div class="postedBy"><%=POSTED_BY%> :<a href="profile.jsp?user=<%=UserName_for_trending_question_T.replaceAll(" ", "+")%>&ID=<%=userID%>&sl=<%=sl%>"> <%=UserName_for_trending_question_T%></a>
+                                            <div class="postedBy"><%=POSTED_BY%> :<a href="profile.jsp?user=<%=UserName_for_trending_question_T.replaceAll(" ", "+")%>&ID=<%=userID%>&sl=<%=sl%>"> <%=firstName(UserName_for_trending_question_T)%></a>
                                                 &nbsp;&nbsp;&nbsp;&nbsp; 
                                                 <%  if (session.getAttribute("Session_id_of_user") != null) {
                                                         int Session_id_of_user = (Integer) session.getAttribute("Session_id_of_user");
@@ -446,7 +446,7 @@
                                             <a href="Answer.jsp?q=<%=question.replaceAll(" ", "-")%>&Id=<%=resultSet.getInt("q.q_id")%>&sl=<%=sl%>" ><%=question%> ?</a>
                                         </div>
                                         <div class="questionArea">
-                                            <div class="postedBy"><%=POSTED_BY%> : <a href="profile.jsp?user=<%=fname.replaceAll(" ", "+")%>&ID=<%=ide%>&sl=<%=sl%>"><%=fname%></a></div>
+                                            <div class="postedBy"><%=POSTED_BY%> : <a href="profile.jsp?user=<%=fname.replaceAll(" ", "+")%>&ID=<%=ide%>&sl=<%=sl%>"><%=firstName(fname)%></a></div>
                                         </div>
                                         <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=resultSet.getInt("q.q_id")%>', '<%="upvote"%>');" >Upvote(<%=VoteCount%>)</a>&nbsp;&nbsp; 
                                         <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=resultSet.getInt("q.q_id")%>', '<%="downvote"%>');" >Downvote</a>&nbsp;&nbsp; 
@@ -549,7 +549,7 @@
                                             </div>
                                             <div class="questionArea">
 
-                                                <div class="postedBy"><%=POSTED_BY%> :<a href="profile.jsp?user=<%=Username.replaceAll(" ", "+")%>&ID=<%=userId%>&sl=<%=sl%>"> <%=Username%></a></div>
+                                                <div class="postedBy"><%=POSTED_BY%> :<a href="profile.jsp?user=<%=Username.replaceAll(" ", "+")%>&ID=<%=userId%>&sl=<%=sl%>"> <%=firstName(Username)%></a></div>
 
                                             </div>
                                             <a href="javascript:void(0)" onclick="return take_value(this, '<%=rs1.getInt("q_id")%>', 'upvote');">Upvote(<%=Vote%>)</a>&nbsp;&nbsp;

@@ -1,6 +1,7 @@
 <%@page language="java"%>
 <%@page import="java.sql.*"%>
 <%@include file="site.jsp" %>
+<%@include file="validator.jsp" %>
 <% //Got the id from Here only
     if (session.getAttribute("email") != null && session.getAttribute("Session_id_of_user") != null) {
         int CurrentUserId = (Integer) session.getAttribute("Session_id_of_user");
@@ -38,18 +39,18 @@
         String question = resultSet.getString("question");
         //String answer = resultSet.getString("answer");
         int userId = resultSet.getInt("followers_id");//who created the notification
-        String userFirstName = resultSet.getString("firstname");
+        String userFirstName = convertStringUpperToLower(resultSet.getString("firstname"));
         String notification_type = resultSet.getString("notification_type");
         if (notification_type.equalsIgnoreCase("got_answer_of_a_question")) {
 
 %>
-<a href="Answer.jsp?q=<%=question.replaceAll(" ", "-")%>&Id=<%=question_id%>"><b><%=userFirstName%></b> give you an answer of <b><%=question%></b></a>
+<a href="Answer.jsp?q=<%=question.replaceAll(" ", "-")%>&ans_by=<%=userFirstName.replaceAll(" ", "+")%>&Id=<%=question_id%>"><b><%=userFirstName%></b> give you an answer of <b><%=question%></b></a>
 <br>-------------------------------------------------<br>
 <%
 } else if (notification_type.equalsIgnoreCase("followed_by")) {
 
 %>
-<a href="profile.jsp?user=<%=userFirstName%>&ID=<%=userId%>"> <b><%=userFirstName%></b> started following you</a>
+<a href="profile.jsp?user=<%=userFirstName.replaceAll(" ", "+")%>&ID=<%=userId%>"> <b><%=userFirstName%></b> started following you</a>
 <br>-------------------------------------------------<br>
 <%
 } else if (notification_type.equalsIgnoreCase("submit_question")) {
@@ -68,7 +69,7 @@
         rs.close();
         if (foundValue) {
 %>
-<a href="profile.jsp?user=<%=userFirstName%>&value=Question&ID=<%=userId%>"> <b><%=userFirstName%></b> posted a new question</a>
+<a href="profile.jsp?user=<%=userFirstName.replaceAll(" ", "+")%>&value=Question&ID=<%=userId%>"> <b><%=userFirstName%></b> posted a new question</a>
 <br>-------------------------------------------------<br>
 <%
                         foundValue = false;

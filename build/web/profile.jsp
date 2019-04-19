@@ -519,18 +519,90 @@
                     </div>
                     <div class="row">
                         <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                            <%
+                            //This script is for cound the rows in a table
+                            //For question
+                            int TotalQuestion = 0;
+                            String sql_question = "select count(*) as cnt from question where id =?";
+                            preparedStatement = connection.prepareStatement(sql_question);
+                            preparedStatement.setInt(1, id_of_user);
+                            resultSet = preparedStatement.executeQuery();
+                            while(resultSet.next()){
+                                TotalQuestion = resultSet.getInt("cnt");
+                            }
+                            %>
+                            <%
+                            //This script is for cound the rows in a table
+                            //For Answer
+                            int TotalAnswer = 0;
+                            String sql_answer = "select count(*) as cnt from answer where  Answer_by_id = ?";
+                            preparedStatement = connection.prepareStatement(sql_answer);
+                            preparedStatement.setInt(1, id_of_user);
+                            resultSet = preparedStatement.executeQuery();
+                            while(resultSet.next()){
+                                TotalAnswer = resultSet.getInt("cnt");
+                            }
+                            %>
+                            <%
+                            //This script is for cound the rows in a table
+                            //For Topic
+                            int TotalTopic = 0;
+                            String sql_topic = " select count(*) as cnt from topic_followers_detail where user_or_followers_id = ?";
+                            preparedStatement = connection.prepareStatement(sql_topic);
+                            preparedStatement.setInt(1, id_of_user);
+                            resultSet = preparedStatement.executeQuery();
+                            while(resultSet.next()){
+                                TotalTopic = resultSet.getInt("cnt");
+                            }
+                            %>
+                            <%
+                            //This script is for cound the rows in a table
+                            //For TotoalFollowing
+                            int TotalFollowing = 0;
+                            String sql_following = "select count(*) as cnt from ak_follower_detail where followers_id = ?";
+                            preparedStatement = connection.prepareStatement(sql_following);
+                            preparedStatement.setInt(1, id_of_user);
+                            resultSet = preparedStatement.executeQuery();
+                            while(resultSet.next()){
+                                TotalFollowing = resultSet.getInt("cnt");
+                            }
+                            %>
+                            <%
+                            //This script is for cound the rows in a table
+                            //For TotoalFollowers
+                            int TotalFollowers = 0;
+                            String sql_followers = "select count(*) as cnt from ak_follower_detail where user_id = ?";
+                            preparedStatement = connection.prepareStatement(sql_followers);
+                            preparedStatement.setInt(1, id_of_user);
+                            resultSet = preparedStatement.executeQuery();
+                            while(resultSet.next()){
+                                TotalFollowers = resultSet.getInt("cnt");
+                            }
+                            %>
+                            <%
+                            //This script is for cound the rows in a table
+                            //For Totoalblog
+                            int Totalblog = 0;
+                            String sql_blogs = "select count(*)as cnt from blog where blog_posted_by = ?";
+                            preparedStatement = connection.prepareStatement(sql_blogs);
+                            preparedStatement.setInt(1, id_of_user);
+                            resultSet = preparedStatement.executeQuery();
+                            while(resultSet.next()){
+                                Totalblog = resultSet.getInt("cnt");
+                            }
+                            %>
 
                             <div class="themeBox" style="min-height:auto;">
                                 <div class="boxHeading">
                                     <%=YOUR_ACTIVITY%>
                                 </div>
                                 <div>
-                                    <a href="profile.jsp?value=Question&ID=<%=ID%>&sl=<%=sl%>"><%=QUESTION%></a><br>
-                                    <a href="profile.jsp?value=Answer&ID=<%=ID%>&sl=<%=sl%>"><%=ANSWER%></a><br>
-                                    <a href="profile.jsp?value=Topic&ID=<%=ID%>&sl=<%=sl%>"><%=TOPIC_FOLLOWED%></a><br>
-                                    <a href="profile.jsp?value=Following&ID=<%=ID%>&sl=<%=sl%>"><%=FOLLOWING%></a><br>
-                                    <a href="profile.jsp?value=Followers&ID=<%=ID%>&sl=<%=sl%>"><%=FOLLOWERS%></a><br>
-                                    <a href="profile.jsp?value=Blog&ID=<%=ID%>&sl=<%=sl%>"><%=BLOG%></a><br>
+                                    <a href="profile.jsp?value=Question&ID=<%=ID%>&sl=<%=sl%>"><%=QUESTION%>(<%=TotalQuestion%>)</a><br>
+                                    <a href="profile.jsp?value=Answer&ID=<%=ID%>&sl=<%=sl%>"><%=ANSWER%>(<%=TotalAnswer%>)</a><br>
+                                    <a href="profile.jsp?value=Topic&ID=<%=ID%>&sl=<%=sl%>"><%=TOPIC_FOLLOWED%>(<%=TotalTopic%>)</a><br>
+                                    <a href="profile.jsp?value=Following&ID=<%=ID%>&sl=<%=sl%>"><%=FOLLOWING%>(<%=TotalFollowing%>)</a><br>
+                                    <a href="profile.jsp?value=Followers&ID=<%=ID%>&sl=<%=sl%>"><%=FOLLOWERS%>(<%=TotalFollowers%>)</a><br>
+                                    <a href="profile.jsp?value=Blog&ID=<%=ID%>&sl=<%=sl%>"><%=BLOG%>(<%=Totalblog%>)</a><br>
                                     <a href="profile.jsp?value=Quotes&ID=<%=ID%>&sl=<%=sl%>"><%=QUOTES%></a><br>
                                 </div>
 
@@ -563,7 +635,7 @@
                                                             question_id = resultSet.getInt("q_id");
                                                             int userId_of_this_question = resultSet.getInt("id");
 
-                                        %> <br>Q. <a href="Answer.jsp?Id=<%=question_id%>&sl=<%=sl%>" ><%=Question_asked_by_user%> ?</a>
+                                        %> <br>Q. <a href="Answer.jsp?q=<%=Question_asked_by_user.replaceAll(" ","-")%>&Id=<%=question_id%>&sl=<%=sl%>" ><%=Question_asked_by_user%> ?</a>
                                         &nbsp;&nbsp;&nbsp;&nbsp; 
                                         <%  if (session.getAttribute("Session_id_of_user") != null) {
                                                 if (userId_of_this_question == session_id_of_user) {%>
@@ -615,7 +687,7 @@
                                                     Question_id = resultSet.getInt("q.q_id");
                                                     int ans_id = resultSet.getInt("ans.a_id");
                                                     int ans_by_id = resultSet.getInt("ans.Answer_by_id");
-                                        %><br> Q. <a href="Answer.jsp?Id=<%=Question_id%>&sl=<%=sl%>" ><%=Question_by_user%> ?</a>
+                                        %><br> Q. <a href="Answer.jsp?q=<%=Question_by_user.replaceAll(" ","-")%>&Id=<%=Question_id%>&sl=<%=sl%>" ><%=Question_by_user%> ?</a>
                                         &nbsp;&nbsp;&nbsp;&nbsp;
                                         <%  if (session.getAttribute("Session_id_of_user") != null) {
                                                 if (ans_by_id == session_id_of_user) {%>
@@ -647,7 +719,7 @@
                                                         topic_name = convertStringUpperToLower(resultSet.getString("topic_name"));
                                                         topic_id = resultSet.getInt("unique_id");
                                                         if (topic_name != null) {
-                                        %><br> <a href="topic.jsp?id=<%=topic_id%>&sl=<%=sl%>" >&nbsp;&nbsp;&nbsp;&nbsp;<%=topic_name%> </a><%
+                                        %><br> <a href="topic.jsp?t=<%=topic_name.replaceAll(" ","+")%>&id=<%=topic_id%>&sl=<%=sl%>" >&nbsp;&nbsp;&nbsp;&nbsp;<%=topic_name%> </a><%
                                                         }
                                                     }
                                                     if (count == 0) {
@@ -735,7 +807,7 @@
                                             if (ParametrVariable.equals("Quotes")) {
                                                 out.println("<center><div class=boxHeading>" + QUOTES + "</div></center>");
                                                 String quotes;
-                                                String Q = "SELECT * FROM quotes WHERE quotes_posted_by = '" + id_of_user + "'";
+                                                String Q = "SELECT * FROM quotes WHERE user_id = '" + id_of_user + "'";
                                                 preparedStatement = connection.prepareStatement(Q);
                                                 resultSet = preparedStatement.executeQuery();
                                                 int count = 0;
