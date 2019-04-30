@@ -1,3 +1,4 @@
+<%@page import="java.util.ArrayList"%>
 <html lang="en">
     <head>
         <%@page language="java" %>
@@ -26,17 +27,17 @@
             }
         </style>
         <script type="text/javascript">
-           
-             function showCommentBox() {
-                 <% if(session.getAttribute("Session_id_of_user") != null){ %>
+
+            function showCommentBox() {
+            <% if (session.getAttribute("Session_id_of_user") != null) { %>
                 var div = document.getElementById('comment');
                 div.className = 'visible';
-                <% }else{ %>alert("Please login first to comment");
-                <%  }  %>
-            }
-                
-          
-           
+            <% } else { %>alert("Please login first to comment");
+            <%  }  %>
+                }
+
+
+
 
         </script>
         <!--        <script type="text/javascript">
@@ -126,20 +127,20 @@
         <script src="ckeditor/ckeditor.js"></script>
         <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
         <script>
-            (adsbygoogle = window.adsbygoogle || []).push({
-                google_ad_client: "ca-pub-8778688755733551",
-                enable_page_level_ads: true
-            });
+                (adsbygoogle = window.adsbygoogle || []).push({
+                    google_ad_client: "ca-pub-8778688755733551",
+                    enable_page_level_ads: true
+                });
         </script>
 
         <script async src="https://www.googletagmanager.com/gtag/js?id=UA-128307055-1"></script>
         <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag() {
-                dataLayer.push(arguments);
-            }
-            gtag('js', new Date());
-            gtag('config', 'UA-128307055-1');
+                window.dataLayer = window.dataLayer || [];
+                function gtag() {
+                    dataLayer.push(arguments);
+                }
+                gtag('js', new Date());
+                gtag('config', 'UA-128307055-1');
         </script> 
         <meta charset="UTF-8">
         <!-- For IE -->
@@ -351,6 +352,9 @@
                             <div class="clear-fix"></div>
                             <div class="clear-fix"></div>
                         </div>
+                        <%
+                            ArrayList<Integer> userId = new ArrayList<>();
+                        %>
                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 
                             <div class="row">
@@ -367,11 +371,15 @@
                                         <%
                                             String fullName_of_user_who_asked_the_question = null;
                                             try {
-                                                String sql_p = "SELECT user.firstname,q.q_id,q.id FROM newuser user RIGHT JOIN question q on user.id=q.id where q_id= (?)";
+                                                String sql_p = "SELECT user.id,user.firstname,q.q_id,q.id FROM newuser user RIGHT JOIN question q on user.id=q.id where q_id= (?)";
                                                 preparedStatement = connection.prepareStatement(sql_p);
                                                 preparedStatement.setInt(1, Question);
                                                 resultSet = preparedStatement.executeQuery();
                                                 while (resultSet.next()) {
+                                                    int user_Id = resultSet.getInt("user.id");
+                                                    if (!userId.contains(user_Id)) {
+                                                        userId.add(user_Id);
+                                                    }
                                                     q_id = resultSet.getInt("q_id");
                                                     q_asked_by_user = resultSet.getInt("id");
                                                     fullName_of_user_who_asked_the_question = convertStringUpperToLower(resultSet.getString("firstname"));
@@ -430,6 +438,9 @@
                                                     String userName = resultSet.getString("fullname");
                                                     String time = resultSet.getString("time");
                                                     int user_id = resultSet.getInt("user_id");
+                                                    if (!userId.contains(user_id)) {
+                                                        userId.add(user_id);
+                                                    }
                                                     out.println("(" + time + ") " + question_comments + ":- ");
                                         %>
                                         <a href="profile.jsp?user=<%=userName.replaceAll(" ", "+")%>&ID=<%=user_id%>&sl=<%=sl%>"><%=convertStringUpperToLower(userName)%></a><br>
@@ -448,7 +459,8 @@
 
                                     <%
                                         try {
-                                            String sql_p = "SELECT user.firstname,ans.answer,ans.a_id,ans.Answer_by_id FROM newuser user RIGHT JOIN answer ans on user.id = ans.Answer_by_id where q_id = '" + q_id + "' order by vote desc";
+                                            String sql_p = "SELECT user.firstname,ans.answer,ans.a_id,ans.Answer_by_id FROM newuser user "
+                                                    + "RIGHT JOIN answer ans on user.id = ans.Answer_by_id where q_id = '" + q_id + "' order by vote desc";
                                             preparedStatement = connection.prepareStatement(sql_p);
                                             resultSet = preparedStatement.executeQuery();
                                             int count = 0;
@@ -457,6 +469,9 @@
                                                 count++;
                                                 String answer = resultSet.getString("answer");
                                                 int who_gave_answer = resultSet.getInt("Answer_by_id");
+                                                if (!userId.contains(who_gave_answer)) {
+                                                    userId.add(who_gave_answer);
+                                                }
                                                 String firstname = convertStringUpperToLower(resultSet.getString("firstname"));
                                                 int answer_id = resultSet.getInt("ans.a_id");
                                     %>
@@ -490,16 +505,16 @@
 
                                         <script type="text/javascript">
                                             function showAns<%=answer_id%>CommentBox() {
-                                            <% if(session.getAttribute("Session_id_of_user") != null){ %>
+                                            <% if (session.getAttribute("Session_id_of_user") != null) {%>
                                                 var div = document.getElementById('Anscomment<%=answer_id%>');
                                                 div.className = 'visible';
-                                                <% }else { %>
-                                                    alert("Please Login First to comment!!!");
-                                                    <% } %>
+                                            <% } else { %>
+                                                alert("Please Login First to comment!!!");
+                                            <% } %>
                                             }
                                         </script>
                                     </div>
-                                    <!-- Comment on question -->
+                                    <!-- Comment on Answer -->
                                     <div align="right">
 
                                         <%
@@ -515,6 +530,9 @@
                                                     String userName = result.getString("fullname");
                                                     String time = result.getString("time");
                                                     int user_id = result.getInt("user_id");
+                                                    if(!userId.contains(user_id)){
+                                                        userId.add(user_id);
+                                                    }
                                                     out.println("(" + time + ") " + question_comments + ":- ");
                                         %>
                                         <a href="profile.jsp?user=<%=userName.replaceAll(" ", "+")%>&ID=<%=user_id%>&sl=<%=sl%>"><%=convertStringUpperToLower(userName)%></a><br>
@@ -560,7 +578,7 @@
                                     </jsp:include><%
                                         }
                                     %>
-                                    <form name="submitquestion" method="post" action="SubmitAnswer.jsp?_id_of_user=<%=id_of_user%>&q_id=<%=q_id%>&URL=<%=request.getRequestURL()%>?Id=<%=q_id%>&sl=<%=sl%>">
+                                    <form name="submitAnswer" method="post" action="SubmitAnswer.jsp?_id_of_user=<%=id_of_user%>&q_id=<%=q_id%>&URL=<%=request.getRequestURL()%>?Id=<%=q_id%>&sl=<%=sl%>">
                                         <input type="hidden" name="question" value="<%=StoredQuestion%>">
                                         <textarea class="ckeditor" name="answer" required="">
                                             <%
@@ -664,6 +682,7 @@
                                     %>
                                 </div>
                                 <%
+                                    session.setAttribute("AllUserIdList", userId);
                                     } catch (Exception e) {
                                         out.println("Error in main try block:-" + e);
                                     } finally {

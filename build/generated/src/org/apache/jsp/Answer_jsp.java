@@ -3,6 +3,7 @@ package org.apache.jsp;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.jsp.*;
+import java.util.ArrayList;
 import java.sql.*;
 
 public final class Answer_jsp extends org.apache.jasper.runtime.HttpJspBase
@@ -171,6 +172,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       _jspx_out = out;
       _jspx_resourceInjector = (org.glassfish.jsp.api.ResourceInjector) application.getAttribute("com.sun.appserv.jsp.resource.injector");
 
+      out.write("\r\n");
       out.write("<html lang=\"en\">\r\n");
       out.write("    <head>\r\n");
       out.write("        \r\n");
@@ -184,6 +186,51 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("        \r\n");
       out.write("        <meta charset=\"UTF-8\">\r\n");
       out.write("        <meta http-equiv=\"content-type\" content=\"text/html\" charset=\"utf-8\">\r\n");
+      out.write("        <style type=\"text/css\">\r\n");
+      out.write("            div.hidden{\r\n");
+      out.write("                display: none;\r\n");
+      out.write("            }\r\n");
+      out.write("            div.visible{\r\n");
+      out.write("                display: block;\r\n");
+      out.write("            }\r\n");
+      out.write("            .comment_box{\r\n");
+      out.write("                border-style:solid;\r\n");
+      out.write("                border-width:1px;\r\n");
+      out.write("                float:left;\r\n");
+      out.write("                background-color:#d4d4cb;\r\n");
+      out.write("                width:280px;\r\n");
+      out.write("                padding-left:20px;\r\n");
+      out.write("                padding-top:25px;\r\n");
+      out.write("                padding-bottom:10px;\r\n");
+      out.write("            }\r\n");
+      out.write("        </style>\r\n");
+      out.write("        <script type=\"text/javascript\">\r\n");
+      out.write("\r\n");
+      out.write("            function showCommentBox() {\r\n");
+      out.write("            ");
+ if (session.getAttribute("Session_id_of_user") != null) { 
+      out.write("\r\n");
+      out.write("                var div = document.getElementById('comment');\r\n");
+      out.write("                div.className = 'visible';\r\n");
+      out.write("            ");
+ } else { 
+      out.write("alert(\"Please login first to comment\");\r\n");
+      out.write("            ");
+  }  
+      out.write("\r\n");
+      out.write("                }\r\n");
+      out.write("\r\n");
+      out.write("\r\n");
+      out.write("\r\n");
+      out.write("\r\n");
+      out.write("        </script>\r\n");
+      out.write("        <!--        <script type=\"text/javascript\">\r\n");
+      out.write("                    function showAnsCommentBox() {\r\n");
+      out.write("                        var div = document.getElementById('Anscomment');\r\n");
+      out.write("                        div.className = 'visible';\r\n");
+      out.write("                    }\r\n");
+      out.write("                </script>-->\r\n");
+      out.write("\r\n");
       out.write("\r\n");
       out.write("        ");
       out.write("\r\n");
@@ -258,20 +305,20 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("        <script src=\"ckeditor/ckeditor.js\"></script>\r\n");
       out.write("        <script async src=\"//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js\"></script>\r\n");
       out.write("        <script>\r\n");
-      out.write("            (adsbygoogle = window.adsbygoogle || []).push({\r\n");
-      out.write("                google_ad_client: \"ca-pub-8778688755733551\",\r\n");
-      out.write("                enable_page_level_ads: true\r\n");
-      out.write("            });\r\n");
+      out.write("                (adsbygoogle = window.adsbygoogle || []).push({\r\n");
+      out.write("                    google_ad_client: \"ca-pub-8778688755733551\",\r\n");
+      out.write("                    enable_page_level_ads: true\r\n");
+      out.write("                });\r\n");
       out.write("        </script>\r\n");
       out.write("\r\n");
       out.write("        <script async src=\"https://www.googletagmanager.com/gtag/js?id=UA-128307055-1\"></script>\r\n");
       out.write("        <script>\r\n");
-      out.write("            window.dataLayer = window.dataLayer || [];\r\n");
-      out.write("            function gtag() {\r\n");
-      out.write("                dataLayer.push(arguments);\r\n");
-      out.write("            }\r\n");
-      out.write("            gtag('js', new Date());\r\n");
-      out.write("            gtag('config', 'UA-128307055-1');\r\n");
+      out.write("                window.dataLayer = window.dataLayer || [];\r\n");
+      out.write("                function gtag() {\r\n");
+      out.write("                    dataLayer.push(arguments);\r\n");
+      out.write("                }\r\n");
+      out.write("                gtag('js', new Date());\r\n");
+      out.write("                gtag('config', 'UA-128307055-1');\r\n");
       out.write("        </script> \r\n");
       out.write("        <meta charset=\"UTF-8\">\r\n");
       out.write("        <!-- For IE -->\r\n");
@@ -525,6 +572,11 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("                            <div class=\"clear-fix\"></div>\r\n");
       out.write("                            <div class=\"clear-fix\"></div>\r\n");
       out.write("                        </div>\r\n");
+      out.write("                        ");
+
+                            ArrayList<Integer> userId = new ArrayList<>();
+                        
+      out.write("\r\n");
       out.write("                        <div class=\"col-lg-6 col-md-6 col-sm-12 col-xs-12\">\r\n");
       out.write("\r\n");
       out.write("                            <div class=\"row\">\r\n");
@@ -546,11 +598,15 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
 
                                             String fullName_of_user_who_asked_the_question = null;
                                             try {
-                                                String sql_p = "SELECT user.firstname,q.q_id,q.id FROM newuser user RIGHT JOIN question q on user.id=q.id where q_id= (?)";
+                                                String sql_p = "SELECT user.id,user.firstname,q.q_id,q.id FROM newuser user RIGHT JOIN question q on user.id=q.id where q_id= (?)";
                                                 preparedStatement = connection.prepareStatement(sql_p);
                                                 preparedStatement.setInt(1, Question);
                                                 resultSet = preparedStatement.executeQuery();
                                                 while (resultSet.next()) {
+                                                    int user_Id = resultSet.getInt("user.id");
+                                                    if (!userId.contains(user_Id)) {
+                                                        userId.add(user_Id);
+                                                    }
                                                     q_id = resultSet.getInt("q_id");
                                                     q_asked_by_user = resultSet.getInt("id");
                                                     fullName_of_user_who_asked_the_question = convertStringUpperToLower(resultSet.getString("firstname"));
@@ -586,7 +642,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.print(sl);
       out.write('"');
       out.write('>');
-      out.print(fullName_of_user_who_asked_the_question);
+      out.print(firstName(fullName_of_user_who_asked_the_question));
       out.write("</a> </div>\r\n");
       out.write("\r\n");
       out.write("                                        </div>\r\n");
@@ -596,14 +652,66 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("                                        <a href=\"javascript:void(0)\" onclick=\"this.style.color = 'red';return take_value(this, '");
       out.print(q_id);
       out.write("', 'downvote', 'question');\" >Downvote</a> &nbsp;&nbsp;\r\n");
-      out.write("                                        <a href=\"#\" data-toggle=\"modal\" data-target=\"#myModal_q_comment\">Comment</a>\r\n");
+      out.write("                                        <a href=\"javascript:void(0)\" value=\"Comment\" onclick=\"showCommentBox()\">Comment</a>\r\n");
+      out.write("                                        <form action=\"SubmitQuestionComment.jsp\" method=\"get\">\r\n");
+      out.write("                                            <div class=\"hidden\" id=\"comment\">\r\n");
+      out.write("                                                <input type=\"hidden\" name=\"question_id\" value=\"");
+      out.print(q_id);
+      out.write("\">\r\n");
+      out.write("                                                <input type=\"hidden\" name=\"question\" value=\"");
+      out.print(StoredQuestion);
+      out.write("\">\r\n");
+      out.write("                                                <textarea name=\"comments\" rows=\"3\" cols=\"30\" required=\"\"></textarea>\r\n");
+      out.write("                                                <input type=\"submit\" name=\"sub\" value=\"Send Comment\">\r\n");
+      out.write("                                            </div>\r\n");
+      out.write("                                        </form>\r\n");
+      out.write("                                    </div>\r\n");
+      out.write("                                    <!-- Comment on question -->\r\n");
+      out.write("                                    <div align=\"right\">\r\n");
+      out.write("\r\n");
+      out.write("                                        ");
+
+                                            try {
+                                                String sql_question_comment = "SELECT unique_id,user_id,"
+                                                        + "(SELECT firstname FROM newuser WHERE id = comments.user_id )AS fullname,"
+                                                        + "q_id,comments,time FROM comments WHERE q_id = ? AND user_id IS NOT NULL AND q_id IS NOT NULL";
+                                                preparedStatement = connection.prepareStatement(sql_question_comment);
+                                                preparedStatement.setInt(1, q_id);
+                                                resultSet = preparedStatement.executeQuery();
+                                                while (resultSet.next()) {
+                                                    String question_comments = resultSet.getString("comments");
+                                                    String userName = resultSet.getString("fullname");
+                                                    String time = resultSet.getString("time");
+                                                    int user_id = resultSet.getInt("user_id");
+                                                    if (!userId.contains(user_id)) {
+                                                        userId.add(user_id);
+                                                    }
+                                                    out.println("(" + time + ") " + question_comments + ":- ");
+                                        
+      out.write("\r\n");
+      out.write("                                        <a href=\"profile.jsp?user=");
+      out.print(userName.replaceAll(" ", "+"));
+      out.write("&ID=");
+      out.print(user_id);
+      out.write("&sl=");
+      out.print(sl);
+      out.write('"');
+      out.write('>');
+      out.print(convertStringUpperToLower(userName));
+      out.write("</a><br>\r\n");
+      out.write("                                        ");
+
+                                                }
+
+                                            } catch (Exception msg) {
+                                                out.println("Error in loading question comment: -" + msg);
+                                            }
+                                        
+      out.write("\r\n");
       out.write("\r\n");
       out.write("                                    </div>\r\n");
-      out.write("                                    <!-- **************If having the comment on the question****************** -->\r\n");
       out.write("\r\n");
-      out.write("                                    <p align=\"right\"><a href=\"\">user profile</a>&nbsp;&nbsp;This is first comment</p>\r\n");
-      out.write("                                    <p align=\"right\"><a href=\"\">user profile</a>&nbsp;&nbsp;This is second comment</p>\r\n");
-      out.write("                                    <!-- **************End of the programm****************** -->\r\n");
+      out.write("\r\n");
       out.write("                                    <div class=\"boxHeading marginbot10\">");
       out.print(ANSWER);
       out.write(":</div>\r\n");
@@ -611,7 +719,8 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("                                    ");
 
                                         try {
-                                            String sql_p = "SELECT user.firstname,ans.answer,ans.a_id,ans.Answer_by_id FROM newuser user RIGHT JOIN answer ans on user.id = ans.Answer_by_id where q_id = '" + q_id + "' order by vote desc";
+                                            String sql_p = "SELECT user.firstname,ans.answer,ans.a_id,ans.Answer_by_id FROM newuser user "
+                                                    + "RIGHT JOIN answer ans on user.id = ans.Answer_by_id where q_id = '" + q_id + "' order by vote desc";
                                             preparedStatement = connection.prepareStatement(sql_p);
                                             resultSet = preparedStatement.executeQuery();
                                             int count = 0;
@@ -620,6 +729,9 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                                 count++;
                                                 String answer = resultSet.getString("answer");
                                                 int who_gave_answer = resultSet.getInt("Answer_by_id");
+                                                if (!userId.contains(who_gave_answer)) {
+                                                    userId.add(who_gave_answer);
+                                                }
                                                 String firstname = convertStringUpperToLower(resultSet.getString("firstname"));
                                                 int answer_id = resultSet.getInt("ans.a_id");
                                     
@@ -641,7 +753,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.print(sl);
       out.write('"');
       out.write('>');
-      out.print(firstname);
+      out.print(firstName(firstname));
       out.write("</a> \r\n");
       out.write("                                                &nbsp;&nbsp;&nbsp;&nbsp;\r\n");
       out.write("                                                ");
@@ -668,13 +780,93 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("                                        <a href=\"javascript:void(0)\" onclick=\"this.style.color = 'red';return take_value(this, '");
       out.print(answer_id);
       out.write("', 'downvote', 'answer');\" >Downvote</a>\r\n");
+      out.write("                                        <a href=\"javascript:void(0)\" value=\"Comment\" onclick=\"showAns");
+      out.print(answer_id);
+      out.write("CommentBox()\">Comment</a>\r\n");
+      out.write("                                        <form action=\"SubmitAnswerComment.jsp\" method=\"get\">\r\n");
+      out.write("                                            <div class=\"hidden\" id=\"Anscomment");
+      out.print(answer_id);
+      out.write("\">\r\n");
+      out.write("                                                <input type=\"hidden\" name=\"answer_id\" value=\"");
+      out.print(answer_id);
+      out.write("\">\r\n");
+      out.write("                                                <input type=\"hidden\" name=\"question_id\" value=\"");
+      out.print(q_id);
+      out.write("\">\r\n");
+      out.write("                                                <input type=\"hidden\" name=\"question\" value=\"");
+      out.print(StoredQuestion);
+      out.write("\">\r\n");
+      out.write("                                                <textarea name=\"comments\" rows=\"3\" cols=\"30\" required=\"\"></textarea>\r\n");
+      out.write("                                                <input type=\"submit\" name=\"sub\" value=\"Send Comment\">\r\n");
+      out.write("                                            </div>\r\n");
+      out.write("                                        </form>\r\n");
+      out.write("\r\n");
+      out.write("                                        <script type=\"text/javascript\">\r\n");
+      out.write("                                            function showAns");
+      out.print(answer_id);
+      out.write("CommentBox() {\r\n");
+      out.write("                                            ");
+ if (session.getAttribute("Session_id_of_user") != null) {
+      out.write("\r\n");
+      out.write("                                                var div = document.getElementById('Anscomment");
+      out.print(answer_id);
+      out.write("');\r\n");
+      out.write("                                                div.className = 'visible';\r\n");
+      out.write("                                            ");
+ } else { 
+      out.write("\r\n");
+      out.write("                                                alert(\"Please Login First to comment!!!\");\r\n");
+      out.write("                                            ");
+ } 
+      out.write("\r\n");
+      out.write("                                            }\r\n");
+      out.write("                                        </script>\r\n");
+      out.write("                                    </div>\r\n");
+      out.write("                                    <!-- Comment on Answer -->\r\n");
+      out.write("                                    <div align=\"right\">\r\n");
+      out.write("\r\n");
+      out.write("                                        ");
+
+                                            try {
+                                                String sql_question_comment = "SELECT unique_id,user_id,"
+                                                        + "(SELECT firstname FROM newuser WHERE id = comments.user_id )AS fullname,"
+                                                        + "ans_id,comments,time FROM comments WHERE ans_id = ? AND user_id IS NOT NULL AND ans_id IS NOT NULL";
+                                                preparedStatement = connection.prepareStatement(sql_question_comment);
+                                                preparedStatement.setInt(1, answer_id);
+                                                ResultSet result = preparedStatement.executeQuery();
+                                                while (result.next()) {
+                                                    String question_comments = result.getString("comments");
+                                                    String userName = result.getString("fullname");
+                                                    String time = result.getString("time");
+                                                    int user_id = result.getInt("user_id");
+                                                    if(!userId.contains(user_id)){
+                                                        userId.add(user_id);
+                                                    }
+                                                    out.println("(" + time + ") " + question_comments + ":- ");
+                                        
+      out.write("\r\n");
+      out.write("                                        <a href=\"profile.jsp?user=");
+      out.print(userName.replaceAll(" ", "+"));
+      out.write("&ID=");
+      out.print(user_id);
+      out.write("&sl=");
+      out.print(sl);
+      out.write('"');
+      out.write('>');
+      out.print(convertStringUpperToLower(userName));
+      out.write("</a><br>\r\n");
+      out.write("                                        ");
+
+                                                }
+                                                result.close();
+
+                                            } catch (Exception msg) {
+                                                out.println("Error in loading question comment: -" + msg);
+                                            }
+                                        
+      out.write("\r\n");
       out.write("\r\n");
       out.write("                                    </div>\r\n");
-      out.write("                                        <!-- **************If having the comment on the question****************** -->\r\n");
-      out.write("\r\n");
-      out.write("                                    <p align=\"right\"><a href=\"\">user profile</a>&nbsp;&nbsp;This is first comment</p>\r\n");
-      out.write("                                    <p align=\"right\"><a href=\"\">user profile</a>&nbsp;&nbsp;This is second comment</p>\r\n");
-      out.write("                                    <!-- **************End of the programm****************** -->\r\n");
       out.write("                                    ");
 
                                         }
@@ -710,7 +902,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                         }
                                     
       out.write("\r\n");
-      out.write("                                    <form name=\"submitquestion\" method=\"post\" action=\"SubmitAnswer.jsp?_id_of_user=");
+      out.write("                                    <form name=\"submitAnswer\" method=\"post\" action=\"SubmitAnswer.jsp?_id_of_user=");
       out.print(id_of_user);
       out.write("&q_id=");
       out.print(q_id);
@@ -720,6 +912,9 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.print(q_id);
       out.write("&sl=");
       out.print(sl);
+      out.write("\">\r\n");
+      out.write("                                        <input type=\"hidden\" name=\"question\" value=\"");
+      out.print(StoredQuestion);
       out.write("\">\r\n");
       out.write("                                        <textarea class=\"ckeditor\" name=\"answer\" required=\"\">\r\n");
       out.write("                                            ");
@@ -836,6 +1031,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("                                </div>\r\n");
       out.write("                                ");
 
+                                    session.setAttribute("AllUserIdList", userId);
                                     } catch (Exception e) {
                                         out.println("Error in main try block:-" + e);
                                     } finally {
@@ -900,66 +1096,10 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("            </div>\r\n");
       out.write("            <div class=\"clear-fix\"></div>\r\n");
       out.write("\r\n");
-      out.write("            <div class=\"modal fade\" id=\"myModal\" role=\"dialog\">\r\n");
-      out.write("                <div class=\"modal-dialog\">\r\n");
-      out.write("                </div>\r\n");
-      out.write("            </div>\r\n");
-      out.write("            \r\n");
-      out.write("<!--  Comment dialog box   -->\r\n");
-      out.write("\r\n");
-      out.write("            <div class=\"modal fade\" id=\"myModal_q_comment\" role=\"dialog\">\r\n");
-      out.write("                <div class=\"modal-dialog\">\r\n");
-      out.write("\r\n");
-      out.write("                    <!-- Modal content-->\r\n");
-      out.write("                    <div class=\"modal-content\">\r\n");
-      out.write("\r\n");
-      out.write("                        <div class=\"modal-header\">\r\n");
-      out.write("                            <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\r\n");
-      out.write("                            <h4 class=\"modal-title\">Comment Box</h4>\r\n");
-      out.write("                        </div>\r\n");
-      out.write("                        ");
-if (session.getAttribute("email") != null) {
-      out.write("\r\n");
-      out.write("                        <form name=\"submitquestioncomment\" method=\"post\" action=\"SubmitQuestionComment.jsp\">\r\n");
-      out.write("                            <div class=\"modal-body\">\r\n");
-      out.write("                                <div>\r\n");
-      out.write("                                    <div>Put Your Comment Here</div>\r\n");
-      out.write("                                    <textarea type=\"text\" class=\"anstext\" name=\"questionComment\" placeholder=\"Type comment here.\"  required=\"\"></textarea\r\n");
-      out.write("                                </div>\r\n");
-      out.write("\r\n");
-      out.write("                                <!-- <p>Some text in the modal.</p> -->\r\n");
+      out.write("            <!--            <div class=\"modal fade\" id=\"myModal\" role=\"dialog\">\r\n");
+      out.write("                            <div class=\"modal-dialog\">\r\n");
       out.write("                            </div>\r\n");
-      out.write("                            <div class=\"modal-footer\">\r\n");
-      out.write("                                <button type=\"submit\" class=\"btn\" name=\"submit\" value=\"submit_question_commit\">post</button>\r\n");
-      out.write("                                <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">close</button>\r\n");
-      out.write("                            </div>\r\n");
-      out.write("                        </form>\r\n");
-      out.write("                        ");
-} else {
-      out.write("\r\n");
-      out.write("                        <div class=\"modal-body\">\r\n");
-      out.write("                            <div>\r\n");
-      out.write("                                <div><h4 style=\"color: red;\">Please Login first!!!</h4></div>\r\n");
-      out.write("                                <div><a href=\"Login.jsp?sl=");
-      out.print(sl);
-      out.write("\">Click here to login</a></div>\r\n");
-      out.write("                            </div>\r\n");
-      out.write("                        </div>\r\n");
-      out.write("                        <div class=\"modal-footer\">                                                    \r\n");
-      out.write("                            <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">close</button>\r\n");
-      out.write("                        </div>\r\n");
-      out.write("\r\n");
-      out.write("                        ");
- }
-      out.write("\r\n");
-      out.write("\r\n");
-      out.write("                    </div>\r\n");
-      out.write("\r\n");
-      out.write("                </div>\r\n");
-      out.write("            </div>\r\n");
-      out.write("\r\n");
-      out.write("\r\n");
-      out.write("\r\n");
+      out.write("                        </div>-->\r\n");
       out.write("            ");
       out.write("<div class=\"modal fade\" id=\"myModalN\" role=\"dialog\">\n");
       out.write("    <div class=\"modal-dialog\">\n");

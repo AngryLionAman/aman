@@ -6,8 +6,7 @@
         <%@include file="validator.jsp" %>
         <meta charset="UTF-8">
         <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-        <%!            
-            String name = null;
+        <%!            String name = null;
             int id_of_user = 0;
             int topic_id = 0;
 
@@ -92,14 +91,14 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="content-type" content="text/html" charset="utf-8">
         <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<script>
-  (adsbygoogle = window.adsbygoogle || []).push({
-    google_ad_client: "ca-pub-8778688755733551",
-    enable_page_level_ads: true
-  });
-</script>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({
+                google_ad_client: "ca-pub-8778688755733551",
+                enable_page_level_ads: true
+            });
+        </script>
 
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-128307055-1"></script>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-128307055-1"></script>
         <script>
             window.dataLayer = window.dataLayer || [];
             function gtag() {
@@ -259,10 +258,10 @@
                                 <div>
                                     <ul>
                                         <%
-                                            
-                                            if(session.getAttribute("Session_id_of_user") != null){
+
+                                            if (session.getAttribute("Session_id_of_user") != null) {
                                                 id_of_user = (Integer) session.getAttribute("Session_id_of_user");
-                                            }else{
+                                            } else {
                                                 id_of_user = 0;
                                             }
                                             String sql = "";
@@ -327,7 +326,7 @@
                                         <div class="boxHeading">
                                             <%=POST_SOMETHING%>
                                         </div>
-                                            <div><textarea type="text" class="anstext" placeholder="<%=POST_YOUR_QUESTION_HERE%>" data-toggle="modal" data-target="#myModal" readonly=""></textarea></div>
+                                        <div><textarea type="text" class="anstext" placeholder="<%=POST_YOUR_QUESTION_HERE%>" data-toggle="modal" data-target="#myModal" readonly=""></textarea></div>
 
                                         <div class="float-right margintop20" style="vertical-align:bottom">
                                             <button type="button" class="btn" data-toggle="modal" data-target="#myModal"><%=POST%></button>
@@ -362,7 +361,7 @@
                                                 int userID = resultSet.getInt("user.ID");
                                                 int tac = resultSet.getInt("tac");
                                                 int UpVote = resultSet.getInt("q.vote");
-                                                UserName_for_trending_question_T = resultSet.getString("firstname").substring(0, 1).toUpperCase()+resultSet.getString("firstname").substring(1).toLowerCase();
+                                                UserName_for_trending_question_T = resultSet.getString("firstname").substring(0, 1).toUpperCase() + resultSet.getString("firstname").substring(1).toLowerCase();
                                     %>
                                     <div class="themeBox" style="height:auto;">
 
@@ -384,9 +383,42 @@
                                             <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=question_id%>', '<%="upvote"%>');" >Upvote(<%=UpVote%>)</a>&nbsp;&nbsp; 
                                             <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=question_id%>', '<%="downvote"%>');" >Downvote</a>&nbsp;&nbsp; 
                                             <a href="Answer.jsp?q=<%=TrendingQuestion_T.replaceAll(" ", "-")%>&Id=<%=question_id%>&sl=<%=sl%>" >Answer(<%=tac%>)</a>
-                                        </div>
+                                            <!-- Comment on question -->
+                                            <div align="right">
 
-                                    </div><%
+                                                <%
+                                                    try {
+                                                        PreparedStatement ps = null;
+                                                        ResultSet rs = null;
+                                                        String sql_question_comment = "SELECT unique_id,user_id,"
+                                                                + "(SELECT firstname FROM newuser WHERE id = comments.user_id )AS fullname,"
+                                                                + "q_id,comments,time FROM comments WHERE q_id = ? AND user_id IS NOT NULL AND q_id IS NOT NULL";
+                                                        ps = connection.prepareStatement(sql_question_comment);
+                                                        ps.setInt(1, question_id);
+                                                        rs = ps.executeQuery();
+                                                        while (rs.next()) {
+                                                            String question_comments = rs.getString("comments");
+                                                            String userName = rs.getString("fullname");
+                                                            String time = rs.getString("time");
+                                                            int user_id = rs.getInt("user_id");
+
+                                                            out.println(question_comments + ":- ");
+                                                %>
+                                                <a href="profile.jsp?user=<%=userName.replaceAll(" ", "+")%>&ID=<%=user_id%>&sl=<%=sl%>"><%=convertStringUpperToLower(userName)%></a>
+                                                <%
+                                                            out.println("(" + time + ") <br>_______________________________________<br>");
+                                                        }
+                                                        ps.close();
+                                                        rs.close();
+                                                    } catch (Exception msg) {
+                                                        out.println("Error in loading question comment: -" + msg);
+                                                    }
+                                                %>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <%
                                         }
                                     } catch (Exception Exceptionmsg) {
                                         out.println("Error " + Exceptionmsg);
@@ -439,7 +471,7 @@
                                                 fname = resultSet.getString("firstname");
                                                 TotalAnswerCount = resultSet.getInt("tac");
                                                 VoteCount = resultSet.getInt("q.vote");
-                                                %>
+                                    %>
                                     <div class="themeBox" style="height:auto;">
 
                                         <div class="boxHeading marginbot10">
@@ -448,17 +480,50 @@
                                         <div class="questionArea">
                                             <div class="postedBy"><%=POSTED_BY%> : <a href="profile.jsp?user=<%=fname.replaceAll(" ", "+")%>&ID=<%=ide%>&sl=<%=sl%>"><%=firstName(fname)%></a></div>
                                         </div>
-                                        <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=resultSet.getInt("q.q_id")%>', '<%="upvote"%>');" >Upvote(<%=VoteCount%>)</a>&nbsp;&nbsp; 
+                                        <a href="javascript:void(0)" onclick="this.style.color = 'red';
+                                                return take_value(this, '<%=resultSet.getInt("q.q_id")%>', '<%="upvote"%>');" >Upvote(<%=VoteCount%>)</a>&nbsp;&nbsp; 
                                         <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=resultSet.getInt("q.q_id")%>', '<%="downvote"%>');" >Downvote</a>&nbsp;&nbsp; 
                                         <a href="Answer.jsp?q=<%=question.replaceAll(" ", "-")%>&Id=<%=resultSet.getInt("q.q_id")%>&sl=<%=sl%>" >Answer(<%=TotalAnswerCount%>)</a>
+                                        <!-- Comment on question -->
+                                        <div align="right">
 
+                                            <%
+                                                try {
+                                                    PreparedStatement ps = null;
+                                                    ResultSet rs = null;
+                                                    String sql_question_comment = "SELECT unique_id,user_id,"
+                                                            + "(SELECT firstname FROM newuser WHERE id = comments.user_id )AS fullname,"
+                                                            + "q_id,comments,time FROM comments WHERE q_id = ? AND user_id IS NOT NULL AND q_id IS NOT NULL";
+                                                    ps = connection.prepareStatement(sql_question_comment);
+                                                    ps.setInt(1, resultSet.getInt("q.q_id"));
+                                                    rs = ps.executeQuery();
+                                                    while (rs.next()) {
+                                                        String question_comments = rs.getString("comments");
+                                                        String userName = rs.getString("fullname");
+                                                        String time = rs.getString("time");
+                                                        int user_id = rs.getInt("user_id");
+
+                                                        out.println(question_comments + ":- ");
+                                            %>
+                                            <a href="profile.jsp?user=<%=userName.replaceAll(" ", "+")%>&ID=<%=user_id%>&sl=<%=sl%>"><%=convertStringUpperToLower(userName)%></a>
+                                            <%
+                                                        out.println("(" + time + ") <br>_______________________________________<br>");
+                                                    }
+                                                    ps.close();
+                                                    rs.close();
+                                                } catch (Exception msg) {
+                                                    out.println("Error in loading question comment: -" + msg);
+                                                }
+                                            %>
+
+                                        </div>
                                     </div>
 
 
-                                    <%             
+                                    <%
                                         }
                                     } catch (Exception e) {
-                                        out.println("<b style=color:red;>No question found related to your selected topic</b>Ex:"+e);
+                                        out.println("<b style=color:red;>No question found related to your selected topic</b>Ex:" + e);
                                         if (session.getAttribute("email") == null) {
                                             email = "Anonuous";
                                         } else {
@@ -476,8 +541,8 @@
                                         <jsp:param name="URLParameter" value="<%=URL%>"></jsp:param>
                                         <jsp:param name="ExceptionMessage" value="<%=e%>"></jsp:param>
                                     </jsp:include><%
+                                            }
                                         }
-                                    } 
                                     %>
 
                                     <h4><%=QUESTION_YOU_MAY_LIKE%></h4>
@@ -555,7 +620,39 @@
                                             <a href="javascript:void(0)" onclick="return take_value(this, '<%=rs1.getInt("q_id")%>', 'upvote');">Upvote(<%=Vote%>)</a>&nbsp;&nbsp;
                                             <a href="javascript:void(0)" onclick="return take_value(this, '<%=rs1.getInt("q_id")%>', 'upvote');">Downvote</a>&nbsp;&nbsp;
                                             <a href="Answer.jsp?q=<%=rs1.getString("question").replaceAll(" ", "-")%>&Id=<%=rs1.getInt("q_id")%>&sl=<%=sl%>">Answer(<%=TotoalAnswerCount%>)</a>
+                                            <!-- Fetching the Comment on question -->
+                                            <div align="right">
 
+                                                <%
+                                                    try {
+                                                        PreparedStatement ps = null;
+                                                        ResultSet rs = null;
+                                                        String sql_question_comment = "SELECT unique_id,user_id,"
+                                                                + "(SELECT firstname FROM newuser WHERE id = comments.user_id )AS fullname,"
+                                                                + "q_id,comments,time FROM comments WHERE q_id = ? AND user_id IS NOT NULL AND q_id IS NOT NULL";
+                                                        ps = connection.prepareStatement(sql_question_comment);
+                                                        ps.setInt(1, rs1.getInt("q_id"));
+                                                        rs = ps.executeQuery();
+                                                        while (rs.next()) {
+                                                            String question_comments = rs.getString("comments");
+                                                            String userName = rs.getString("fullname");
+                                                            String time = rs.getString("time");
+                                                            int user_id = rs.getInt("user_id");
+
+                                                            out.println(question_comments + ":- ");
+                                                %>
+                                                <a href="profile.jsp?user=<%=userName.replaceAll(" ", "+")%>&ID=<%=user_id%>&sl=<%=sl%>"><%=convertStringUpperToLower(userName)%></a>
+                                                <%
+                                                            out.println("(" + time + ") <br>_______________________________________<br>");
+                                                        }
+                                                        ps.close();
+                                                        rs.close();
+                                                    } catch (Exception msg) {
+                                                        out.println("Error in loading question comment: -" + msg);
+                                                    }
+                                                %>
+
+                                            </div>
                                         </div>
 
                                         <%
@@ -636,28 +733,28 @@
                                         </table>
                                     </form>
                                     <%
-                                            try {
-                                                if (ps1 != null) {
-                                                    ps1.close();
-                                                }
-                                                if (rs1 != null) {
-                                                    rs1.close();
-                                                }
-
-                                                if (ps2 != null) {
-                                                    ps2.close();
-                                                }
-                                                if (rs2 != null) {
-                                                    rs2.close();
-                                                }
-
-                                                //if (connection2 != null) {
-                                                //  connection2.close();
-                                                //}
-                                            } catch (Exception e) {
-                                                e.printStackTrace();
+                                        try {
+                                            if (ps1 != null) {
+                                                ps1.close();
                                             }
-                                        %>
+                                            if (rs1 != null) {
+                                                rs1.close();
+                                            }
+
+                                            if (ps2 != null) {
+                                                ps2.close();
+                                            }
+                                            if (rs2 != null) {
+                                                rs2.close();
+                                            }
+
+                                            //if (connection2 != null) {
+                                            //  connection2.close();
+                                            //}
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    %>
                                     <div class="clear-fix"></div>
 
 
@@ -672,19 +769,19 @@
                                 </div>
                                 <div>
                                     <jsp:include page="funZoneList.jsp"></jsp:include>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="themeBox" style="height:auto;">
-                                <div class="boxHeading">
-                                    Education Zone
+                                <div class="themeBox" style="height:auto;">
+                                    <div class="boxHeading">
+                                        Education Zone
+                                    </div>
+                                    <div>
+                                    <jsp:include page="eduZoneList.jsp"></jsp:include>
+                                    </div>
                                 </div>
-                                <div>
-                                <jsp:include page="eduZoneList.jsp"></jsp:include>
-                                </div>
-                            </div>
 
-                            <!--div class="themeBox" style="height:auto;">
-                                <div class="boxHeading">
+                                <!--div class="themeBox" style="height:auto;">
+                                    <div class="boxHeading">
                             <%--=TRENDING_QUESTION--%>
                         </div>
                         <div>

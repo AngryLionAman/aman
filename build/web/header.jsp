@@ -4,8 +4,7 @@
 <%@page import="java.sql.*" %> 
 <%@include file="validator.jsp"%>
 <%@include file="site.jsp"%>
-<%!
-    String EMAIL = "";
+<%!    String EMAIL = "";
     String PASSWORD = "";
     String HOME = "";
     String LOGIN = "";
@@ -64,9 +63,19 @@
                 </a></div>
         </div>
         <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 serachhere" style="display:inline-block;">
-
+            <script type="text/javascript">
+                function validateForm()
+                {
+                    var a = document.forms["Form"]["search"].value;
+                    if (a === null || a === "", a.trim() === "")
+                    {
+                        //alert("Please Fill All Required Field");
+                        return false;
+                    }
+                }
+            </script>
             <div style="overflow: hidden; padding-right: .5em;">
-                <form action="SearchBar.jsp">
+                <form action="SearchBar.jsp" name="Form" onsubmit="return validateForm()">
                     <input type="hidden" name="sl" value="<%=sl%>">
                     <input type="text" style="width: 100%;" name="search" required="">
 <!--                    <button type="submit" style="float: right;width: 50px;" /><%=SEARCH%></button>-->
@@ -83,23 +92,23 @@
             <% } else { %>
             <a href="index.jsp?sl=hi" class="helpicon"  style="color: white;padding-left: 10px;padding-right: 30px;">हिन्दी</a>
             <% } %>
-             <% if (session.getAttribute("email") != null) {%> 
+            <% if (session.getAttribute("email") != null) {%> 
             <a href="#" data-toggle="modal" class="helpicon" data-target="#myModalN" style="color: white;padding-left: 10px;padding-right: 10px;">
-<!--                <span></span>--> Inbox
-<!--                <span class="badge">0</span>-->
+                <!--                <span></span>--> Inbox
+                <!--                <span class="badge">0</span>-->
             </a> 
             <% }%>
-            
+
             <a href="help.jsp?sl=<%=sl%>" class="helpicon"  style="color: white;padding-left: 10px;padding-right: 10px;">Help</a>
             <a href="index.jsp?sl=<%=sl%>" class="helpicon" style="color: white;padding-left: 10px;padding-right: 30px;"><%=HOME%></a>
-            
+
             <%if (session.getAttribute("email") == null) {%>
             <a href="Login.jsp?sl=<%=sl%>" class="helpicon" style="color: white;padding-left: 10px;padding-right: 30px;"><%=LOGIN%></a>
             <a href="signup.jsp?sl=<%=sl%>" class="helpicon"  style="color: white;padding-left: 10px;padding-right: 30px;">SIgnUp</a>
             <% } else {
-               // String DB_URL = "jdbc:mysql://localhost/bharat";
-               // String DB_USERNAME = "root";
-               // String DB_PASSWORD = null;
+                // String DB_URL = "jdbc:mysql://localhost/bharat";
+                // String DB_USERNAME = "root";
+                // String DB_PASSWORD = null;
 
                 Statement stmt;
                 Connection con;
@@ -117,7 +126,7 @@
                     while (rs.next()) {
                         id_of_user = rs.getInt("id");
                         fullName = rs.getString("firstname");
-                    } 
+                    }
                     stmt.close();
                     con.close();
                     rs.close();
@@ -127,10 +136,10 @@
             %>
             <a href="Logout.jsp?sl=<%=sl%>" class="helpicon" style="color: white;padding-left: 10px;padding-right: 30px;">Logout</a>
             <a href="profile.jsp?user=<%=fullName.replaceAll(" ", "+")%>&ID=<%=id_of_user%>&sl=<%=sl%>" class="helpicon" style="color: white;padding-left: 10px;padding-right: 30px;"><b><%=firstName(fullName)%></b></a>
-            <%
+                    <%
                 }%>            
-            
-    </div>
+
+        </div>
 
     </div>
 </header>

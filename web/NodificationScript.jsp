@@ -35,6 +35,7 @@
 <% boolean status = true;
     while (resultSet.next()) {
         status = false;
+        int comment_id = resultSet.getInt("unique_id");
         int question_id = resultSet.getInt("question_id");
         String question = resultSet.getString("question");
         //String answer = resultSet.getString("answer");
@@ -44,13 +45,13 @@
         if (notification_type.equalsIgnoreCase("got_answer_of_a_question")) {
 
 %>
-<a href="Answer.jsp?q=<%=question.replaceAll(" ", "-")%>&ans_by=<%=userFirstName.replaceAll(" ", "+")%>&Id=<%=question_id%>"><b><%=userFirstName%></b> give you an answer of <b><%=question%></b></a>
+<a href="Answer.jsp?q=<%=question.replaceAll(" ", "-")%>&ans_by=<%=userFirstName.replaceAll(" ", "+")%>&Id=<%=question_id%>&c_id=<%=comment_id%>"><b><%=userFirstName%></b> give you an answer of <b><%=question%></b></a>
 <br>-------------------------------------------------<br>
 <%
 } else if (notification_type.equalsIgnoreCase("followed_by")) {
 
 %>
-<a href="profile.jsp?user=<%=userFirstName.replaceAll(" ", "+")%>&ID=<%=userId%>"> <b><%=userFirstName%></b> started following you</a>
+<a href="profile.jsp?user=<%=userFirstName.replaceAll(" ", "+")%>&ID=<%=userId%>&c_id=<%=comment_id%>"> <b><%=userFirstName%></b> started following you</a>
 <br>-------------------------------------------------<br>
 <%
 } else if (notification_type.equalsIgnoreCase("submit_question")) {
@@ -69,15 +70,25 @@
         rs.close();
         if (foundValue) {
 %>
-<a href="profile.jsp?user=<%=userFirstName.replaceAll(" ", "+")%>&value=Question&ID=<%=userId%>"> <b><%=userFirstName%></b> posted a new question</a>
+<a href="profile.jsp?user=<%=userFirstName.replaceAll(" ", "+")%>&value=Question&ID=<%=userId%>&c_id=<%=comment_id%>"> <b><%=userFirstName%></b> posted a new question</a>
 <br>-------------------------------------------------<br>
 <%
-                        foundValue = false;
-                    }
+            foundValue = false;
+        }
 
-                } catch (Exception msg) {
-                    out.println("got some error in featchig the uploaded question notification" + msg);
-                }
+    } catch (Exception msg) {
+        out.println("got some error in featchig the uploaded question notification" + msg);
+    }
+} else if (notification_type.equalsIgnoreCase("comment_on_question")) {
+%>
+<a href="Answer.jsp?q=<%=question.replaceAll(" ", "-")%>&comment_by=<%=userFirstName.replaceAll(" ", "+")%>&Id=<%=question_id%>&c_id=<%=comment_id%>"><b><%=userFirstName%></b> commented on <b><%=question%></b></a>
+<br>-------------------------------------------------<br>
+<%
+            } else if (notification_type.equalsIgnoreCase("comment_on_Answer")) {
+%>
+<a href="Answer.jsp?q=<%=question.replaceAll(" ", "-")%>&comment_by=<%=userFirstName.replaceAll(" ", "+")%>&Id=<%=question_id%>&c_id=<%=comment_id%>"><b><%=userFirstName%></b> commented on a answer which something belongs to you and question is :- <b><%=question%></b></a>
+<br>-------------------------------------------------<br>
+<%
             }
         }
         if (status) {
