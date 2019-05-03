@@ -114,6 +114,7 @@
                 Connection con;
                 ResultSet rs;
                 String fullName = null;
+                String userName = null;
                 String email = (String) session.getAttribute("email");
                 int id_of_user = 0;
 
@@ -126,6 +127,8 @@
                     while (rs.next()) {
                         id_of_user = rs.getInt("id");
                         fullName = rs.getString("firstname");
+                        userName = rs.getString("username");
+                         
                     }
                     stmt.close();
                     con.close();
@@ -135,7 +138,7 @@
                 }
             %>
             <a href="Logout.jsp?sl=<%=sl%>" class="helpicon" style="color: white;padding-left: 10px;padding-right: 30px;">Logout</a>
-            <a href="profile.jsp?user=<%=fullName.replaceAll(" ", "+")%>&ID=<%=id_of_user%>&sl=<%=sl%>" class="helpicon" style="color: white;padding-left: 10px;padding-right: 30px;"><b><%=firstName(fullName)%></b></a>
+            <a href="profile.jsp?user=<%=userName%>&ID=<%=id_of_user%>&sl=<%=sl%>" class="helpicon" style="color: white;padding-left: 10px;padding-right: 30px;"><b><%=firstName(fullName)%></b></a>
                     <%
                 }%>            
 

@@ -30,18 +30,21 @@
         %>
         <%
             request.setCharacterEncoding("UTF-8");
-    response.setCharacterEncoding("UTF-8");
+            response.setCharacterEncoding("UTF-8");
             String str = request.getParameter("Blog_Id");
             //String str = request.getParameter("id");
             if (str == null || str.length() <= 0) {
                 response.sendRedirect("index.jsp?sl=" + sl);
             }
             String Question = "";
-
-            for (int i = 0; i < str.length(); i++) {
-                if (str.charAt(i) > 47 && str.charAt(i) < 58) {
-                    Question += str.charAt(i);
+            try {
+                for (int i = 0; i < str.length(); i++) {
+                    if (str.charAt(i) > 47 && str.charAt(i) < 58) {
+                        Question += str.charAt(i);
+                    }
                 }
+            } catch (Exception msg) {
+                out.println(msg);
             }
 
         %>
@@ -68,8 +71,7 @@
         <%@page language="java" %>
         <%@page import="java.sql.*" %> 
         <%@include file="site.jsp" %>
-        <%            
-            Connection connection = null;
+        <%            Connection connection = null;
             ResultSet resultSet = null;
             PreparedStatement preparedStatement = null;
             try {
@@ -87,21 +89,21 @@
             String StoredAnswer = "";
             String FirstName = "";
             int UserID = 0;
-            if(Question != null){
-            try {
-                String p = "SELECT b.blog_subject, substring(b.blog,1,500),user.firstname,user.id FROM blog b right join newuser user on b.blog_posted_by = user.Id  WHERE blog_id = '" + Question + "'";
-                preparedStatement = connection.prepareStatement(p);
-                resultSet = preparedStatement.executeQuery();
-                while (resultSet.next()) {
-                    StoredQuestion = resultSet.getString("blog_subject");
-                    StoredAnswer = resultSet.getString("substring(b.blog,1,500)");
-                    FirstName = resultSet.getString("firstname");
-                    UserID = resultSet.getInt("ID");
+            if (Question != null) {
+                try {
+                    String p = "SELECT b.blog_subject, substring(b.blog,1,500),user.firstname,user.id FROM blog b right join newuser user on b.blog_posted_by = user.Id  WHERE blog_id = '" + Question + "'";
+                    preparedStatement = connection.prepareStatement(p);
+                    resultSet = preparedStatement.executeQuery();
+                    while (resultSet.next()) {
+                        StoredQuestion = resultSet.getString("blog_subject");
+                        StoredAnswer = resultSet.getString("substring(b.blog,1,500)");
+                        FirstName = resultSet.getString("firstname");
+                        UserID = resultSet.getInt("ID");
+                    }
+                } catch (Exception e) {
+                    out.println("Unable to retrieve!!" + e);
                 }
-            } catch (Exception e) {
-                out.println("Unable to retrieve!!" + e);
             }
-           }
         %>
         <title><%=StoredQuestion%></title>
         <meta property="og:title" content="<%=StoredQuestion%>" />
@@ -120,7 +122,7 @@
 
 
             <!-- Header _________________________________ -->
-           <jsp:include page="header.jsp">
+            <jsp:include page="header.jsp">
                 <jsp:param name="sl" value="<%=sl%>"/>
             </jsp:include>
             <div class="clear-fix"></div>
@@ -156,7 +158,7 @@
                                     <div class="boxHeading marginbot10"><%=DESCRIPTION%></div>
 
                                     <%
-                                        
+
                                         try {
                                             String p = "SELECT * FROM blog WHERE  blog_id = '" + Question + "'";
                                             preparedStatement = connection.prepareStatement(p);
@@ -175,7 +177,7 @@
 
                                         } catch (Exception e) {
                                             out.println("Unable to retrieve!!" + e);
-                                        } 
+                                        }
                                     %>
                                     <%
                                         } catch (Exception e) {
@@ -223,17 +225,18 @@
 
                             </div><% }%>
                             <div class="clear-fix"></div>
-                            <%
+                            <%--
                                 if (session.getAttribute("email") != null) {
                             %>
-                            <div class="themeBox" style="height:auto;">
+<!--                            <div class="themeBox" style="height:auto;">
                                 <div class="boxHeading">
                                     <%=TRENDING_QUUESTION%>
                                 </div>
                                 <div>
                                     <jsp:include page="TrendingQuestion.jsp" />
                                 </div>
-                            </div><% }%>
+                            </div>-->
+                            <% }--%>
                             <div class="clear-fix"></div>
 
                             <div class="clear-fix"></div>
@@ -251,7 +254,7 @@
                 </div>
             </div>
             <%@include file="notificationhtml.jsp" %>
-              <jsp:include page="footer.jsp">
+            <jsp:include page="footer.jsp">
                 <jsp:param name="sl" value="<%=sl%>"/>
             </jsp:include>
             <script type="text/javascript" src="vendor/jquery-2.1.4.js"></script>

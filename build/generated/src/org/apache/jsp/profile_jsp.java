@@ -427,31 +427,15 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("                <div class=\"container clear-fix\">\r\n");
       out.write("                    ");
 
-                        Connection connection = null;
-                        ResultSet resultSet = null;
-                        PreparedStatement preparedStatement = null;
-                        try {
-                            if (connection == null || connection.isClosed()) {
-                                try {
-                                    Class.forName("com.mysql.jdbc.Driver");
-                                } catch (ClassNotFoundException ex) {
-                                    out.println("Exception in loading the class forname Driver" + ex);
-                                }
-                                connection = DriverManager.getConnection(DB_URL_, DB_USERNAME_, DB_PASSWORD_);
-                            }
-                    
-      out.write("\r\n");
-      out.write("                    ");
 
-                        
                         String email = null;
                         int session_id_of_user = 0;
-                        if(session.getAttribute("email") != null){
-                            email  = (String) session.getAttribute("email");
+                        if (session.getAttribute("email") != null) {
+                            email = (String) session.getAttribute("email");
                         }
-                        
-                        if(session.getAttribute("session_id_of_user") != null){
-                            session_id_of_user = (Integer) session.getAttribute("session_id_of_user");
+
+                        if (session.getAttribute("Session_id_of_user") != null) {
+                            session_id_of_user = (Integer) session.getAttribute("Session_id_of_user");
                         }
 //                        if (email == null) {
 //
@@ -474,13 +458,31 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("\r\n");
       out.write("                    ");
 
+                        Connection connection = null;
+                        ResultSet resultSet = null;
+                        PreparedStatement preparedStatement = null;
+                        try {
+                            if (connection == null || connection.isClosed()) {
+                                try {
+                                    Class.forName("com.mysql.jdbc.Driver");
+                                } catch (ClassNotFoundException ex) {
+                                    out.println("Exception in loading the class forname Driver" + ex);
+                                }
+                                connection = DriverManager.getConnection(DB_URL_, DB_USERNAME_, DB_PASSWORD_);
+                            }
+                    
+      out.write("\r\n");
+      out.write("\r\n");
+      out.write("                    ");
+
                         //String ID = request.getParameter("ID");
                         String str = request.getParameter("ID");
                         String ID = "";
                         if (str == null) {
-                            if(session.getAttribute("session_id_of_user") != null){//if user trying to access this page directly without login
-                                ID = (String) session.getAttribute("session_id_of_user");
-                            }else {
+                            if (session.getAttribute("Session_id_of_user") != null) {//if user trying to access this page directly without login
+                                ID =String.valueOf(session.getAttribute("Session_id_of_user"));//We can directly convert object to string 
+                                //or you cast the object into integer and then cast to String
+                            } else {
                                 response.sendRedirect("UserProfile.jsp?sl=" + sl);
                             }
                         } else {
@@ -490,6 +492,10 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                 }
                             }
                         }
+                    
+      out.write("\r\n");
+      out.write("                    ");
+
                         String fullName = null;
                         String higher_colification = null;
                         String bio = null;
@@ -499,11 +505,13 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                         int id_of_user = 0;
                         int topic_id = 0;
                         int email_status = 0;
+                        boolean userFound = true;
                         try {
                             String p = "SELECT * FROM newuser WHERE ID = '" + ID + "'";
                             preparedStatement = connection.prepareStatement(p);
                             resultSet = preparedStatement.executeQuery();
                             while (resultSet.next()) {
+                                userFound = false;
                                 id_of_user = resultSet.getInt("id");
                                 fullName = resultSet.getString("firstname");
                                 mail = resultSet.getString("email");
@@ -515,6 +523,9 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                             }
                         } catch (Exception e) {
                             out.println("Unable to retrieve!!" + e);
+                        }
+                        if(userFound){
+                            response.sendRedirect("UserProfile.jsp");
                         }
                     
       out.write("\r\n");
@@ -731,6 +742,90 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("                    </div>\r\n");
       out.write("                    <div class=\"row\">\r\n");
       out.write("                        <div class=\"col-lg-3 col-md-3 col-sm-12 col-xs-12\">\r\n");
+      out.write("                            ");
+
+                            //This script is for cound the rows in a table
+                            //For question
+                            int TotalQuestion = 0;
+                            String sql_question = "select count(*) as cnt from question where id =?";
+                            preparedStatement = connection.prepareStatement(sql_question);
+                            preparedStatement.setInt(1, id_of_user);
+                            resultSet = preparedStatement.executeQuery();
+                            while(resultSet.next()){
+                                TotalQuestion = resultSet.getInt("cnt");
+                            }
+                            
+      out.write("\r\n");
+      out.write("                            ");
+
+                            //This script is for cound the rows in a table
+                            //For Answer
+                            int TotalAnswer = 0;
+                            String sql_answer = "select count(*) as cnt from answer where  Answer_by_id = ?";
+                            preparedStatement = connection.prepareStatement(sql_answer);
+                            preparedStatement.setInt(1, id_of_user);
+                            resultSet = preparedStatement.executeQuery();
+                            while(resultSet.next()){
+                                TotalAnswer = resultSet.getInt("cnt");
+                            }
+                            
+      out.write("\r\n");
+      out.write("                            ");
+
+                            //This script is for cound the rows in a table
+                            //For Topic
+                            int TotalTopic = 0;
+                            String sql_topic = " select count(*) as cnt from topic_followers_detail where user_or_followers_id = ?";
+                            preparedStatement = connection.prepareStatement(sql_topic);
+                            preparedStatement.setInt(1, id_of_user);
+                            resultSet = preparedStatement.executeQuery();
+                            while(resultSet.next()){
+                                TotalTopic = resultSet.getInt("cnt");
+                            }
+                            
+      out.write("\r\n");
+      out.write("                            ");
+
+                            //This script is for cound the rows in a table
+                            //For TotoalFollowing
+                            int TotalFollowing = 0;
+                            String sql_following = "select count(*) as cnt from ak_follower_detail where followers_id = ?";
+                            preparedStatement = connection.prepareStatement(sql_following);
+                            preparedStatement.setInt(1, id_of_user);
+                            resultSet = preparedStatement.executeQuery();
+                            while(resultSet.next()){
+                                TotalFollowing = resultSet.getInt("cnt");
+                            }
+                            
+      out.write("\r\n");
+      out.write("                            ");
+
+                            //This script is for cound the rows in a table
+                            //For TotoalFollowers
+                            int TotalFollowers = 0;
+                            String sql_followers = "select count(*) as cnt from ak_follower_detail where user_id = ?";
+                            preparedStatement = connection.prepareStatement(sql_followers);
+                            preparedStatement.setInt(1, id_of_user);
+                            resultSet = preparedStatement.executeQuery();
+                            while(resultSet.next()){
+                                TotalFollowers = resultSet.getInt("cnt");
+                            }
+                            
+      out.write("\r\n");
+      out.write("                            ");
+
+                            //This script is for cound the rows in a table
+                            //For Totoalblog
+                            int Totalblog = 0;
+                            String sql_blogs = "select count(*)as cnt from blog where blog_posted_by = ?";
+                            preparedStatement = connection.prepareStatement(sql_blogs);
+                            preparedStatement.setInt(1, id_of_user);
+                            resultSet = preparedStatement.executeQuery();
+                            while(resultSet.next()){
+                                Totalblog = resultSet.getInt("cnt");
+                            }
+                            
+      out.write("\r\n");
       out.write("\r\n");
       out.write("                            <div class=\"themeBox\" style=\"min-height:auto;\">\r\n");
       out.write("                                <div class=\"boxHeading\">\r\n");
@@ -746,7 +841,9 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write('"');
       out.write('>');
       out.print(QUESTION);
-      out.write("</a><br>\r\n");
+      out.write('(');
+      out.print(TotalQuestion);
+      out.write(")</a><br>\r\n");
       out.write("                                    <a href=\"profile.jsp?value=Answer&ID=");
       out.print(ID);
       out.write("&sl=");
@@ -754,7 +851,9 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write('"');
       out.write('>');
       out.print(ANSWER);
-      out.write("</a><br>\r\n");
+      out.write('(');
+      out.print(TotalAnswer);
+      out.write(")</a><br>\r\n");
       out.write("                                    <a href=\"profile.jsp?value=Topic&ID=");
       out.print(ID);
       out.write("&sl=");
@@ -762,7 +861,9 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write('"');
       out.write('>');
       out.print(TOPIC_FOLLOWED);
-      out.write("</a><br>\r\n");
+      out.write('(');
+      out.print(TotalTopic);
+      out.write(")</a><br>\r\n");
       out.write("                                    <a href=\"profile.jsp?value=Following&ID=");
       out.print(ID);
       out.write("&sl=");
@@ -770,7 +871,9 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write('"');
       out.write('>');
       out.print(FOLLOWING);
-      out.write("</a><br>\r\n");
+      out.write('(');
+      out.print(TotalFollowing);
+      out.write(")</a><br>\r\n");
       out.write("                                    <a href=\"profile.jsp?value=Followers&ID=");
       out.print(ID);
       out.write("&sl=");
@@ -778,7 +881,9 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write('"');
       out.write('>');
       out.print(FOLLOWERS);
-      out.write("</a><br>\r\n");
+      out.write('(');
+      out.print(TotalFollowers);
+      out.write(")</a><br>\r\n");
       out.write("                                    <a href=\"profile.jsp?value=Blog&ID=");
       out.print(ID);
       out.write("&sl=");
@@ -786,7 +891,9 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write('"');
       out.write('>');
       out.print(BLOG);
-      out.write("</a><br>\r\n");
+      out.write('(');
+      out.print(Totalblog);
+      out.write(")</a><br>\r\n");
       out.write("                                    <a href=\"profile.jsp?value=Quotes&ID=");
       out.print(ID);
       out.write("&sl=");
@@ -828,7 +935,9 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                                             int userId_of_this_question = resultSet.getInt("id");
 
                                         
-      out.write(" <br>Q. <a href=\"Answer.jsp?Id=");
+      out.write(" <br>Q. <a href=\"Answer.jsp?q=");
+      out.print(Question_asked_by_user.replaceAll(" ","-"));
+      out.write("&Id=");
       out.print(question_id);
       out.write("&sl=");
       out.print(sl);
@@ -838,8 +947,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("                                        &nbsp;&nbsp;&nbsp;&nbsp; \r\n");
       out.write("                                        ");
   if (session.getAttribute("Session_id_of_user") != null) {
-                                                int Session_id_of_user = (Integer) session.getAttribute("Session_id_of_user");
-                                                if (userId_of_this_question == Session_id_of_user) {
+                                                if (userId_of_this_question == session_id_of_user) {
       out.write("\r\n");
       out.write("                                        <a href=\"edit_q.jsp?Id=");
       out.print(question_id);
@@ -901,7 +1009,9 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                                     int ans_id = resultSet.getInt("ans.a_id");
                                                     int ans_by_id = resultSet.getInt("ans.Answer_by_id");
                                         
-      out.write("<br> Q. <a href=\"Answer.jsp?Id=");
+      out.write("<br> Q. <a href=\"Answer.jsp?q=");
+      out.print(Question_by_user.replaceAll(" ","-"));
+      out.write("&Id=");
       out.print(Question_id);
       out.write("&sl=");
       out.print(sl);
@@ -911,8 +1021,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("                                        &nbsp;&nbsp;&nbsp;&nbsp;\r\n");
       out.write("                                        ");
   if (session.getAttribute("Session_id_of_user") != null) {
-                                                int Session_id_of_user = (Integer) session.getAttribute("Session_id_of_user");
-                                                if (ans_by_id == Session_id_of_user) {
+                                                if (ans_by_id == session_id_of_user) {
       out.write("\r\n");
       out.write("\r\n");
       out.write("                                        <a href=\"edit_a.jsp?q_id=");
@@ -952,7 +1061,9 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                                         topic_id = resultSet.getInt("unique_id");
                                                         if (topic_name != null) {
                                         
-      out.write("<br> <a href=\"topic.jsp?id=");
+      out.write("<br> <a href=\"topic.jsp?t=");
+      out.print(topic_name.replaceAll(" ","+"));
+      out.write("&id=");
       out.print(topic_id);
       out.write("&sl=");
       out.print(sl);
@@ -1071,7 +1182,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                             if (ParametrVariable.equals("Quotes")) {
                                                 out.println("<center><div class=boxHeading>" + QUOTES + "</div></center>");
                                                 String quotes;
-                                                String Q = "SELECT * FROM quotes WHERE quotes_posted_by = '" + id_of_user + "'";
+                                                String Q = "SELECT * FROM quotes WHERE user_id = '" + id_of_user + "'";
                                                 preparedStatement = connection.prepareStatement(Q);
                                                 resultSet = preparedStatement.executeQuery();
                                                 int count = 0;
@@ -1110,7 +1221,9 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                                     blog_posted_by_user = resultSet.getString("blog_subject");
                                                     int Blog_id = resultSet.getInt("blog_id");
                                         
-      out.write(" <br><a href=\"D_Blog.jsp?Blog_Id=");
+      out.write(" <br><a href=\"D_Blog.jsp?sub=");
+      out.print(blog_posted_by_user);
+      out.write("&Blog_Id=");
       out.print(Blog_id);
       out.write("&sl=");
       out.print(sl);
@@ -1145,27 +1258,31 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                             } catch (Exception e) {
                                                 out.println("Error in main try block:-" + e);
                                             } finally {
+                                                try {
 
-                                                if (connection != null || !connection.isClosed()) {
-                                                    try {
-                                                        connection.close();
-                                                    } catch (Exception e) {
-                                                        out.println("Exception in closing connection " + e);
+                                                    if (connection != null || !connection.isClosed()) {
+                                                        try {
+                                                            connection.close();
+                                                        } catch (Exception e) {
+                                                            out.println("Exception in closing connection " + e);
+                                                        }
                                                     }
-                                                }
-                                                if (resultSet != null || !resultSet.isClosed()) {
-                                                    try {
-                                                        resultSet.close();
-                                                    } catch (Exception e) {
-                                                        out.println("Exception in closing resulatset " + e);
+                                                    if (resultSet != null || !resultSet.isClosed()) {
+                                                        try {
+                                                            resultSet.close();
+                                                        } catch (Exception e) {
+                                                            out.println("Exception in closing resulatset " + e);
+                                                        }
                                                     }
-                                                }
-                                                if (preparedStatement != null || !preparedStatement.isClosed()) {
-                                                    try {
-                                                        preparedStatement.close();
-                                                    } catch (Exception e) {
-                                                        out.println("Exception in closing preparedStatement " + e);
+                                                    if (preparedStatement != null || !preparedStatement.isClosed()) {
+                                                        try {
+                                                            preparedStatement.close();
+                                                        } catch (Exception e) {
+                                                            out.println("Exception in closing preparedStatement " + e);
+                                                        }
                                                     }
+                                                } catch (Exception msg) {
+                                                    out.println(msg);
                                                 }
                                             }
                                         
@@ -1277,6 +1394,9 @@ if (session.getAttribute("email") != null) {
       org.apache.jasper.runtime.JspRuntimeLibrary.include(request, response, "NodificationScript.jsp", out, false);
       out.write("\n");
       out.write("                </div>\n");
+      out.write("            </div>\n");
+      out.write("            <div class=\"modal-footer\">                                                    \n");
+      out.write("                <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">close</button>\n");
       out.write("            </div>\n");
       out.write("        </div>\n");
       out.write("    </div>\n");

@@ -1,6 +1,7 @@
 <html lang="en">
     <head>
         <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+        <%@include file="site.jsp" %>
         <%!
             String LOGIN = "";
             String SEARCH = "";
@@ -100,7 +101,37 @@
                     alert(err.Description);
                 }
             }
+            function userNameValidation(e, t) {
+                try {
+                    if (window.event) {
+                        var charCode = window.event.keyCode;
+                    } else if (e) {
+                        var charCode = e.which;
+                    } else {
+                        return true;
+                    }
+                    if ((charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123) || (charCode > 47 && charCode < 58))
+                        return true;
+                    else
+                        return false;
+                } catch (err) {
+                    alert(err.Description);
+                }
+            }
 
+        </script>
+            <script type="text/javascript">
+            function take_value(email) {
+                //alert(email.value);
+                var http = new XMLHttpRequest();
+                http.open("post", "<%=DB_AJAX_PATH%>/validateUserName.jsp?userName=" + email.value, true);
+                http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                http.send();
+                http.onload = function () {
+                    http.responseText;
+                    document.getElementById("demo").innerHTML = http.responseText;
+                };
+            }
         </script>
     </head>
     <body>
@@ -162,14 +193,16 @@
                                                                 %>
                                                                 <form action="NewUser.jsp" method="post" name="newUser">
                                                                     <input type="hidden" name="sl" value="<%=sl%>">
+
                                                                     <label for="fname"><%=FIRST_NAME%></label>
                                                                     <div class="boxHeading">
                                                                         <input type="text" id="fname" name="firstname" onkeypress="return onlyAlphabets(event, this);" required="">
-                                                                    </div>
-<!--                                                                    <label for="lname"><%=LAST_NAME%></label>
+                                                                        
+                                                                    </div><p id="demo"></p>
+                                                                    <label for="userName">UserName</label>
                                                                     <div class="boxHeading">
-                                                                        <input type="text" id="lname" name="lastname" onkeypress="return onlyAlphabets(event, this);" required="">
-                                                                    </div>-->
+                                                                        <input type="text" id="fname" name="userName" onkeypress="return userNameValidation(event, this);" onkeyup="return take_value(this);" required="">
+                                                                    </div>
                                                                     <label for="fname"><%=EMAIL%></label>
                                                                     <div class="boxHeading">
                                                                         <input type="email"  name="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required="">
@@ -181,7 +214,7 @@
                                                                     <br>
                                                                     <button type="submit" class="button button1" data-toggle="modal"  ><%=CREATE_ACCOUNT%></button>
                                                                 </form>
-                                                                    <form action="ForgotPassword.jsp?sl=<%=sl%>" method="post" name="forgetPassword">
+                                                                <form action="ForgotPassword.jsp?sl=<%=sl%>" method="post" name="forgetPassword">
                                                                     <button class="button button1" style="background-color: red;"><%=FORGET_PASSWORD%></button>
                                                                 </form>
                                                             </div>

@@ -12,12 +12,13 @@
     if (sl == null) {
         sl = "eng";
     }
-    String firstname,password, email;
+    String firstname,password, email,userName;
     firstname = request.getParameter("firstname");
     email = request.getParameter("email");
     password = request.getParameter("password");
+    userName = request.getParameter("userName");
 
-    if (firstname == null || email == null || password == null) {
+    if (firstname == null || email == null || password == null || userName == null) {
         out.println("you can't access this page direcitly");
     } else {
         //Form validation
@@ -26,6 +27,13 @@
         //boolean validLastName = false;
         boolean validPassword = false;
         boolean emailValid = false;
+        boolean userNameValid = false;
+        //UserName validation
+        int userNameLength = userName.length();
+        if(userNameLength > 5){
+            userNameValid = true;
+        }
+        
         //Regular expression for validating email from server side
         String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
         if (email.matches(ePattern)) {
@@ -74,7 +82,7 @@
         /**
          * *****************
          */
-        if (validFirstName &&  validPassword && emailValid ) {
+        if (validFirstName &&  validPassword && emailValid && userNameValid ) {
             String Email = request.getParameter("email");
             Connection connection = null;
             ResultSet resultSet = null;
@@ -105,7 +113,7 @@
                     try {
 
                         //Statement statement = connection.createStatement();
-                        String insert_user = "insert into newuser(firstname,email,email_s,password,imagepath) values(?,?,?,?,?)";
+                        String insert_user = "insert into newuser(firstname,username,email,email_s,password,imagepath) values(?,?,?,?,?,?)";
                         
                         //'" + firstname + "','" + lastname + "','" + email + "','0','" + password + "','inquiryhere_Logo.PNG'
                         //Email_s represent the security of gmail
@@ -114,10 +122,11 @@
                         
                          preparedStatement = connection.prepareStatement(insert_user);
                          preparedStatement.setString(1, firstname);
-                         preparedStatement.setString(2, email);
-                         preparedStatement.setInt(3, 0);
-                         preparedStatement.setString(4, password);
-                         preparedStatement.setString(5, "inquiryhere_Logo.PNG");
+                         preparedStatement.setString(2, userName);
+                         preparedStatement.setString(3, email);
+                         preparedStatement.setInt(4, 0);
+                         preparedStatement.setString(5, password);
+                         preparedStatement.setString(6, "inquiryhere_Logo.PNG");
                          preparedStatement.execute();
                         
 //                        statement.execute(p);

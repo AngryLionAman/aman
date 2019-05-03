@@ -24,7 +24,7 @@
                     statement = connection.createStatement();
                     String p = "insert into blog(blog_subject,blog,blog_posted_by) values('" + blog_sub + "','" + blog_description + "','" + id_of_user + "')";
                     statement.execute(p);
-                    response.sendRedirect("profile.jsp");
+                    response.sendRedirect("profile.jsp?value=Blog");
                 } catch (Exception e1) {
                     out.print("Error:-" + e1);
                 }
