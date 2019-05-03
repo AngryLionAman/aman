@@ -35,10 +35,6 @@
             <% } else { %>alert("Please login first to comment");
             <%  }  %>
                 }
-
-
-
-
         </script>
         <!--        <script type="text/javascript">
                     function showAnsCommentBox() {

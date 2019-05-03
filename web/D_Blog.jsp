@@ -71,6 +71,7 @@
         <%@page language="java" %>
         <%@page import="java.sql.*" %> 
         <%@include file="site.jsp" %>
+        <%@include file="validator.jsp" %>
         <%            Connection connection = null;
             ResultSet resultSet = null;
             PreparedStatement preparedStatement = null;
@@ -113,6 +114,36 @@
         <meta property="og:image" content="https://www.inquiryhere.com/images/logo/inquiryhere_Logo.PNG" />
         <meta property="og:type" content="website">
         <meta property="og:locale" content="en_US">
+        <script type="text/javascript">
+
+            function showCommentBox() {
+                var div = document.getElementById('comment');
+                div.className = 'visible';
+            }
+        </script>
+        <style>
+            input[type=text] {
+                width: 100%;
+                padding: 4px 8px;
+                margin: 4px 0;
+                box-sizing: border-box;
+                border: 1px solid #b3b3b3;
+                border-radius: 2px;
+            }
+            .button {
+                background-color: #4CAF50; /* Green */
+                border: none;
+                color: white;
+                padding: 15px 32px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                margin: 4px 2px;
+                cursor: pointer;
+            }
+            .button1 {width: 250px;}
+        </style>
 
 
     </head>
@@ -172,42 +203,103 @@
                                         </div>
 
                                     </div>
-                                    <%
-                                            }
 
-                                        } catch (Exception e) {
-                                            out.println("Unable to retrieve!!" + e);
-                                        }
-                                    %>
-                                    <%
-                                        } catch (Exception e) {
-                                            out.println("Error in main try block:-" + e);
-                                        } finally {
-
-                                            if (connection != null || !connection.isClosed()) {
-                                                try {
-                                                    connection.close();
-                                                } catch (Exception e) {
-                                                    out.println("Exception in closing connection " + e);
-                                                }
-                                            }
-                                            if (resultSet != null || !resultSet.isClosed()) {
-                                                try {
-                                                    resultSet.close();
-                                                } catch (Exception e) {
-                                                    out.println("Exception in closing resulatset " + e);
-                                                }
-                                            }
-                                            if (preparedStatement != null || !preparedStatement.isClosed()) {
-                                                try {
-                                                    preparedStatement.close();
-                                                } catch (Exception e) {
-                                                    out.println("Exception in closing preparedStatement " + e);
-                                                }
-                                            }
-                                        }
-                                    %>
                                     <div class="clear-fix"></div>
+                                    Comments....<br>
+                                    <div align="right">
+
+                                        <%
+                                            try {
+                                                String sql_question_comment = "SELECT unique_id,user_id,"
+                                                        + "(SELECT firstname FROM newuser WHERE id = comments.user_id )AS fullname,"
+                                                        + "q_id,comments,time FROM comments WHERE blog_id = ? ";
+                                                preparedStatement = connection.prepareStatement(sql_question_comment);
+                                                preparedStatement.setString(1, Question);
+                                                resultSet = preparedStatement.executeQuery();
+                                                while (resultSet.next()) {
+                                                    String Blog_comments = resultSet.getString("comments");
+                                                    int user_id = resultSet.getInt("user_id");//userId of who commented
+                                                    String userName = "GuestUser";
+                                                    if (user_id != 0) {
+                                                        userName = resultSet.getString("fullname");//UserName who commentd   
+                                                    }
+                                                    String time = resultSet.getString("time");
+
+                                                    out.println(Blog_comments + ":- ");
+                                                    if (userName.equalsIgnoreCase("GuestUser")) {
+                                                        out.println("<b style=color:red;>"+userName+"</b>");
+                                                    } else {
+                                        %>
+                                        <a href="profile.jsp?user=<%=userName.replaceAll(" ", "+")%>&ID=<%=user_id%>&sl=<%=sl%>"><%=convertStringUpperToLower(userName)%></a>
+                                        <%  }
+                                                    out.println("(" + time + ") <br>_____________________________<br> ");
+                                                }
+
+                                            } catch (Exception msg) {
+                                                out.println("Error in loading question comment: -" + msg);
+                                            }
+                                        %>
+                                        </div>
+                                        <%
+                                                }
+
+                                            } catch (Exception e) {
+                                                out.println("Unable to retrieve!!" + e);
+                                            }
+                                        %>
+                                        <%
+                                            } catch (Exception e) {
+                                                out.println("Error in main try block:-" + e);
+                                            } finally {
+
+                                                if (connection != null || !connection.isClosed()) {
+                                                    try {
+                                                        connection.close();
+                                                    } catch (Exception e) {
+                                                        out.println("Exception in closing connection " + e);
+                                                    }
+                                                }
+                                                if (resultSet != null || !resultSet.isClosed()) {
+                                                    try {
+                                                        resultSet.close();
+                                                    } catch (Exception e) {
+                                                        out.println("Exception in closing resulatset " + e);
+                                                    }
+                                                }
+                                                if (preparedStatement != null || !preparedStatement.isClosed()) {
+                                                    try {
+                                                        preparedStatement.close();
+                                                    } catch (Exception e) {
+                                                        out.println("Exception in closing preparedStatement " + e);
+                                                    }
+                                                }
+                                            }
+                                        %>
+                                    
+                                    <%
+                                        if (session.getAttribute("Session_id_of_user") == null) {
+                                    %>
+                                    <div align="center">
+                                        <button type="submit" class="button button1" onclick="showCommentBox()">Comment as Guest</button> 
+                                    </div>
+                                    <form action="saveBlogComment.jsp" method="get">
+                                        <div class="hidden" id="comment">
+                                            <input type="hidden" name="blog_id" value="<%=Question%>">
+                                            <textarea name="comments" rows="3" cols="30" required="" placeholder="What you think..."></textarea>
+                                            <input type="submit" name="sub" value="Send Comment">
+                                        </div>
+                                    </form>
+                                    <div align="center">
+                                        <button type="submit" class="button button1" onclick="location.href='Login.jsp';" >Login to comment</button> 
+                                    </div>
+                                    <% } else {%>
+                                    <form action="saveBlogComment.jsp" method="get">
+                                        <input type="hidden" name="blog_id" value="<%=Question%>">
+                                        <textarea name="comments" rows="3" cols="30" required="" placeholder="What you think..."></textarea>
+                                        <input type="submit" name="sub" value="Send Comment">
+                                    </form>
+                                    <% } %>
+
 
                                 </div>
                             </div>

@@ -1,169 +1,181 @@
 <!DOCTYPE html>
 <html lang="en">
-    <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-     <link rel="icon" href="https://www.inquiryhere.com/images/inquiryhere_Logo.PNG" type="image/png">
-    <meta charset="UTF-8">
-    <%@page language="java" %>
-    <%@page import="java.sql.*" %> 
-    <%@include file="validator.jsp" %>
-    <%
-        String EMAIL = "";
-        String PASSWORD = "";
-        String HOME = "";
-        String LOGIN = "";
-        String SIGNUP = "";
-        String SEARCH = "";
-        String PROFILE = "";
-        String CONTACT_US = "";
-        String ABOUT_US = "";
-        String LOGOUT = "";
-        String SELECT = "";
-        String PROFILE_DETAILS = "";
-        String UPDATE_YOUR_PROFILE_IMAGE = "";
-        String NAME = "";
-        String MAIL_ID = "";
-        String HIGHER_QUALIFICATION = "";
-        String BEST_ACHIEVEMENT = "";
-        String BIO = "";
-        String COMPLETE_YOUR_PROFILE = "";
-        String YOUR_ACTIVITY = "";
-        String QUESTION = "";
-        String ANSWER = "";
-        String TOPIC_FOLLOWED = "";
-        String FOLLOWING = "";
-        String FOLLOWERS = "";
-        String BLOG = "";
-        String QUOTES = "";
-        String ADD_MORE_QUESTION = "";
-        String FOLLOW_MORE_TOPIC = "";
-        String NOT_FOLLOWING_ANY_USER = "";
-        String FOLLOW_MORE_USER = "";
-        String NO_BLOG_POSTED_YET = "";
-        String BLOG_ABOUT_SOMETHING = "";
-        String NO_QUESTES_POSTED_YET = "";
-        String ADD_MORE_QUOTES = "";
-        String NOT_FOLLOWED_BY_ANY_USER = "";
-        String POST_YOUR_QUESTION_HERE = "";
-        String PLEASE_LOGIN_FIRST = "";
-        String CLOSE = "";
-        String CLICK_HERE_TO_LOGIN = "";
-        String FOLLOWED_TOPIC = "";
-        String CLICK_HERE_TO_MORE_TOPIC = "";
-        String PUT_YOUR_QUESTION_HERE = "";
-        String EX = "";
-        String TAG_SUGGESTION_DESCRIPTION = "";
-        String TAG_EXMAPLE = "";
-        String POST = "";
-    %>
+    <head> 
+        <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+        <link rel="icon" href="https://www.inquiryhere.com/images/inquiryhere_Logo.PNG" type="image/png">
 
-    <%
-        String sl = request.getParameter("sl");
-        if (sl == null) {
-            sl = "en";
-        } else {
+        <meta charset="UTF-8">
+        <%@page language="java" %>
+        <%@page import="java.sql.*" %> 
+        <%@include file="validator.jsp" %>
+        <%@include file="site.jsp" %>
+        <%
+            String EMAIL = "";
+            String PASSWORD = "";
+            String HOME = "";
+            String LOGIN = "";
+            String SIGNUP = "";
+            String SEARCH = "";
+            String PROFILE = "";
+            String CONTACT_US = "";
+            String ABOUT_US = "";
+            String LOGOUT = "";
+            String SELECT = "";
+            String PROFILE_DETAILS = "";
+            String UPDATE_YOUR_PROFILE_IMAGE = "";
+            String NAME = "";
+            String MAIL_ID = "";
+            String HIGHER_QUALIFICATION = "";
+            String BEST_ACHIEVEMENT = "";
+            String BIO = "";
+            String COMPLETE_YOUR_PROFILE = "";
+            String YOUR_ACTIVITY = "";
+            String QUESTION = "";
+            String ANSWER = "";
+            String TOPIC_FOLLOWED = "";
+            String FOLLOWING = "";
+            String FOLLOWERS = "";
+            String BLOG = "";
+            String QUOTES = "";
+            String ADD_MORE_QUESTION = "";
+            String FOLLOW_MORE_TOPIC = "";
+            String NOT_FOLLOWING_ANY_USER = "";
+            String FOLLOW_MORE_USER = "";
+            String NO_BLOG_POSTED_YET = "";
+            String BLOG_ABOUT_SOMETHING = "";
+            String NO_QUESTES_POSTED_YET = "";
+            String ADD_MORE_QUOTES = "";
+            String NOT_FOLLOWED_BY_ANY_USER = "";
+            String POST_YOUR_QUESTION_HERE = "";
+            String PLEASE_LOGIN_FIRST = "";
+            String CLOSE = "";
+            String CLICK_HERE_TO_LOGIN = "";
+            String FOLLOWED_TOPIC = "";
+            String CLICK_HERE_TO_MORE_TOPIC = "";
+            String PUT_YOUR_QUESTION_HERE = "";
+            String EX = "";
+            String TAG_SUGGESTION_DESCRIPTION = "";
+            String TAG_EXMAPLE = "";
+            String POST = "";
+        %>
 
-        }
-        if (sl.equalsIgnoreCase("hi")) {
-            EMAIL = "ईमेल";
-            PASSWORD = "पासवर्ड";
-            HOME = "होम";
-            LOGIN = "लॉग इन करें";
-            SIGNUP = "नया खाता बनाएँ";
-            SEARCH = "खोजे";
-            PROFILE = "प्रोफ़ाइल";
-            CONTACT_US = "हमसे संपर्क करें";
-            ABOUT_US = "हमारे बारे में";
-            LOGOUT = "बाहर जाये";
-            SELECT = "चयन करें";
-            PROFILE_DETAILS = "प्रोफ़ाइल का विवरण";
-            UPDATE_YOUR_PROFILE_IMAGE = "अपनी प्रोफ़ाइल छवि को अपडेट करें";
-            NAME = "नाम";
-            MAIL_ID = "ईमेल आईडी";
-            HIGHER_QUALIFICATION = "उच्च योग्यता";
-            BEST_ACHIEVEMENT = "सबसे अच्छी उपलब्धि";
-            BIO = "आपके बारे में";
-            COMPLETE_YOUR_PROFILE = "अपनी प्रोफाइल पूरी कीजिए";
-            YOUR_ACTIVITY = "आपकी गतिविधि";
-            QUESTION = "प्रशन";
-            ANSWER = "उत्तर";
-            TOPIC_FOLLOWED = "विषय का पालन किया";
-            FOLLOWING = "आपने जिसको अनुशरण किया";
-            FOLLOWERS = "अनुसरण करने वाले शिष्य";
-            BLOG = "ब्लॉग";
-            QUOTES = "उल्लेख";
-            ADD_MORE_QUESTION = "एक और सवाल जोड़ें";
-            FOLLOW_MORE_TOPIC = "अधिक विषय का पालन करें";
-            NOT_FOLLOWING_ANY_USER = "किसी भी उपयोगकर्ता का अनुसरण नहीं कर रहे है";
-            FOLLOW_MORE_USER = "अधिक उपयोगकर्ता का पालन करें";
-            NO_BLOG_POSTED_YET = "अभी तक कोई ब्लॉग पोस्ट नहीं किया गया";
-            BLOG_ABOUT_SOMETHING = "किसी चीज के बारे में ब्लॉग";
-            NO_QUESTES_POSTED_YET = "अभी तक कोई उद्धरण पोस्ट नहीं किया गया है";
-            ADD_MORE_QUOTES = "अधिक उद्धरण जोड़ें";
-            NOT_FOLLOWED_BY_ANY_USER = "किसी भी उपयोगकर्ता द्वारा पीछा नहीं किया गया";
-            POST_YOUR_QUESTION_HERE = "यहाँ अपना प्रश्न डाले";
-            PLEASE_LOGIN_FIRST = "पहले प्रवेश करें";
-            CLOSE = "बंद करे";
-            CLICK_HERE_TO_LOGIN = "लॉग इन करने के लिए यहां क्लिक करें";
-            FOLLOWED_TOPIC = "विषय जो आपको पसंद है";
-            CLICK_HERE_TO_MORE_TOPIC = "अधिक विषय के लिए यहां क्लिक करें";
-            PUT_YOUR_QUESTION_HERE = "अपना प्रश्न यहाँ रखें";
-            EX = "उदाहरण :कैसे है ,क्या है ";
-            TAG_SUGGESTION_DESCRIPTION = "अपने प्रश्न से संबंधित कम से कम दो टैग प्रदान करें। कोमा (,) का उपयोग करके अलग करे";
-            TAG_EXMAPLE = "उदाहरण :विज्ञान,भौतिक , रसायन विज्ञान  ";
-            POST = "post";
+        <%
+            String sl = request.getParameter("sl");
+            if (sl == null) {
+                sl = "en";
+            } else {
 
-        } else {
-            EMAIL = "Email";
-            PASSWORD = "Password";
-            HOME = "Home";
-            LOGIN = "Login";
-            SIGNUP = "SignUp";
-            SEARCH = "Search";
-            PROFILE = "Profile";
-            CONTACT_US = "contact Us";
-            ABOUT_US = "About Us";
-            LOGOUT = "Logout";
-            SELECT = "Select";
-            PROFILE_DETAILS = "Profile Details ";
-            UPDATE_YOUR_PROFILE_IMAGE = "Update your profile image";
-            NAME = "Name ";
-            MAIL_ID = "Mail Id ";
-            HIGHER_QUALIFICATION = "Higher Qualification ";
-            BEST_ACHIEVEMENT = "Best Achievement";
-            BIO = "Bio ";
-            COMPLETE_YOUR_PROFILE = "Complete your profile";
-            YOUR_ACTIVITY = "User Activity ";
-            QUESTION = "Question";
-            ANSWER = "Answer";
-            TOPIC_FOLLOWED = "Topic Followed";
-            FOLLOWING = "Following";
-            FOLLOWERS = "Followers";
-            BLOG = "Blog";
-            QUOTES = "Quotes";
-            ADD_MORE_QUESTION = "Add more question";
-            FOLLOW_MORE_TOPIC = "Follow more topic";
-            NOT_FOLLOWING_ANY_USER = "Not following any user";
-            FOLLOW_MORE_USER = "Follow More User";
-            NO_BLOG_POSTED_YET = "No blog posted yet";
-            BLOG_ABOUT_SOMETHING = "Blog about something";
-            NO_QUESTES_POSTED_YET = "No quotes posted yet";
-            ADD_MORE_QUOTES = "Add more quotes";
-            NOT_FOLLOWED_BY_ANY_USER = "Not followed by any user";
-            POST_YOUR_QUESTION_HERE = "Post Your Question Here";
-            PLEASE_LOGIN_FIRST = "Please Lgin First";
-            CLOSE = "Close";
-            CLICK_HERE_TO_LOGIN = "Click here to login";
-            FOLLOWED_TOPIC = "Followed Topic";
-            CLICK_HERE_TO_MORE_TOPIC = "Click here to more topic";
-            PUT_YOUR_QUESTION_HERE = "Put Your Question Here";
-            EX = "Ex: What is,How to..";
-            TAG_SUGGESTION_DESCRIPTION = "Provide at least two tag related to your question. separate tag using Coma(,)";
-            TAG_EXMAPLE = "Ex:Java,Database,c language";
-            POST = "post";
-        }
-    %>
-    <%@include file="site.jsp" %>
-    <head>
+            }
+            if (sl.equalsIgnoreCase("hi")) {
+                EMAIL = "ईमेल";
+                PASSWORD = "पासवर्ड";
+                HOME = "होम";
+                LOGIN = "लॉग इन करें";
+                SIGNUP = "नया खाता बनाएँ";
+                SEARCH = "खोजे";
+                PROFILE = "प्रोफ़ाइल";
+                CONTACT_US = "हमसे संपर्क करें";
+                ABOUT_US = "हमारे बारे में";
+                LOGOUT = "बाहर जाये";
+                SELECT = "चयन करें";
+                PROFILE_DETAILS = "प्रोफ़ाइल का विवरण";
+                UPDATE_YOUR_PROFILE_IMAGE = "अपनी प्रोफ़ाइल छवि को अपडेट करें";
+                NAME = "नाम";
+                MAIL_ID = "ईमेल आईडी";
+                HIGHER_QUALIFICATION = "उच्च योग्यता";
+                BEST_ACHIEVEMENT = "सबसे अच्छी उपलब्धि";
+                BIO = "आपके बारे में";
+                COMPLETE_YOUR_PROFILE = "अपनी प्रोफाइल पूरी कीजिए";
+                YOUR_ACTIVITY = "आपकी गतिविधि";
+                QUESTION = "प्रशन";
+                ANSWER = "उत्तर";
+                TOPIC_FOLLOWED = "विषय का पालन किया";
+                FOLLOWING = "आपने जिसको अनुशरण किया";
+                FOLLOWERS = "अनुसरण करने वाले शिष्य";
+                BLOG = "ब्लॉग";
+                QUOTES = "उल्लेख";
+                ADD_MORE_QUESTION = "एक और सवाल जोड़ें";
+                FOLLOW_MORE_TOPIC = "अधिक विषय का पालन करें";
+                NOT_FOLLOWING_ANY_USER = "किसी भी उपयोगकर्ता का अनुसरण नहीं कर रहे है";
+                FOLLOW_MORE_USER = "अधिक उपयोगकर्ता का पालन करें";
+                NO_BLOG_POSTED_YET = "अभी तक कोई ब्लॉग पोस्ट नहीं किया गया";
+                BLOG_ABOUT_SOMETHING = "किसी चीज के बारे में ब्लॉग";
+                NO_QUESTES_POSTED_YET = "अभी तक कोई उद्धरण पोस्ट नहीं किया गया है";
+                ADD_MORE_QUOTES = "अधिक उद्धरण जोड़ें";
+                NOT_FOLLOWED_BY_ANY_USER = "किसी भी उपयोगकर्ता द्वारा पीछा नहीं किया गया";
+                POST_YOUR_QUESTION_HERE = "यहाँ अपना प्रश्न डाले";
+                PLEASE_LOGIN_FIRST = "पहले प्रवेश करें";
+                CLOSE = "बंद करे";
+                CLICK_HERE_TO_LOGIN = "लॉग इन करने के लिए यहां क्लिक करें";
+                FOLLOWED_TOPIC = "विषय जो आपको पसंद है";
+                CLICK_HERE_TO_MORE_TOPIC = "अधिक विषय के लिए यहां क्लिक करें";
+                PUT_YOUR_QUESTION_HERE = "अपना प्रश्न यहाँ रखें";
+                EX = "उदाहरण :कैसे है ,क्या है ";
+                TAG_SUGGESTION_DESCRIPTION = "अपने प्रश्न से संबंधित कम से कम दो टैग प्रदान करें। कोमा (,) का उपयोग करके अलग करे";
+                TAG_EXMAPLE = "उदाहरण :विज्ञान,भौतिक , रसायन विज्ञान  ";
+                POST = "post";
+
+            } else {
+                EMAIL = "Email";
+                PASSWORD = "Password";
+                HOME = "Home";
+                LOGIN = "Login";
+                SIGNUP = "SignUp";
+                SEARCH = "Search";
+                PROFILE = "Profile";
+                CONTACT_US = "contact Us";
+                ABOUT_US = "About Us";
+                LOGOUT = "Logout";
+                SELECT = "Select";
+                PROFILE_DETAILS = "Profile Details ";
+                UPDATE_YOUR_PROFILE_IMAGE = "Update your profile image";
+                NAME = "Name ";
+                MAIL_ID = "Mail Id ";
+                HIGHER_QUALIFICATION = "Higher Qualification ";
+                BEST_ACHIEVEMENT = "Best Achievement";
+                BIO = "Bio ";
+                COMPLETE_YOUR_PROFILE = "Complete your profile";
+                YOUR_ACTIVITY = "User Activity ";
+                QUESTION = "Question";
+                ANSWER = "Answer";
+                TOPIC_FOLLOWED = "Topic Followed";
+                FOLLOWING = "Following";
+                FOLLOWERS = "Followers";
+                BLOG = "Blog";
+                QUOTES = "Quotes";
+                ADD_MORE_QUESTION = "Add more question";
+                FOLLOW_MORE_TOPIC = "Follow more topic";
+                NOT_FOLLOWING_ANY_USER = "Not following any user";
+                FOLLOW_MORE_USER = "Follow More User";
+                NO_BLOG_POSTED_YET = "No blog posted yet";
+                BLOG_ABOUT_SOMETHING = "Blog about something";
+                NO_QUESTES_POSTED_YET = "No quotes posted yet";
+                ADD_MORE_QUOTES = "Add more quotes";
+                NOT_FOLLOWED_BY_ANY_USER = "Not followed by any user";
+                POST_YOUR_QUESTION_HERE = "Post Your Question Here";
+                PLEASE_LOGIN_FIRST = "Please Lgin First";
+                CLOSE = "Close";
+                CLICK_HERE_TO_LOGIN = "Click here to login";
+                FOLLOWED_TOPIC = "Followed Topic";
+                CLICK_HERE_TO_MORE_TOPIC = "Click here to more topic";
+                PUT_YOUR_QUESTION_HERE = "Put Your Question Here";
+                EX = "Ex: What is,How to..";
+                TAG_SUGGESTION_DESCRIPTION = "Provide at least two tag related to your question. separate tag using Coma(,)";
+                TAG_EXMAPLE = "Ex:Java,Database,c language";
+                POST = "post";
+            }
+        %>
+
+        <script type="text/javascript">
+
+            function showCommentBox() {
+            <% if (session.getAttribute("Session_id_of_user") != null) { %>
+                var div = document.getElementById('comment');
+                div.className = 'visible';
+            <% } else { %>alert("Please login first to comment");
+            <%  }  %>
+                }
+        </script>
 
         <meta charset="UTF-8">
         <!-- For IE -->
@@ -184,13 +196,13 @@
         <meta property="og:locale" content="en_US">
         <script async src="https://www.googletagmanager.com/gtag/js?id=UA-128307055-1"></script>
         <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag() {
-                dataLayer.push(arguments);
-            }
-            gtag('js', new Date());
+                window.dataLayer = window.dataLayer || [];
+                function gtag() {
+                    dataLayer.push(arguments);
+                }
+                gtag('js', new Date());
 
-            gtag('config', 'UA-128307055-1');
+                gtag('config', 'UA-128307055-1');
         </script> 
         <script type="text/javascript">
 
@@ -335,7 +347,7 @@
                     <div class="row">
 
                         <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
-                            <div class="themeBox" style="min-height:500px;">
+                            <div class="themeBox" style="min-height:1px;">
                                 <div class="boxHeading">
                                     <%=PROFILE_DETAILS%>
                                 </div>
@@ -459,13 +471,66 @@
                                             <td><a href="UpdateUserProfile.jsp?sl=<%=sl%>"><%=COMPLETE_YOUR_PROFILE%></a></td>  
 
                                         </tr>
+
                                         <% }
                                                 }
                                             } catch (Exception ex) {
                                                 out.println("What the hell is going on" + ex);
                                             }%>
+                                             <tr>                                                   
+                                            <td>Appreciation ..</td>  
 
+                                        </tr>
+                                        
                                     </table>
+                                                    
+                                    <div align="right">
+
+                                        <% //Fetching the userProfile comment
+                                            try {
+                                                String sql_question_comment = "SELECT unique_id,user_id,"
+                                                        + "(SELECT firstname FROM newuser WHERE id = comments.user_id )AS fullname,"
+                                                        + "q_id,comments,time FROM comments WHERE userprofileid = ? ";
+                                                preparedStatement = connection.prepareStatement(sql_question_comment);
+                                                preparedStatement.setInt(1, id_of_user);
+                                                resultSet = preparedStatement.executeQuery();
+                                                while (resultSet.next()) {
+                                                    String Blog_comments = resultSet.getString("comments");
+                                                    int user_id = resultSet.getInt("user_id");//userId of who commented
+                                                    String userNameWhoCommented = resultSet.getString("fullname");//UserName who commentd
+                                                    String time = resultSet.getString("time");
+
+                                                    out.println(Blog_comments + ":- ");
+                                                    if (userName.equalsIgnoreCase("GuestUser")) {
+                                                        out.println("<b style=color:red;>" + userName + "</b>");
+                                                    } else {
+                                        %>
+                                        <a href="profile.jsp?user=<%=userNameWhoCommented.replaceAll(" ", "+")%>&ID=<%=user_id%>&sl=<%=sl%>"><%=convertStringUpperToLower(userNameWhoCommented)%></a>
+                                        <%  }
+                                                    out.println(" <br>_____________________________<br> ");
+                                                }
+
+                                            } catch (Exception msg) {
+                                                out.println("Error in loading question comment: -" + msg);
+                                            }
+                                        %>
+                                         <% try {
+                                                         if (session.getAttribute("email") != null) {
+                                                             if (!mail.equals(session.getAttribute("email"))) {%>     
+                                                <a href="javascript:void(0)" value="Comment" onclick="showCommentBox()">Write Good Thing About Him</a>
+                                                <% }
+                                                        }
+                                                    } catch (Exception msg) {
+                                                        out.println(msg);
+                                                    } %>
+                                    </div>
+                                    <form action="SubmitUserProfileComment.jsp" method="get">
+                                        <div class="hidden" id="comment">
+                                            <input type="hidden" name="OnCommentUserId" value="<%=id_of_user%>">
+                                            <textarea name="comments" rows="3" cols="30" required="" placeholder="Write about him and let the world know how good he is.."></textarea>
+                                            <input type="submit" name="sub" value="Send Comment">
+                                        </div>
+                                    </form>
 
                                 </div>
                             </div>

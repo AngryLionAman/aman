@@ -26,7 +26,7 @@
                         + "(SELECT firstname FROM newuser WHERE id = notification.followers_id)AS firstname,"
                         + "question_id,"
                         + "(SELECT question FROM question WHERE q_id = notification.question_id)AS QUESTION,ans_id,"
-                        + "(SELECT answer FROM answer WHERE a_id = notification.ans_id)AS answer,time FROM notification "
+                        + "(SELECT answer FROM answer WHERE a_id = notification.ans_id)AS answer,blog_id,time FROM notification "
                         + "WHERE user_id = ? OR user_id IS NULL ORDER BY unique_id DESC";
                 preparedStatement = connection.prepareStatement(sql);
                 preparedStatement.setInt(1, CurrentUserId);
@@ -37,6 +37,7 @@
         status = false;
         int comment_id = resultSet.getInt("unique_id");
         int question_id = resultSet.getInt("question_id");
+        int blog_id = resultSet.getInt("blog_id");
         String question = resultSet.getString("question");
         //String answer = resultSet.getString("answer");
         int userId = resultSet.getInt("followers_id");//who created the notification
@@ -84,12 +85,22 @@
 <a href="Answer.jsp?q=<%=question.replaceAll(" ", "-")%>&comment_by=<%=userFirstName.replaceAll(" ", "+")%>&Id=<%=question_id%>&c_id=<%=comment_id%>"><b><%=userFirstName%></b> commented on <b><%=question%></b></a>
 <br>-------------------------------------------------<br>
 <%
-            } else if (notification_type.equalsIgnoreCase("comment_on_Answer")) {
+ } else if (notification_type.equalsIgnoreCase("comment_on_Answer")) {
 %>
 <a href="Answer.jsp?q=<%=question.replaceAll(" ", "-")%>&comment_by=<%=userFirstName.replaceAll(" ", "+")%>&Id=<%=question_id%>&c_id=<%=comment_id%>"><b><%=userFirstName%></b> commented on a answer which something belongs to you and question is :- <b><%=question%></b></a>
 <br>-------------------------------------------------<br>
 <%
-            }
+ }else if (notification_type.equalsIgnoreCase("comment_on_Blog")) {
+%>
+<a href="D_Blog.jsp?Blog_Id=<%=blog_id%>&c_id=<%=comment_id%>"><b><%=userFirstName%></b> Commented on your Blog </a>
+<br>-------------------------------------------------<br>
+<%
+ }else if (notification_type.equalsIgnoreCase("comment_on_Profile")) {
+%>
+<a href="profile.jsp?ID=<%=CurrentUserId%>&c_id=<%=comment_id%>"> <b><%=userFirstName%></b> Commented on You profile</a>
+<br>-------------------------------------------------<br>
+<%
+ }
         }
         if (status) {
             out.println("You don't have any notification");
