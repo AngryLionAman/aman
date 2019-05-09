@@ -276,7 +276,7 @@
                                                     sql = "SELECT t.unique_id AS unique_id,t.topic_name AS topic_name,"
                                                             + "(SELECT COUNT(user_or_followers_id) FROM topic_followers_detail "
                                                             + "WHERE topic_id = t.unique_id) AS count FROM topic t "
-                                                            + "where t.unique_id IS NOT NULL AND t.topic_name IS NOT NULL LIMIT 5";
+                                                            + "where t.unique_id IS NOT NULL AND t.topic_name IS NOT NULL ORDER BY RAND() LIMIT 5";
                                                 }
                                                 preparedStatement = connection.prepareStatement(sql);
                                                 resultSet = preparedStatement.executeQuery();
@@ -348,16 +348,27 @@
 
                                     <h4><%=RECENT_POSTED_QUESTION%></h4>
                                     <%
-                                        String sql3 = "SELECT q.q_id,(select count(*) from answer where q_id = q.q_id) as tac,"
+                                        String sql3 = "SELECT q.total_view,q.q_id,(select count(*) from answer where q_id = q.q_id) as tac,"
                                                 + "q.question,q.vote,user.firstname,user.ID FROM question q RIGHT JOIN newuser user ON user.id = q.id "
                                                 + "WHERE q.q_id IS NOT NULL AND q.question IS NOT NULL ORDER BY q_id DESC LIMIT 10";
                                         String UserName_for_trending_question_T = null;
                                         try {
                                             preparedStatement = connection.prepareStatement(sql3);
                                             resultSet = preparedStatement.executeQuery();
+                                            PreparedStatement ps2 = null;
                                             while (resultSet.next()) {
                                                 String TrendingQuestion_T = resultSet.getString("question");
+                                                int totalView = resultSet.getInt("q.total_view") + 1;
                                                 int question_id = resultSet.getInt("q.q_id");
+                                                try {
+                                                    String countView = "UPDATE question SET total_view = total_view + 1 WHERE q_id =? ";
+                                                    ps2 = connection.prepareStatement(countView);
+                                                    ps2.setInt(1, question_id);
+                                                    ps2.executeUpdate();
+
+                                                } catch (Exception msg) {
+                                                    out.println("Error in cound the view" + msg);
+                                                }
                                                 int userID = resultSet.getInt("user.ID");
                                                 int tac = resultSet.getInt("tac");
                                                 int UpVote = resultSet.getInt("q.vote");
@@ -382,7 +393,8 @@
                                             </div>
                                             <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=question_id%>', '<%="upvote"%>');" >Upvote(<%=UpVote%>)</a>&nbsp;&nbsp; 
                                             <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=question_id%>', '<%="downvote"%>');" >Downvote</a>&nbsp;&nbsp; 
-                                            <a href="Answer.jsp?q=<%=TrendingQuestion_T.replaceAll(" ", "-")%>&Id=<%=question_id%>&sl=<%=sl%>" >Answer(<%=tac%>)</a>
+                                            <a href="Answer.jsp?q=<%=TrendingQuestion_T.replaceAll(" ", "-")%>&Id=<%=question_id%>&sl=<%=sl%>" >Answer(<%=tac%>)</a>&nbsp;&nbsp;
+                                            <a href="javascript:void(0)">View(<%=totalView%>)</a>
                                             <!-- Comment on question -->
                                             <div align="right">
 
@@ -420,6 +432,7 @@
                                     </div>
                                     <%
                                         }
+                                        ps2.close();
                                     } catch (Exception Exceptionmsg) {
                                         out.println("Error " + Exceptionmsg);
                                         if (session.getAttribute("email") == null) {
@@ -458,7 +471,7 @@
                                             //Migrated the join from right to inner. i don't know if any bug will create
                                             //Please god help me
                                             String sql4 = "select DISTINCT q.id,(SELECT firstname FROM newuser WHERE id= q.id) as firstname,"
-                                                    + "q.q_id,q.question,q.vote,(select count(*) from answer where q_id = q.q_id) as tac from question q "
+                                                    + "q.q_id,q.total_view,q.question,q.vote,(select count(*) from answer where q_id = q.q_id) as tac from question q "
                                                     + "inner join question_topic_tag qtt on q.q_id = qtt.question_id where tag_id IN "
                                                     + "(select t.unique_id from topic t inner join topic_followers_detail de on t.unique_id = de.topic_id "
                                                     + "where user_or_followers_id = ?) and q.id is not null and q.q_id is not null "
@@ -466,11 +479,26 @@
                                             preparedStatement = connection.prepareStatement(sql4);
                                             preparedStatement.setInt(1, id_of_user);
                                             resultSet = preparedStatement.executeQuery();
+                                            
                                             while (resultSet.next()) {
                                                 question = resultSet.getString("question");
                                                 fname = resultSet.getString("firstname");
                                                 TotalAnswerCount = resultSet.getInt("tac");
                                                 VoteCount = resultSet.getInt("q.vote");
+                                                
+                                                int question_id = resultSet.getInt("q.q_id");
+                                                try {
+                                                    PreparedStatement ps3 = null;
+                                                    String countView = "UPDATE question SET total_view = total_view + 1 WHERE q_id =? ";
+                                                    ps3 = connection.prepareStatement(countView);
+                                                    ps3.setInt(1, question_id);
+                                                    ps3.executeUpdate();
+                                                    ps3.close();
+
+                                                } catch (Exception msg) {
+                                                    out.println("Error in cound the view" + msg);
+                                                }
+                                                int ViewCount = resultSet.getInt("q.total_view");
                                     %>
                                     <div class="themeBox" style="height:auto;">
 
@@ -480,10 +508,10 @@
                                         <div class="questionArea">
                                             <div class="postedBy"><%=POSTED_BY%> : <a href="profile.jsp?user=<%=fname.replaceAll(" ", "+")%>&ID=<%=ide%>&sl=<%=sl%>"><%=firstName(fname)%></a></div>
                                         </div>
-                                        <a href="javascript:void(0)" onclick="this.style.color = 'red';
-                                                return take_value(this, '<%=resultSet.getInt("q.q_id")%>', '<%="upvote"%>');" >Upvote(<%=VoteCount%>)</a>&nbsp;&nbsp; 
+                                        <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=resultSet.getInt("q.q_id")%>', '<%="upvote"%>');" >Upvote(<%=VoteCount%>)</a>&nbsp;&nbsp; 
                                         <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=resultSet.getInt("q.q_id")%>', '<%="downvote"%>');" >Downvote</a>&nbsp;&nbsp; 
-                                        <a href="Answer.jsp?q=<%=question.replaceAll(" ", "-")%>&Id=<%=resultSet.getInt("q.q_id")%>&sl=<%=sl%>" >Answer(<%=TotalAnswerCount%>)</a>
+                                        <a href="Answer.jsp?q=<%=question.replaceAll(" ", "-")%>&Id=<%=resultSet.getInt("q.q_id")%>&sl=<%=sl%>" >Answer(<%=TotalAnswerCount%>)</a>&nbsp;&nbsp;                                         
+                                        <a href="javascript:void(0)">View(<%=ViewCount%>)</a>
                                         <!-- Comment on question -->
                                         <div align="right">
 
@@ -557,7 +585,7 @@
                                         // Connection connection2 = null;
 
                                         int showRows = 10;
-                                        int totalRecords = 1;
+                                        int totalRecords = 5;
                                         int totalRows = nullIntconvert(request.getParameter("totalRows"));
                                         int totalPages = nullIntconvert(request.getParameter("totalPages"));
                                         int iPageNo = nullIntconvert(request.getParameter("iPageNo"));
@@ -576,7 +604,7 @@
 
                                             String query1 = "SELECT SQL_CALC_FOUND_ROWS id,(SELECT firstname FROM newuser "
                                                     + "WHERE id = question.id)AS firstname,q_id,(SELECT COUNT(*) FROM answer WHERE q_id = question.q_id) AS tac,"
-                                                    + "question,vote FROM question LIMIT " + iPageNo + "," + showRows + "";
+                                                    + "question,vote,total_view FROM question ORDER BY RAND() LIMIT " + iPageNo + "," + showRows + "";
                                             ps1 = connection.prepareStatement(query1);
                                             rs1 = ps1.executeQuery();
 
@@ -601,11 +629,24 @@
                                         <input type="hidden" name="cPageNo" value="<%=cPageNo%>">
                                         <input type="hidden" name="showRows" value="<%=showRows%>">
                                         <%
+                                            
                                             while (rs1.next()) {
                                                 Username = rs1.getString("firstname");
                                                 userId = rs1.getInt("id");
                                                 Vote = rs1.getInt("vote");
                                                 TotoalAnswerCount = rs1.getInt("tac");
+                                                int total_count = rs1.getInt("total_view")+1;
+                                                PreparedStatement ps4 = null;
+                                                 try {
+                                                    String countView = "UPDATE question SET total_view = total_view + 1 WHERE q_id =? ";
+                                                    ps4 = connection.prepareStatement(countView);
+                                                    ps4.setInt(1, rs1.getInt("q_id"));
+                                                    ps4.executeUpdate();
+
+                                                } catch (Exception msg) {
+                                                    out.println("Error in cound the view" + msg);
+                                                }
+                                                 ps4.close();
                                         %>
                                         <div class="themeBox" style="height:auto;">
 
@@ -619,7 +660,8 @@
                                             </div>
                                             <a href="javascript:void(0)" onclick="return take_value(this, '<%=rs1.getInt("q_id")%>', 'upvote');">Upvote(<%=Vote%>)</a>&nbsp;&nbsp;
                                             <a href="javascript:void(0)" onclick="return take_value(this, '<%=rs1.getInt("q_id")%>', 'upvote');">Downvote</a>&nbsp;&nbsp;
-                                            <a href="Answer.jsp?q=<%=rs1.getString("question").replaceAll(" ", "-")%>&Id=<%=rs1.getInt("q_id")%>&sl=<%=sl%>">Answer(<%=TotoalAnswerCount%>)</a>
+                                            <a href="Answer.jsp?q=<%=rs1.getString("question").replaceAll(" ", "-")%>&Id=<%=rs1.getInt("q_id")%>&sl=<%=sl%>">Answer(<%=TotoalAnswerCount%>)</a>&nbsp;&nbsp;
+                                            <a href="javascript:void(0)">View(<%=total_count%>)</a>
                                             <!-- Fetching the Comment on question -->
                                             <div align="right">
 
@@ -656,7 +698,7 @@
                                         </div>
 
                                         <%
-                                            }
+                                            }  // ps4.close();
                                         } catch (Exception e) {
                                             out.println(e);
                                             if (session.getAttribute("email") == null) {

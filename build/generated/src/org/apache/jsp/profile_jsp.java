@@ -159,177 +159,196 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
 
       out.write("<!DOCTYPE html>\r\n");
       out.write("<html lang=\"en\">\r\n");
-      out.write("    \r\n");
-      out.write("    <meta charset=\"UTF-8\">\r\n");
-      out.write("    \r\n");
-      out.write("     \r\n");
-      out.write("    ");
+      out.write("    <head> \r\n");
+      out.write("        \r\n");
+      out.write("        <link rel=\"icon\" href=\"https://www.inquiryhere.com/images/inquiryhere_Logo.PNG\" type=\"image/png\">\r\n");
+      out.write("\r\n");
+      out.write("        <meta charset=\"UTF-8\">\r\n");
+      out.write("        \r\n");
+      out.write("         \r\n");
+      out.write("        ");
       out.write('\n');
       out.write('\n');
       out.write("\r\n");
-      out.write("    ");
+      out.write("        ");
+      out.write("\r\n");
+      out.write("        ");
 
-        String EMAIL = "";
-        String PASSWORD = "";
-        String HOME = "";
-        String LOGIN = "";
-        String SIGNUP = "";
-        String SEARCH = "";
-        String PROFILE = "";
-        String CONTACT_US = "";
-        String ABOUT_US = "";
-        String LOGOUT = "";
-        String SELECT = "";
-        String PROFILE_DETAILS = "";
-        String UPDATE_YOUR_PROFILE_IMAGE = "";
-        String NAME = "";
-        String MAIL_ID = "";
-        String HIGHER_QUALIFICATION = "";
-        String BEST_ACHIEVEMENT = "";
-        String BIO = "";
-        String COMPLETE_YOUR_PROFILE = "";
-        String YOUR_ACTIVITY = "";
-        String QUESTION = "";
-        String ANSWER = "";
-        String TOPIC_FOLLOWED = "";
-        String FOLLOWING = "";
-        String FOLLOWERS = "";
-        String BLOG = "";
-        String QUOTES = "";
-        String ADD_MORE_QUESTION = "";
-        String FOLLOW_MORE_TOPIC = "";
-        String NOT_FOLLOWING_ANY_USER = "";
-        String FOLLOW_MORE_USER = "";
-        String NO_BLOG_POSTED_YET = "";
-        String BLOG_ABOUT_SOMETHING = "";
-        String NO_QUESTES_POSTED_YET = "";
-        String ADD_MORE_QUOTES = "";
-        String NOT_FOLLOWED_BY_ANY_USER = "";
-        String POST_YOUR_QUESTION_HERE = "";
-        String PLEASE_LOGIN_FIRST = "";
-        String CLOSE = "";
-        String CLICK_HERE_TO_LOGIN = "";
-        String FOLLOWED_TOPIC = "";
-        String CLICK_HERE_TO_MORE_TOPIC = "";
-        String PUT_YOUR_QUESTION_HERE = "";
-        String EX = "";
-        String TAG_SUGGESTION_DESCRIPTION = "";
-        String TAG_EXMAPLE = "";
-        String POST = "";
-    
+            String EMAIL = "";
+            String PASSWORD = "";
+            String HOME = "";
+            String LOGIN = "";
+            String SIGNUP = "";
+            String SEARCH = "";
+            String PROFILE = "";
+            String CONTACT_US = "";
+            String ABOUT_US = "";
+            String LOGOUT = "";
+            String SELECT = "";
+            String PROFILE_DETAILS = "";
+            String UPDATE_YOUR_PROFILE_IMAGE = "";
+            String NAME = "";
+            String MAIL_ID = "";
+            String HIGHER_QUALIFICATION = "";
+            String BEST_ACHIEVEMENT = "";
+            String BIO = "";
+            String COMPLETE_YOUR_PROFILE = "";
+            String YOUR_ACTIVITY = "";
+            String QUESTION = "";
+            String ANSWER = "";
+            String TOPIC_FOLLOWED = "";
+            String FOLLOWING = "";
+            String FOLLOWERS = "";
+            String BLOG = "";
+            String QUOTES = "";
+            String ADD_MORE_QUESTION = "";
+            String FOLLOW_MORE_TOPIC = "";
+            String NOT_FOLLOWING_ANY_USER = "";
+            String FOLLOW_MORE_USER = "";
+            String NO_BLOG_POSTED_YET = "";
+            String BLOG_ABOUT_SOMETHING = "";
+            String NO_QUESTES_POSTED_YET = "";
+            String ADD_MORE_QUOTES = "";
+            String NOT_FOLLOWED_BY_ANY_USER = "";
+            String POST_YOUR_QUESTION_HERE = "";
+            String PLEASE_LOGIN_FIRST = "";
+            String CLOSE = "";
+            String CLICK_HERE_TO_LOGIN = "";
+            String FOLLOWED_TOPIC = "";
+            String CLICK_HERE_TO_MORE_TOPIC = "";
+            String PUT_YOUR_QUESTION_HERE = "";
+            String EX = "";
+            String TAG_SUGGESTION_DESCRIPTION = "";
+            String TAG_EXMAPLE = "";
+            String POST = "";
+        
       out.write("\r\n");
       out.write("\r\n");
-      out.write("    ");
+      out.write("        ");
 
-        String sl = request.getParameter("sl");
-        if (sl == null) {
-            sl = "en";
-        } else {
+            String sl = request.getParameter("sl");
+            if (sl == null) {
+                sl = "en";
+            } else {
 
-        }
-        if (sl.equalsIgnoreCase("hi")) {
-            EMAIL = "ईमेल";
-            PASSWORD = "पासवर्ड";
-            HOME = "होम";
-            LOGIN = "लॉग इन करें";
-            SIGNUP = "नया खाता बनाएँ";
-            SEARCH = "खोजे";
-            PROFILE = "प्रोफ़ाइल";
-            CONTACT_US = "हमसे संपर्क करें";
-            ABOUT_US = "हमारे बारे में";
-            LOGOUT = "बाहर जाये";
-            SELECT = "चयन करें";
-            PROFILE_DETAILS = "प्रोफ़ाइल का विवरण";
-            UPDATE_YOUR_PROFILE_IMAGE = "अपनी प्रोफ़ाइल छवि को अपडेट करें";
-            NAME = "नाम";
-            MAIL_ID = "ईमेल आईडी";
-            HIGHER_QUALIFICATION = "उच्च योग्यता";
-            BEST_ACHIEVEMENT = "सबसे अच्छी उपलब्धि";
-            BIO = "आपके बारे में";
-            COMPLETE_YOUR_PROFILE = "अपनी प्रोफाइल पूरी कीजिए";
-            YOUR_ACTIVITY = "आपकी गतिविधि";
-            QUESTION = "प्रशन";
-            ANSWER = "उत्तर";
-            TOPIC_FOLLOWED = "विषय का पालन किया";
-            FOLLOWING = "आपने जिसको अनुशरण किया";
-            FOLLOWERS = "अनुसरण करने वाले शिष्य";
-            BLOG = "ब्लॉग";
-            QUOTES = "उल्लेख";
-            ADD_MORE_QUESTION = "एक और सवाल जोड़ें";
-            FOLLOW_MORE_TOPIC = "अधिक विषय का पालन करें";
-            NOT_FOLLOWING_ANY_USER = "किसी भी उपयोगकर्ता का अनुसरण नहीं कर रहे है";
-            FOLLOW_MORE_USER = "अधिक उपयोगकर्ता का पालन करें";
-            NO_BLOG_POSTED_YET = "अभी तक कोई ब्लॉग पोस्ट नहीं किया गया";
-            BLOG_ABOUT_SOMETHING = "किसी चीज के बारे में ब्लॉग";
-            NO_QUESTES_POSTED_YET = "अभी तक कोई उद्धरण पोस्ट नहीं किया गया है";
-            ADD_MORE_QUOTES = "अधिक उद्धरण जोड़ें";
-            NOT_FOLLOWED_BY_ANY_USER = "किसी भी उपयोगकर्ता द्वारा पीछा नहीं किया गया";
-            POST_YOUR_QUESTION_HERE = "यहाँ अपना प्रश्न डाले";
-            PLEASE_LOGIN_FIRST = "पहले प्रवेश करें";
-            CLOSE = "बंद करे";
-            CLICK_HERE_TO_LOGIN = "लॉग इन करने के लिए यहां क्लिक करें";
-            FOLLOWED_TOPIC = "विषय जो आपको पसंद है";
-            CLICK_HERE_TO_MORE_TOPIC = "अधिक विषय के लिए यहां क्लिक करें";
-            PUT_YOUR_QUESTION_HERE = "अपना प्रश्न यहाँ रखें";
-            EX = "उदाहरण :कैसे है ,क्या है ";
-            TAG_SUGGESTION_DESCRIPTION = "अपने प्रश्न से संबंधित कम से कम दो टैग प्रदान करें। कोमा (,) का उपयोग करके अलग करे";
-            TAG_EXMAPLE = "उदाहरण :विज्ञान,भौतिक , रसायन विज्ञान  ";
-            POST = "post";
+            }
+            if (sl.equalsIgnoreCase("hi")) {
+                EMAIL = "ईमेल";
+                PASSWORD = "पासवर्ड";
+                HOME = "होम";
+                LOGIN = "लॉग इन करें";
+                SIGNUP = "नया खाता बनाएँ";
+                SEARCH = "खोजे";
+                PROFILE = "प्रोफ़ाइल";
+                CONTACT_US = "हमसे संपर्क करें";
+                ABOUT_US = "हमारे बारे में";
+                LOGOUT = "बाहर जाये";
+                SELECT = "चयन करें";
+                PROFILE_DETAILS = "प्रोफ़ाइल का विवरण";
+                UPDATE_YOUR_PROFILE_IMAGE = "अपनी प्रोफ़ाइल छवि को अपडेट करें";
+                NAME = "नाम";
+                MAIL_ID = "ईमेल आईडी";
+                HIGHER_QUALIFICATION = "उच्च योग्यता";
+                BEST_ACHIEVEMENT = "सबसे अच्छी उपलब्धि";
+                BIO = "आपके बारे में";
+                COMPLETE_YOUR_PROFILE = "अपनी प्रोफाइल पूरी कीजिए";
+                YOUR_ACTIVITY = "आपकी गतिविधि";
+                QUESTION = "प्रशन";
+                ANSWER = "उत्तर";
+                TOPIC_FOLLOWED = "विषय का पालन किया";
+                FOLLOWING = "आपने जिसको अनुशरण किया";
+                FOLLOWERS = "अनुसरण करने वाले शिष्य";
+                BLOG = "ब्लॉग";
+                QUOTES = "उल्लेख";
+                ADD_MORE_QUESTION = "एक और सवाल जोड़ें";
+                FOLLOW_MORE_TOPIC = "अधिक विषय का पालन करें";
+                NOT_FOLLOWING_ANY_USER = "किसी भी उपयोगकर्ता का अनुसरण नहीं कर रहे है";
+                FOLLOW_MORE_USER = "अधिक उपयोगकर्ता का पालन करें";
+                NO_BLOG_POSTED_YET = "अभी तक कोई ब्लॉग पोस्ट नहीं किया गया";
+                BLOG_ABOUT_SOMETHING = "किसी चीज के बारे में ब्लॉग";
+                NO_QUESTES_POSTED_YET = "अभी तक कोई उद्धरण पोस्ट नहीं किया गया है";
+                ADD_MORE_QUOTES = "अधिक उद्धरण जोड़ें";
+                NOT_FOLLOWED_BY_ANY_USER = "किसी भी उपयोगकर्ता द्वारा पीछा नहीं किया गया";
+                POST_YOUR_QUESTION_HERE = "यहाँ अपना प्रश्न डाले";
+                PLEASE_LOGIN_FIRST = "पहले प्रवेश करें";
+                CLOSE = "बंद करे";
+                CLICK_HERE_TO_LOGIN = "लॉग इन करने के लिए यहां क्लिक करें";
+                FOLLOWED_TOPIC = "विषय जो आपको पसंद है";
+                CLICK_HERE_TO_MORE_TOPIC = "अधिक विषय के लिए यहां क्लिक करें";
+                PUT_YOUR_QUESTION_HERE = "अपना प्रश्न यहाँ रखें";
+                EX = "उदाहरण :कैसे है ,क्या है ";
+                TAG_SUGGESTION_DESCRIPTION = "अपने प्रश्न से संबंधित कम से कम दो टैग प्रदान करें। कोमा (,) का उपयोग करके अलग करे";
+                TAG_EXMAPLE = "उदाहरण :विज्ञान,भौतिक , रसायन विज्ञान  ";
+                POST = "post";
 
-        } else {
-            EMAIL = "Email";
-            PASSWORD = "Password";
-            HOME = "Home";
-            LOGIN = "Login";
-            SIGNUP = "SignUp";
-            SEARCH = "Search";
-            PROFILE = "Profile";
-            CONTACT_US = "contact Us";
-            ABOUT_US = "About Us";
-            LOGOUT = "Logout";
-            SELECT = "Select";
-            PROFILE_DETAILS = "Profile Details ";
-            UPDATE_YOUR_PROFILE_IMAGE = "Update your profile image";
-            NAME = "Name ";
-            MAIL_ID = "Mail Id ";
-            HIGHER_QUALIFICATION = "Higher Qualification ";
-            BEST_ACHIEVEMENT = "Best Achievement";
-            BIO = "Bio ";
-            COMPLETE_YOUR_PROFILE = "Complete your profile";
-            YOUR_ACTIVITY = "User Activity ";
-            QUESTION = "Question";
-            ANSWER = "Answer";
-            TOPIC_FOLLOWED = "Topic Followed";
-            FOLLOWING = "Following";
-            FOLLOWERS = "Followers";
-            BLOG = "Blog";
-            QUOTES = "Quotes";
-            ADD_MORE_QUESTION = "Add more question";
-            FOLLOW_MORE_TOPIC = "Follow more topic";
-            NOT_FOLLOWING_ANY_USER = "Not following any user";
-            FOLLOW_MORE_USER = "Follow More User";
-            NO_BLOG_POSTED_YET = "No blog posted yet";
-            BLOG_ABOUT_SOMETHING = "Blog about something";
-            NO_QUESTES_POSTED_YET = "No quotes posted yet";
-            ADD_MORE_QUOTES = "Add more quotes";
-            NOT_FOLLOWED_BY_ANY_USER = "Not followed by any user";
-            POST_YOUR_QUESTION_HERE = "Post Your Question Here";
-            PLEASE_LOGIN_FIRST = "Please Lgin First";
-            CLOSE = "Close";
-            CLICK_HERE_TO_LOGIN = "Click here to login";
-            FOLLOWED_TOPIC = "Followed Topic";
-            CLICK_HERE_TO_MORE_TOPIC = "Click here to more topic";
-            PUT_YOUR_QUESTION_HERE = "Put Your Question Here";
-            EX = "Ex: What is,How to..";
-            TAG_SUGGESTION_DESCRIPTION = "Provide at least two tag related to your question. separate tag using Coma(,)";
-            TAG_EXMAPLE = "Ex:Java,Database,c language";
-            POST = "post";
-        }
-    
+            } else {
+                EMAIL = "Email";
+                PASSWORD = "Password";
+                HOME = "Home";
+                LOGIN = "Login";
+                SIGNUP = "SignUp";
+                SEARCH = "Search";
+                PROFILE = "Profile";
+                CONTACT_US = "contact Us";
+                ABOUT_US = "About Us";
+                LOGOUT = "Logout";
+                SELECT = "Select";
+                PROFILE_DETAILS = "Profile Details ";
+                UPDATE_YOUR_PROFILE_IMAGE = "Update your profile image";
+                NAME = "Name ";
+                MAIL_ID = "Mail Id ";
+                HIGHER_QUALIFICATION = "Higher Qualification ";
+                BEST_ACHIEVEMENT = "Best Achievement";
+                BIO = "Bio ";
+                COMPLETE_YOUR_PROFILE = "Complete your profile";
+                YOUR_ACTIVITY = "User Activity ";
+                QUESTION = "Question";
+                ANSWER = "Answer";
+                TOPIC_FOLLOWED = "Topic Followed";
+                FOLLOWING = "Following";
+                FOLLOWERS = "Followers";
+                BLOG = "Blog";
+                QUOTES = "Quotes";
+                ADD_MORE_QUESTION = "Add more question";
+                FOLLOW_MORE_TOPIC = "Follow more topic";
+                NOT_FOLLOWING_ANY_USER = "Not following any user";
+                FOLLOW_MORE_USER = "Follow More User";
+                NO_BLOG_POSTED_YET = "No blog posted yet";
+                BLOG_ABOUT_SOMETHING = "Blog about something";
+                NO_QUESTES_POSTED_YET = "No quotes posted yet";
+                ADD_MORE_QUOTES = "Add more quotes";
+                NOT_FOLLOWED_BY_ANY_USER = "Not followed by any user";
+                POST_YOUR_QUESTION_HERE = "Post Your Question Here";
+                PLEASE_LOGIN_FIRST = "Please Lgin First";
+                CLOSE = "Close";
+                CLICK_HERE_TO_LOGIN = "Click here to login";
+                FOLLOWED_TOPIC = "Followed Topic";
+                CLICK_HERE_TO_MORE_TOPIC = "Click here to more topic";
+                PUT_YOUR_QUESTION_HERE = "Put Your Question Here";
+                EX = "Ex: What is,How to..";
+                TAG_SUGGESTION_DESCRIPTION = "Provide at least two tag related to your question. separate tag using Coma(,)";
+                TAG_EXMAPLE = "Ex:Java,Database,c language";
+                POST = "post";
+            }
+        
       out.write("\r\n");
-      out.write("    ");
       out.write("\r\n");
-      out.write("    <head>\r\n");
+      out.write("        <script type=\"text/javascript\">\r\n");
+      out.write("\r\n");
+      out.write("            function showCommentBox() {\r\n");
+      out.write("            ");
+ if (session.getAttribute("Session_id_of_user") != null) { 
+      out.write("\r\n");
+      out.write("                var div = document.getElementById('comment');\r\n");
+      out.write("                div.className = 'visible';\r\n");
+      out.write("            ");
+ } else { 
+      out.write("alert(\"Please login first to comment\");\r\n");
+      out.write("            ");
+  }  
+      out.write("\r\n");
+      out.write("                }\r\n");
+      out.write("        </script>\r\n");
       out.write("\r\n");
       out.write("        <meta charset=\"UTF-8\">\r\n");
       out.write("        <!-- For IE -->\r\n");
@@ -350,13 +369,13 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("        <meta property=\"og:locale\" content=\"en_US\">\r\n");
       out.write("        <script async src=\"https://www.googletagmanager.com/gtag/js?id=UA-128307055-1\"></script>\r\n");
       out.write("        <script>\r\n");
-      out.write("            window.dataLayer = window.dataLayer || [];\r\n");
-      out.write("            function gtag() {\r\n");
-      out.write("                dataLayer.push(arguments);\r\n");
-      out.write("            }\r\n");
-      out.write("            gtag('js', new Date());\r\n");
+      out.write("                window.dataLayer = window.dataLayer || [];\r\n");
+      out.write("                function gtag() {\r\n");
+      out.write("                    dataLayer.push(arguments);\r\n");
+      out.write("                }\r\n");
+      out.write("                gtag('js', new Date());\r\n");
       out.write("\r\n");
-      out.write("            gtag('config', 'UA-128307055-1');\r\n");
+      out.write("                gtag('config', 'UA-128307055-1');\r\n");
       out.write("        </script> \r\n");
       out.write("        <script type=\"text/javascript\">\r\n");
       out.write("\r\n");
@@ -437,23 +456,6 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                         if (session.getAttribute("Session_id_of_user") != null) {
                             session_id_of_user = (Integer) session.getAttribute("Session_id_of_user");
                         }
-//                        if (email == null) {
-//
-//                        } else {
-//                            try {
-//                                String p = "SELECT * FROM newuser WHERE email = '" + email + "'";
-//                                preparedStatement = connection.prepareStatement(p);
-//                                resultSet = preparedStatement.executeQuery();
-//                                while (resultSet.next()) {
-//                                    id_of_user = resultSet.getInt("id");
-//                                    //session_id_of_user = resultSet.getInt("id");
-//                                    //fullName = firstName(resultSet.getString("firstname"));
-//                                }
-//                            } catch (Exception e) {
-//                                out.println("Unable to retrieve!!" + e);
-//                            }
-//
-//                        }
                     
       out.write("\r\n");
       out.write("                    ");
@@ -477,10 +479,14 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
 
                         //String ID = request.getParameter("ID");
                         String str = request.getParameter("ID");
+                        String userName = null;
+
                         String ID = "";
                         if (str == null) {
-                            if (session.getAttribute("Session_id_of_user") != null) {//if user trying to access this page directly without login
-                                ID =String.valueOf(session.getAttribute("Session_id_of_user"));//We can directly convert object to string 
+                            if (request.getParameter("user") != null) {
+                                userName = request.getParameter("user");;
+                            } else if (session.getAttribute("Session_id_of_user") != null) {//if user trying to access this page directly without login
+                                ID = String.valueOf(session.getAttribute("Session_id_of_user"));//We can directly convert object to string 
                                 //or you cast the object into integer and then cast to String
                             } else {
                                 response.sendRedirect("UserProfile.jsp?sl=" + sl);
@@ -505,15 +511,23 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                         int id_of_user = 0;
                         int topic_id = 0;
                         int email_status = 0;
-                        boolean userFound = true;
+                        boolean userNotFound = true;
+                        String p = null;
                         try {
-                            String p = "SELECT * FROM newuser WHERE ID = '" + ID + "'";
+
+                            if (ID != null && ID.length() > 0) {
+                                p = "SELECT * FROM newuser WHERE ID = '" + ID + "'";
+                            } else {
+                                p = "SELECT * FROM newuser WHERE username = '" + userName + "'";
+                            }
                             preparedStatement = connection.prepareStatement(p);
                             resultSet = preparedStatement.executeQuery();
                             while (resultSet.next()) {
-                                userFound = false;
+                                userNotFound = false;
                                 id_of_user = resultSet.getInt("id");
+                                ID = resultSet.getString("id");
                                 fullName = resultSet.getString("firstname");
+                                userName = resultSet.getString("username");
                                 mail = resultSet.getString("email");
                                 higher_colification = resultSet.getString("higher_edu");
                                 bio = resultSet.getString("bio");
@@ -524,7 +538,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                         } catch (Exception e) {
                             out.println("Unable to retrieve!!" + e);
                         }
-                        if(userFound){
+                        if (userNotFound) {
                             response.sendRedirect("UserProfile.jsp");
                         }
                     
@@ -532,7 +546,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("                    <div class=\"row\">\r\n");
       out.write("\r\n");
       out.write("                        <div class=\"col-lg-9 col-md-9 col-sm-12 col-xs-12\">\r\n");
-      out.write("                            <div class=\"themeBox\" style=\"min-height:500px;\">\r\n");
+      out.write("                            <div class=\"themeBox\" style=\"min-height:1px;\">\r\n");
       out.write("                                <div class=\"boxHeading\">\r\n");
       out.write("                                    ");
       out.print(PROFILE_DETAILS);
@@ -715,6 +729,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("</a></td>  \r\n");
       out.write("\r\n");
       out.write("                                        </tr>\r\n");
+      out.write("\r\n");
       out.write("                                        ");
  }
                                                 }
@@ -722,8 +737,79 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                                 out.println("What the hell is going on" + ex);
                                             }
       out.write("\r\n");
+      out.write("                                             <tr>                                                   \r\n");
+      out.write("                                            <td>Appreciation ..</td>  \r\n");
       out.write("\r\n");
+      out.write("                                        </tr>\r\n");
+      out.write("                                        \r\n");
       out.write("                                    </table>\r\n");
+      out.write("                                                    \r\n");
+      out.write("                                    <div align=\"right\">\r\n");
+      out.write("\r\n");
+      out.write("                                        ");
+ //Fetching the userProfile comment
+                                            try {
+                                                String sql_question_comment = "SELECT unique_id,user_id,"
+                                                        + "(SELECT firstname FROM newuser WHERE id = comments.user_id )AS fullname,"
+                                                        + "q_id,comments,time FROM comments WHERE userprofileid = ? ";
+                                                preparedStatement = connection.prepareStatement(sql_question_comment);
+                                                preparedStatement.setInt(1, id_of_user);
+                                                resultSet = preparedStatement.executeQuery();
+                                                while (resultSet.next()) {
+                                                    String Blog_comments = resultSet.getString("comments");
+                                                    int user_id = resultSet.getInt("user_id");//userId of who commented
+                                                    String userNameWhoCommented = resultSet.getString("fullname");//UserName who commentd
+                                                    String time = resultSet.getString("time");
+
+                                                    out.println(Blog_comments + ":- ");
+                                                    if (userName.equalsIgnoreCase("GuestUser")) {
+                                                        out.println("<b style=color:red;>" + userName + "</b>");
+                                                    } else {
+                                        
+      out.write("\r\n");
+      out.write("                                        <a href=\"profile.jsp?user=");
+      out.print(userNameWhoCommented.replaceAll(" ", "+"));
+      out.write("&ID=");
+      out.print(user_id);
+      out.write("&sl=");
+      out.print(sl);
+      out.write('"');
+      out.write('>');
+      out.print(convertStringUpperToLower(userNameWhoCommented));
+      out.write("</a>\r\n");
+      out.write("                                        ");
+  }
+                                                    out.println(" <br>_____________________________<br> ");
+                                                }
+
+                                            } catch (Exception msg) {
+                                                out.println("Error in loading question comment: -" + msg);
+                                            }
+                                        
+      out.write("\r\n");
+      out.write("                                         ");
+ try {
+                                                         if (session.getAttribute("email") != null) {
+                                                             if (!mail.equals(session.getAttribute("email"))) {
+      out.write("     \r\n");
+      out.write("                                                <a href=\"javascript:void(0)\" value=\"Comment\" onclick=\"showCommentBox()\">Write Good Thing About Him</a>\r\n");
+      out.write("                                                ");
+ }
+                                                        }
+                                                    } catch (Exception msg) {
+                                                        out.println(msg);
+                                                    } 
+      out.write("\r\n");
+      out.write("                                    </div>\r\n");
+      out.write("                                    <form action=\"SubmitUserProfileComment.jsp\" method=\"get\">\r\n");
+      out.write("                                        <div class=\"hidden\" id=\"comment\">\r\n");
+      out.write("                                            <input type=\"hidden\" name=\"OnCommentUserId\" value=\"");
+      out.print(id_of_user);
+      out.write("\">\r\n");
+      out.write("                                            <textarea name=\"comments\" rows=\"3\" cols=\"30\" required=\"\" placeholder=\"Write about him and let the world know how good he is..\"></textarea>\r\n");
+      out.write("                                            <input type=\"submit\" name=\"sub\" value=\"Send Comment\">\r\n");
+      out.write("                                        </div>\r\n");
+      out.write("                                    </form>\r\n");
       out.write("\r\n");
       out.write("                                </div>\r\n");
       out.write("                            </div>\r\n");
@@ -744,86 +830,86 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("                        <div class=\"col-lg-3 col-md-3 col-sm-12 col-xs-12\">\r\n");
       out.write("                            ");
 
-                            //This script is for cound the rows in a table
-                            //For question
-                            int TotalQuestion = 0;
-                            String sql_question = "select count(*) as cnt from question where id =?";
-                            preparedStatement = connection.prepareStatement(sql_question);
-                            preparedStatement.setInt(1, id_of_user);
-                            resultSet = preparedStatement.executeQuery();
-                            while(resultSet.next()){
-                                TotalQuestion = resultSet.getInt("cnt");
-                            }
+                                //This script is for cound the rows in a table
+                                //For question
+                                int TotalQuestion = 0;
+                                String sql_question = "select count(*) as cnt from question where id =?";
+                                preparedStatement = connection.prepareStatement(sql_question);
+                                preparedStatement.setInt(1, id_of_user);
+                                resultSet = preparedStatement.executeQuery();
+                                while (resultSet.next()) {
+                                    TotalQuestion = resultSet.getInt("cnt");
+                                }
                             
       out.write("\r\n");
       out.write("                            ");
 
-                            //This script is for cound the rows in a table
-                            //For Answer
-                            int TotalAnswer = 0;
-                            String sql_answer = "select count(*) as cnt from answer where  Answer_by_id = ?";
-                            preparedStatement = connection.prepareStatement(sql_answer);
-                            preparedStatement.setInt(1, id_of_user);
-                            resultSet = preparedStatement.executeQuery();
-                            while(resultSet.next()){
-                                TotalAnswer = resultSet.getInt("cnt");
-                            }
+                                //This script is for cound the rows in a table
+                                //For Answer
+                                int TotalAnswer = 0;
+                                String sql_answer = "select count(*) as cnt from answer where  Answer_by_id = ?";
+                                preparedStatement = connection.prepareStatement(sql_answer);
+                                preparedStatement.setInt(1, id_of_user);
+                                resultSet = preparedStatement.executeQuery();
+                                while (resultSet.next()) {
+                                    TotalAnswer = resultSet.getInt("cnt");
+                                }
                             
       out.write("\r\n");
       out.write("                            ");
 
-                            //This script is for cound the rows in a table
-                            //For Topic
-                            int TotalTopic = 0;
-                            String sql_topic = " select count(*) as cnt from topic_followers_detail where user_or_followers_id = ?";
-                            preparedStatement = connection.prepareStatement(sql_topic);
-                            preparedStatement.setInt(1, id_of_user);
-                            resultSet = preparedStatement.executeQuery();
-                            while(resultSet.next()){
-                                TotalTopic = resultSet.getInt("cnt");
-                            }
+                                //This script is for cound the rows in a table
+                                //For Topic
+                                int TotalTopic = 0;
+                                String sql_topic = " select count(*) as cnt from topic_followers_detail where user_or_followers_id = ?";
+                                preparedStatement = connection.prepareStatement(sql_topic);
+                                preparedStatement.setInt(1, id_of_user);
+                                resultSet = preparedStatement.executeQuery();
+                                while (resultSet.next()) {
+                                    TotalTopic = resultSet.getInt("cnt");
+                                }
                             
       out.write("\r\n");
       out.write("                            ");
 
-                            //This script is for cound the rows in a table
-                            //For TotoalFollowing
-                            int TotalFollowing = 0;
-                            String sql_following = "select count(*) as cnt from ak_follower_detail where followers_id = ?";
-                            preparedStatement = connection.prepareStatement(sql_following);
-                            preparedStatement.setInt(1, id_of_user);
-                            resultSet = preparedStatement.executeQuery();
-                            while(resultSet.next()){
-                                TotalFollowing = resultSet.getInt("cnt");
-                            }
+                                //This script is for cound the rows in a table
+                                //For TotoalFollowing
+                                int TotalFollowing = 0;
+                                String sql_following = "select count(*) as cnt from ak_follower_detail where followers_id = ?";
+                                preparedStatement = connection.prepareStatement(sql_following);
+                                preparedStatement.setInt(1, id_of_user);
+                                resultSet = preparedStatement.executeQuery();
+                                while (resultSet.next()) {
+                                    TotalFollowing = resultSet.getInt("cnt");
+                                }
                             
       out.write("\r\n");
       out.write("                            ");
 
-                            //This script is for cound the rows in a table
-                            //For TotoalFollowers
-                            int TotalFollowers = 0;
-                            String sql_followers = "select count(*) as cnt from ak_follower_detail where user_id = ?";
-                            preparedStatement = connection.prepareStatement(sql_followers);
-                            preparedStatement.setInt(1, id_of_user);
-                            resultSet = preparedStatement.executeQuery();
-                            while(resultSet.next()){
-                                TotalFollowers = resultSet.getInt("cnt");
-                            }
+                                //This script is for cound the rows in a table
+                                //For TotoalFollowers
+                                int TotalFollowers = 0;
+                                String sql_followers = "select count(*) as cnt from ak_follower_detail where user_id = ?";
+                                preparedStatement = connection.prepareStatement(sql_followers);
+                                preparedStatement.setInt(1, id_of_user);
+                                resultSet = preparedStatement.executeQuery();
+                                while (resultSet.next()) {
+                                    TotalFollowers = resultSet.getInt("cnt");
+                                }
                             
       out.write("\r\n");
       out.write("                            ");
 
-                            //This script is for cound the rows in a table
-                            //For Totoalblog
-                            int Totalblog = 0;
-                            String sql_blogs = "select count(*)as cnt from blog where blog_posted_by = ?";
-                            preparedStatement = connection.prepareStatement(sql_blogs);
-                            preparedStatement.setInt(1, id_of_user);
-                            resultSet = preparedStatement.executeQuery();
-                            while(resultSet.next()){
-                                Totalblog = resultSet.getInt("cnt");
-                            }
+                                //This script is for cound the rows in a table
+                                //For Totoalblog
+                                int Totalblog = 0;
+                                String sql_blogs = "select count(*)as cnt from blog where blog_posted_by = ?";
+                                preparedStatement = connection.prepareStatement(sql_blogs);
+                                preparedStatement.setInt(1, id_of_user);
+                                resultSet = preparedStatement.executeQuery();
+                                while (resultSet.next()) {
+                                    Totalblog = resultSet.getInt("cnt");
+                                }
                             
       out.write("\r\n");
       out.write("\r\n");
@@ -834,7 +920,9 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("\r\n");
       out.write("                                </div>\r\n");
       out.write("                                <div>\r\n");
-      out.write("                                    <a href=\"profile.jsp?value=Question&ID=");
+      out.write("                                    <a href=\"profile.jsp?user=");
+      out.print(userName);
+      out.write("&value=Question&ID=");
       out.print(ID);
       out.write("&sl=");
       out.print(sl);
@@ -844,7 +932,9 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write('(');
       out.print(TotalQuestion);
       out.write(")</a><br>\r\n");
-      out.write("                                    <a href=\"profile.jsp?value=Answer&ID=");
+      out.write("                                    <a href=\"profile.jsp?user=");
+      out.print(userName);
+      out.write("&value=Answer&ID=");
       out.print(ID);
       out.write("&sl=");
       out.print(sl);
@@ -854,7 +944,9 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write('(');
       out.print(TotalAnswer);
       out.write(")</a><br>\r\n");
-      out.write("                                    <a href=\"profile.jsp?value=Topic&ID=");
+      out.write("                                    <a href=\"profile.jsp?user=");
+      out.print(userName);
+      out.write("&value=Topic&ID=");
       out.print(ID);
       out.write("&sl=");
       out.print(sl);
@@ -864,7 +956,9 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write('(');
       out.print(TotalTopic);
       out.write(")</a><br>\r\n");
-      out.write("                                    <a href=\"profile.jsp?value=Following&ID=");
+      out.write("                                    <a href=\"profile.jsp?user=");
+      out.print(userName);
+      out.write("&value=Following&ID=");
       out.print(ID);
       out.write("&sl=");
       out.print(sl);
@@ -874,7 +968,9 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write('(');
       out.print(TotalFollowing);
       out.write(")</a><br>\r\n");
-      out.write("                                    <a href=\"profile.jsp?value=Followers&ID=");
+      out.write("                                    <a href=\"profile.jsp?user=");
+      out.print(userName);
+      out.write("&value=Followers&ID=");
       out.print(ID);
       out.write("&sl=");
       out.print(sl);
@@ -884,7 +980,9 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write('(');
       out.print(TotalFollowers);
       out.write(")</a><br>\r\n");
-      out.write("                                    <a href=\"profile.jsp?value=Blog&ID=");
+      out.write("                                    <a href=\"profile.jsp?user=");
+      out.print(userName);
+      out.write("&value=Blog&ID=");
       out.print(ID);
       out.write("&sl=");
       out.print(sl);
@@ -894,7 +992,9 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write('(');
       out.print(Totalblog);
       out.write(")</a><br>\r\n");
-      out.write("                                    <a href=\"profile.jsp?value=Quotes&ID=");
+      out.write("                                    <a href=\"profile.jsp?user=");
+      out.print(userName);
+      out.write("&value=Quotes&ID=");
       out.print(ID);
       out.write("&sl=");
       out.print(sl);
@@ -936,7 +1036,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
 
                                         
       out.write(" <br>Q. <a href=\"Answer.jsp?q=");
-      out.print(Question_asked_by_user.replaceAll(" ","-"));
+      out.print(Question_asked_by_user.replaceAll(" ", "-"));
       out.write("&Id=");
       out.print(question_id);
       out.write("&sl=");
@@ -1010,7 +1110,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                                     int ans_by_id = resultSet.getInt("ans.Answer_by_id");
                                         
       out.write("<br> Q. <a href=\"Answer.jsp?q=");
-      out.print(Question_by_user.replaceAll(" ","-"));
+      out.print(Question_by_user.replaceAll(" ", "-"));
       out.write("&Id=");
       out.print(Question_id);
       out.write("&sl=");
@@ -1062,7 +1162,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                                         if (topic_name != null) {
                                         
       out.write("<br> <a href=\"topic.jsp?t=");
-      out.print(topic_name.replaceAll(" ","+"));
+      out.print(topic_name.replaceAll(" ", "+"));
       out.write("&id=");
       out.print(topic_id);
       out.write("&sl=");
@@ -1222,7 +1322,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                                     int Blog_id = resultSet.getInt("blog_id");
                                         
       out.write(" <br><a href=\"D_Blog.jsp?sub=");
-      out.print(blog_posted_by_user);
+      out.print(blog_posted_by_user.replaceAll(" ", "+"));
       out.write("&Blog_Id=");
       out.print(Blog_id);
       out.write("&sl=");

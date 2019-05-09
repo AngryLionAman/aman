@@ -36,14 +36,7 @@
             <%  }  %>
                 }
         </script>
-        <!--        <script type="text/javascript">
-                    function showAnsCommentBox() {
-                        var div = document.getElementById('Anscomment');
-                        div.className = 'visible';
-                    }
-                </script>-->
-
-
+     
         <%!            String FOLLOWED_TOPIC = "";
             String QUESTION = "";
             String POSTED_BY = "";
@@ -201,11 +194,22 @@
                 preparedStatement = connection.prepareStatement(sql);
                 preparedStatement.setInt(1, Question);
                 resultSet = preparedStatement.executeQuery();
+                PreparedStatement ps4 = null;
                 while (resultSet.next()) {
                     StoredQuestion = resultSet.getString("question");
                     StoredQuestionId = resultSet.getInt("q_id");
+                    try {
+                        String countView = "UPDATE question SET total_view = total_view + 1 WHERE q_id =? ";
+                        ps4 = connection.prepareStatement(countView);
+                        ps4.setInt(1, StoredQuestionId);
+                        ps4.executeUpdate();
+
+                    } catch (Exception msg) {
+                        out.println("Error in cound the view" + msg);
+                    }
                     StoredAnswer = resultSet.getString("answer");
                 }
+                ps4.close();
             } catch (Exception e) {
                 out.println("Unable to retrieve!!" + e);
                 if (session.getAttribute("email") == null) {
@@ -237,7 +241,7 @@
         %><meta property="og:description" content="<%=StoredQuestion%>"/><%
             }%>
 
-        <meta property="og:url" content="https://www.inquiryhere.com/">
+        <meta property="og:url" content="https://www.inquiryhere.com/Answer.jsp">
         <meta property="og:site_name" content="https://www.inquiryhere.com/" />
         <meta property="og:image" content="https://www.inquiryhere.com/images/logo/inquiryhere_Logo.PNG" />
         <meta property="og:type" content="website">
@@ -366,13 +370,15 @@
 
                                         <%
                                             String fullName_of_user_who_asked_the_question = null;
+                                            int TotalView = 0;
                                             try {
-                                                String sql_p = "SELECT user.id,user.firstname,q.q_id,q.id FROM newuser user RIGHT JOIN question q on user.id=q.id where q_id= (?)";
+                                                String sql_p = "SELECT user.id,user.firstname,q.q_id,q.id,q.total_view FROM newuser user RIGHT JOIN question q on user.id=q.id where q_id= (?)";
                                                 preparedStatement = connection.prepareStatement(sql_p);
                                                 preparedStatement.setInt(1, Question);
                                                 resultSet = preparedStatement.executeQuery();
                                                 while (resultSet.next()) {
                                                     int user_Id = resultSet.getInt("user.id");
+                                                    TotalView = resultSet.getInt("q.total_view");
                                                     if (!userId.contains(user_Id)) {
                                                         userId.add(user_Id);
                                                     }
@@ -408,7 +414,8 @@
                                         </div>
                                         <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=q_id%>', 'upvote', 'question');" >Upvote</a> &nbsp;&nbsp; 
                                         <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=q_id%>', 'downvote', 'question');" >Downvote</a> &nbsp;&nbsp;
-                                        <a href="javascript:void(0)" value="Comment" onclick="showCommentBox()">Comment</a>
+                                        <a href="javascript:void(0)" value="Comment" onclick="showCommentBox()">Comment</a>&nbsp;&nbsp;
+                                        <a href="javascript:void(0)">View(<%=TotalView%>)</a>
                                         <form action="SubmitQuestionComment.jsp" method="get">
                                             <div class="hidden" id="comment">
                                                 <input type="hidden" name="question_id" value="<%=q_id%>">
@@ -455,21 +462,34 @@
 
                                     <%
                                         try {
-                                            String sql_p = "SELECT user.firstname,ans.answer,ans.a_id,ans.Answer_by_id FROM newuser user "
-                                                    + "RIGHT JOIN answer ans on user.id = ans.Answer_by_id where q_id = '" + q_id + "' order by vote desc";
+                                            String sql_p = "SELECT user.firstname,ans.answer,ans.a_id,ans.Answer_by_id,ans.total_view FROM newuser user "
+                                                    + "RIGHT JOIN answer ans on user.id = ans.Answer_by_id where q_id = '" + q_id + "' and a_id is not null order by vote desc";
                                             preparedStatement = connection.prepareStatement(sql_p);
                                             resultSet = preparedStatement.executeQuery();
                                             int count = 0;
-
+                                           
                                             while (resultSet.next()) {
                                                 count++;
                                                 String answer = resultSet.getString("answer");
                                                 int who_gave_answer = resultSet.getInt("Answer_by_id");
+                                                int total_view = resultSet.getInt("ans.total_view") + 1;
                                                 if (!userId.contains(who_gave_answer)) {
                                                     userId.add(who_gave_answer);
                                                 }
                                                 String firstname = convertStringUpperToLower(resultSet.getString("firstname"));
                                                 int answer_id = resultSet.getInt("ans.a_id");
+                                                
+                                                try {
+                                                     PreparedStatement ps1 = null;
+                                                    String countView = "UPDATE answer SET total_view = total_view + 1 WHERE a_id =? ";
+                                                    ps1 = connection.prepareStatement(countView);
+                                                    ps1.setInt(1, answer_id);
+                                                    ps1.executeUpdate();
+                                                    ps1.close();
+
+                                                } catch (Exception msg) {
+                                                    out.println("Error in cound the view" + msg);
+                                                }
                                     %>
                                     <div class="themeBox" style="height:auto;">
                                         <div class="boxHeading marginbot10" style="font-size: 15px;font-family: Arial, Helvetica, sans-serif;">
@@ -487,8 +507,9 @@
                                                     }%> </div>
                                         </div>
                                         <a href="javascript:void(0)" onclick="this.style.color = 'red'; return take_value(this, '<%=answer_id%>', 'upvote', 'answer');" >Upvote</a>&nbsp;&nbsp; 
-                                        <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=answer_id%>', 'downvote', 'answer');" >Downvote</a>
-                                        <a href="javascript:void(0)" value="Comment" onclick="showAns<%=answer_id%>CommentBox()">Comment</a>
+                                        <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=answer_id%>', 'downvote', 'answer');" >Downvote</a>&nbsp;&nbsp;
+                                        <a href="javascript:void(0)" value="Comment" onclick="showAns<%=answer_id%>CommentBox()">Comment</a>&nbsp;&nbsp;
+                                        <a href="javascript:void(0)">View(<%=total_view%>)</a>
                                         <form action="SubmitAnswerComment.jsp" method="get">
                                             <div class="hidden" id="Anscomment<%=answer_id%>">
                                                 <input type="hidden" name="answer_id" value="<%=answer_id%>">
@@ -526,7 +547,7 @@
                                                     String userName = result.getString("fullname");
                                                     String time = result.getString("time");
                                                     int user_id = result.getInt("user_id");
-                                                    if(!userId.contains(user_id)){
+                                                    if (!userId.contains(user_id)) {
                                                         userId.add(user_id);
                                                     }
                                                     out.println("(" + time + ") " + question_comments + ":- ");
@@ -544,6 +565,7 @@
                                     </div>
                                     <%
                                         }
+                                        
                                         if (count == 0) {
                                     %>
                                     <div class="themeBox" style="height:auto;">
@@ -678,7 +700,7 @@
                                     %>
                                 </div>
                                 <%
-                                    session.setAttribute("AllUserIdList", userId);
+                                        session.setAttribute("AllUserIdList", userId);
                                     } catch (Exception e) {
                                         out.println("Error in main try block:-" + e);
                                     } finally {

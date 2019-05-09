@@ -313,6 +313,7 @@
                         int id_of_user = 0;
                         int topic_id = 0;
                         int email_status = 0;
+                        int TotalView = 0;
                         boolean userNotFound = true;
                         String p = null;
                         try {
@@ -327,6 +328,17 @@
                             while (resultSet.next()) {
                                 userNotFound = false;
                                 id_of_user = resultSet.getInt("id");
+                                try {
+                                    PreparedStatement ps1 = null;
+                                    String countView = "UPDATE newuser SET total_view = total_view + 1 WHERE ID =? ";
+                                    ps1 = connection.prepareStatement(countView);
+                                    ps1.setInt(1, id_of_user);
+                                    ps1.executeUpdate();
+                                    ps1.close();
+
+                                } catch (Exception msg) {
+                                    out.println("Error in cound the view" + msg);
+                                }
                                 ID = resultSet.getString("id");
                                 fullName = resultSet.getString("firstname");
                                 userName = resultSet.getString("username");
@@ -336,6 +348,7 @@
                                 BestAchievement = resultSet.getString("best_achievement");
                                 ImagePath = resultSet.getString("imagepath");
                                 email_status = resultSet.getInt("email_s");
+                                TotalView = resultSet.getInt("total_view") + 1;
                             }
                         } catch (Exception e) {
                             out.println("Unable to retrieve!!" + e);
@@ -349,7 +362,7 @@
                         <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
                             <div class="themeBox" style="min-height:1px;">
                                 <div class="boxHeading">
-                                    <%=PROFILE_DETAILS%>
+                                    <%=PROFILE_DETAILS%>[ View(<%=TotalView%>) ]
                                 </div>
                                 <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                                     <img src="images/<%=ImagePath%>" alt="Image" style="width:90%; margin:10px 0px 0px; border:1px solid #ddd;">
@@ -477,13 +490,13 @@
                                             } catch (Exception ex) {
                                                 out.println("What the hell is going on" + ex);
                                             }%>
-                                             <tr>                                                   
+                                        <tr>                                                   
                                             <td>Appreciation ..</td>  
 
                                         </tr>
-                                        
+
                                     </table>
-                                                    
+
                                     <div align="right">
 
                                         <% //Fetching the userProfile comment
@@ -514,15 +527,19 @@
                                                 out.println("Error in loading question comment: -" + msg);
                                             }
                                         %>
-                                         <% try {
-                                                         if (session.getAttribute("email") != null) {
-                                                             if (!mail.equals(session.getAttribute("email"))) {%>     
-                                                <a href="javascript:void(0)" value="Comment" onclick="showCommentBox()">Write Good Thing About Him</a>
-                                                <% }
-                                                        }
-                                                    } catch (Exception msg) {
-                                                        out.println(msg);
-                                                    } %>
+                                        <% try {
+                                                if (session.getAttribute("email") != null) {
+                                                    if (!mail.equals(session.getAttribute("email"))) {%>     
+                                        <a href="javascript:void(0)" value="Comment" onclick="showCommentBox()">Write Good Thing About Him</a>
+                                        <% }
+                                        } else {
+                                        %>     
+                                        <a href="javascript:void(0)" value="Comment" onclick="alert('Please Login To Comment');">Write Good Thing About Him</a>
+                                        <%
+                                                }
+                                            } catch (Exception msg) {
+                                                out.println(msg);
+                                            }%>
                                     </div>
                                     <form action="SubmitUserProfileComment.jsp" method="get">
                                         <div class="hidden" id="comment">

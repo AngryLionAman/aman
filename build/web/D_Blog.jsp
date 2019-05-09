@@ -90,9 +90,10 @@
             String StoredAnswer = "";
             String FirstName = "";
             int UserID = 0;
+            int TotalView = 0;
             if (Question != null) {
                 try {
-                    String p = "SELECT b.blog_subject, substring(b.blog,1,500),user.firstname,user.id FROM blog b right join newuser user on b.blog_posted_by = user.Id  WHERE blog_id = '" + Question + "'";
+                    String p = "SELECT b.blog_subject,b.total_view,b.blog_id,substring(b.blog,1,500),user.firstname,user.id FROM blog b right join newuser user on b.blog_posted_by = user.Id  WHERE blog_id = '" + Question + "'";
                     preparedStatement = connection.prepareStatement(p);
                     resultSet = preparedStatement.executeQuery();
                     while (resultSet.next()) {
@@ -100,6 +101,19 @@
                         StoredAnswer = resultSet.getString("substring(b.blog,1,500)");
                         FirstName = resultSet.getString("firstname");
                         UserID = resultSet.getInt("ID");
+                        TotalView = resultSet.getInt("b.total_view") + 1;
+                        int blog_id = resultSet.getInt("b.blog_id");
+                        try {
+                            PreparedStatement ps1 = null;
+                            String countView = "UPDATE blog SET total_view = total_view + 1 WHERE blog_id =? ";
+                            ps1 = connection.prepareStatement(countView);
+                            ps1.setInt(1, blog_id);
+                            ps1.executeUpdate();
+                            ps1.close();
+
+                        } catch (Exception msg) {
+                            out.println("Error in cound the view" + msg);
+                        }
                     }
                 } catch (Exception e) {
                     out.println("Unable to retrieve!!" + e);
@@ -178,7 +192,7 @@
 
                                         <div class="boxHeading marginbot10">
 
-                                            <%=SUBJECT%> :  <%=StoredQuestion%> 
+                                          [ <%=TotalView%> ]  <%=SUBJECT%> :  <%=StoredQuestion%> 
                                         </div>
                                         <div class="questionArea">
 
@@ -227,7 +241,7 @@
 
                                                     out.println(Blog_comments + ":- ");
                                                     if (userName.equalsIgnoreCase("GuestUser")) {
-                                                        out.println("<b style=color:red;>"+userName+"</b>");
+                                                        out.println("<b style=color:red;>" + userName + "</b>");
                                                     } else {
                                         %>
                                         <a href="profile.jsp?user=<%=userName.replaceAll(" ", "+")%>&ID=<%=user_id%>&sl=<%=sl%>"><%=convertStringUpperToLower(userName)%></a>
@@ -239,43 +253,43 @@
                                                 out.println("Error in loading question comment: -" + msg);
                                             }
                                         %>
-                                        </div>
-                                        <%
-                                                }
-
-                                            } catch (Exception e) {
-                                                out.println("Unable to retrieve!!" + e);
+                                    </div>
+                                    <%
                                             }
-                                        %>
-                                        <%
-                                            } catch (Exception e) {
-                                                out.println("Error in main try block:-" + e);
-                                            } finally {
 
-                                                if (connection != null || !connection.isClosed()) {
-                                                    try {
-                                                        connection.close();
-                                                    } catch (Exception e) {
-                                                        out.println("Exception in closing connection " + e);
-                                                    }
-                                                }
-                                                if (resultSet != null || !resultSet.isClosed()) {
-                                                    try {
-                                                        resultSet.close();
-                                                    } catch (Exception e) {
-                                                        out.println("Exception in closing resulatset " + e);
-                                                    }
-                                                }
-                                                if (preparedStatement != null || !preparedStatement.isClosed()) {
-                                                    try {
-                                                        preparedStatement.close();
-                                                    } catch (Exception e) {
-                                                        out.println("Exception in closing preparedStatement " + e);
-                                                    }
+                                        } catch (Exception e) {
+                                            out.println("Unable to retrieve!!" + e);
+                                        }
+                                    %>
+                                    <%
+                                        } catch (Exception e) {
+                                            out.println("Error in main try block:-" + e);
+                                        } finally {
+
+                                            if (connection != null || !connection.isClosed()) {
+                                                try {
+                                                    connection.close();
+                                                } catch (Exception e) {
+                                                    out.println("Exception in closing connection " + e);
                                                 }
                                             }
-                                        %>
-                                    
+                                            if (resultSet != null || !resultSet.isClosed()) {
+                                                try {
+                                                    resultSet.close();
+                                                } catch (Exception e) {
+                                                    out.println("Exception in closing resulatset " + e);
+                                                }
+                                            }
+                                            if (preparedStatement != null || !preparedStatement.isClosed()) {
+                                                try {
+                                                    preparedStatement.close();
+                                                } catch (Exception e) {
+                                                    out.println("Exception in closing preparedStatement " + e);
+                                                }
+                                            }
+                                        }
+                                    %>
+
                                     <%
                                         if (session.getAttribute("Session_id_of_user") == null) {
                                     %>
@@ -290,7 +304,7 @@
                                         </div>
                                     </form>
                                     <div align="center">
-                                        <button type="submit" class="button button1" onclick="location.href='Login.jsp';" >Login to comment</button> 
+                                        <button type="submit" class="button button1" onclick="location.href = 'Login.jsp';" >Login to comment</button> 
                                     </div>
                                     <% } else {%>
                                     <form action="saveBlogComment.jsp" method="get">

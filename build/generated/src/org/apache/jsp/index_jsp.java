@@ -116,7 +116,6 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
         return cat;
     }
 
-            
             String name = null;
             int id_of_user = 0;
             int topic_id = 0;
@@ -259,14 +258,14 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\r\n");
       out.write("        <meta http-equiv=\"content-type\" content=\"text/html\" charset=\"utf-8\">\r\n");
       out.write("        <script async src=\"//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js\"></script>\r\n");
-      out.write("<script>\r\n");
-      out.write("  (adsbygoogle = window.adsbygoogle || []).push({\r\n");
-      out.write("    google_ad_client: \"ca-pub-8778688755733551\",\r\n");
-      out.write("    enable_page_level_ads: true\r\n");
-      out.write("  });\r\n");
-      out.write("</script>\r\n");
+      out.write("        <script>\r\n");
+      out.write("            (adsbygoogle = window.adsbygoogle || []).push({\r\n");
+      out.write("                google_ad_client: \"ca-pub-8778688755733551\",\r\n");
+      out.write("                enable_page_level_ads: true\r\n");
+      out.write("            });\r\n");
+      out.write("        </script>\r\n");
       out.write("\r\n");
-      out.write("<script async src=\"https://www.googletagmanager.com/gtag/js?id=UA-128307055-1\"></script>\r\n");
+      out.write("        <script async src=\"https://www.googletagmanager.com/gtag/js?id=UA-128307055-1\"></script>\r\n");
       out.write("        <script>\r\n");
       out.write("            window.dataLayer = window.dataLayer || [];\r\n");
       out.write("            function gtag() {\r\n");
@@ -421,10 +420,10 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("                                    <ul>\r\n");
       out.write("                                        ");
 
-                                            
-                                            if(session.getAttribute("Session_id_of_user") != null){
+
+                                            if (session.getAttribute("Session_id_of_user") != null) {
                                                 id_of_user = (Integer) session.getAttribute("Session_id_of_user");
-                                            }else{
+                                            } else {
                                                 id_of_user = 0;
                                             }
                                             String sql = "";
@@ -511,7 +510,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.print(POST_SOMETHING);
       out.write("\r\n");
       out.write("                                        </div>\r\n");
-      out.write("                                            <div><textarea type=\"text\" class=\"anstext\" placeholder=\"");
+      out.write("                                        <div><textarea type=\"text\" class=\"anstext\" placeholder=\"");
       out.print(POST_YOUR_QUESTION_HERE);
       out.write("\" data-toggle=\"modal\" data-target=\"#myModal\" readonly=\"\"></textarea></div>\r\n");
       out.write("\r\n");
@@ -542,20 +541,31 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("</h4>\r\n");
       out.write("                                    ");
 
-                                        String sql3 = "SELECT q.q_id,(select count(*) from answer where q_id = q.q_id) as tac,"
+                                        String sql3 = "SELECT q.total_view,q.q_id,(select count(*) from answer where q_id = q.q_id) as tac,"
                                                 + "q.question,q.vote,user.firstname,user.ID FROM question q RIGHT JOIN newuser user ON user.id = q.id "
                                                 + "WHERE q.q_id IS NOT NULL AND q.question IS NOT NULL ORDER BY q_id DESC LIMIT 10";
                                         String UserName_for_trending_question_T = null;
                                         try {
                                             preparedStatement = connection.prepareStatement(sql3);
                                             resultSet = preparedStatement.executeQuery();
+                                            PreparedStatement ps2 = null;
                                             while (resultSet.next()) {
                                                 String TrendingQuestion_T = resultSet.getString("question");
+                                                int totalView = resultSet.getInt("q.total_view") + 1;
                                                 int question_id = resultSet.getInt("q.q_id");
+                                                try {
+                                                    String countView = "UPDATE question SET total_view = total_view + 1 WHERE q_id =? ";
+                                                    ps2 = connection.prepareStatement(countView);
+                                                    ps2.setInt(1, question_id);
+                                                    ps2.executeUpdate();
+
+                                                } catch (Exception msg) {
+                                                    out.println("Error in cound the view" + msg);
+                                                }
                                                 int userID = resultSet.getInt("user.ID");
                                                 int tac = resultSet.getInt("tac");
                                                 int UpVote = resultSet.getInt("q.vote");
-                                                UserName_for_trending_question_T = resultSet.getString("firstname").substring(0, 1).toUpperCase()+resultSet.getString("firstname").substring(1).toLowerCase();
+                                                UserName_for_trending_question_T = resultSet.getString("firstname").substring(0, 1).toUpperCase() + resultSet.getString("firstname").substring(1).toLowerCase();
                                     
       out.write("\r\n");
       out.write("                                    <div class=\"themeBox\" style=\"height:auto;\">\r\n");
@@ -621,12 +631,62 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.print(sl);
       out.write("\" >Answer(");
       out.print(tac);
+      out.write(")</a>&nbsp;&nbsp;\r\n");
+      out.write("                                            <a href=\"javascript:void(0)\">View(");
+      out.print(totalView);
       out.write(")</a>\r\n");
-      out.write("                                        </div>\r\n");
+      out.write("                                            <!-- Comment on question -->\r\n");
+      out.write("                                            <div align=\"right\">\r\n");
       out.write("\r\n");
-      out.write("                                    </div>");
+      out.write("                                                ");
+
+                                                    try {
+                                                        PreparedStatement ps = null;
+                                                        ResultSet rs = null;
+                                                        String sql_question_comment = "SELECT unique_id,user_id,"
+                                                                + "(SELECT firstname FROM newuser WHERE id = comments.user_id )AS fullname,"
+                                                                + "q_id,comments,time FROM comments WHERE q_id = ? AND user_id IS NOT NULL AND q_id IS NOT NULL";
+                                                        ps = connection.prepareStatement(sql_question_comment);
+                                                        ps.setInt(1, question_id);
+                                                        rs = ps.executeQuery();
+                                                        while (rs.next()) {
+                                                            String question_comments = rs.getString("comments");
+                                                            String userName = rs.getString("fullname");
+                                                            String time = rs.getString("time");
+                                                            int user_id = rs.getInt("user_id");
+
+                                                            out.println(question_comments + ":- ");
+                                                
+      out.write("\r\n");
+      out.write("                                                <a href=\"profile.jsp?user=");
+      out.print(userName.replaceAll(" ", "+"));
+      out.write("&ID=");
+      out.print(user_id);
+      out.write("&sl=");
+      out.print(sl);
+      out.write('"');
+      out.write('>');
+      out.print(convertStringUpperToLower(userName));
+      out.write("</a>\r\n");
+      out.write("                                                ");
+
+                                                            out.println("(" + time + ") <br>_______________________________________<br>");
+                                                        }
+                                                        ps.close();
+                                                        rs.close();
+                                                    } catch (Exception msg) {
+                                                        out.println("Error in loading question comment: -" + msg);
+                                                    }
+                                                
+      out.write("\r\n");
+      out.write("\r\n");
+      out.write("                                            </div>\r\n");
+      out.write("                                        </div>\r\n");
+      out.write("                                    </div>\r\n");
+      out.write("                                    ");
 
                                         }
+                                        ps2.close();
                                     } catch (Exception Exceptionmsg) {
                                         out.println("Error " + Exceptionmsg);
                                         if (session.getAttribute("email") == null) {
@@ -668,7 +728,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                             //Migrated the join from right to inner. i don't know if any bug will create
                                             //Please god help me
                                             String sql4 = "select DISTINCT q.id,(SELECT firstname FROM newuser WHERE id= q.id) as firstname,"
-                                                    + "q.q_id,q.question,q.vote,(select count(*) from answer where q_id = q.q_id) as tac from question q "
+                                                    + "q.q_id,q.total_view,q.question,q.vote,(select count(*) from answer where q_id = q.q_id) as tac from question q "
                                                     + "inner join question_topic_tag qtt on q.q_id = qtt.question_id where tag_id IN "
                                                     + "(select t.unique_id from topic t inner join topic_followers_detail de on t.unique_id = de.topic_id "
                                                     + "where user_or_followers_id = ?) and q.id is not null and q.q_id is not null "
@@ -676,12 +736,27 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                             preparedStatement = connection.prepareStatement(sql4);
                                             preparedStatement.setInt(1, id_of_user);
                                             resultSet = preparedStatement.executeQuery();
+                                            
                                             while (resultSet.next()) {
                                                 question = resultSet.getString("question");
                                                 fname = resultSet.getString("firstname");
                                                 TotalAnswerCount = resultSet.getInt("tac");
                                                 VoteCount = resultSet.getInt("q.vote");
                                                 
+                                                int question_id = resultSet.getInt("q.q_id");
+                                                try {
+                                                    PreparedStatement ps3 = null;
+                                                    String countView = "UPDATE question SET total_view = total_view + 1 WHERE q_id =? ";
+                                                    ps3 = connection.prepareStatement(countView);
+                                                    ps3.setInt(1, question_id);
+                                                    ps3.executeUpdate();
+                                                    ps3.close();
+
+                                                } catch (Exception msg) {
+                                                    out.println("Error in cound the view" + msg);
+                                                }
+                                                int ViewCount = resultSet.getInt("q.total_view");
+                                    
       out.write("\r\n");
       out.write("                                    <div class=\"themeBox\" style=\"height:auto;\">\r\n");
       out.write("\r\n");
@@ -730,16 +805,64 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.print(sl);
       out.write("\" >Answer(");
       out.print(TotalAnswerCount);
+      out.write(")</a>&nbsp;&nbsp;                                         \r\n");
+      out.write("                                        <a href=\"javascript:void(0)\">View(");
+      out.print(ViewCount);
       out.write(")</a>\r\n");
+      out.write("                                        <!-- Comment on question -->\r\n");
+      out.write("                                        <div align=\"right\">\r\n");
       out.write("\r\n");
+      out.write("                                            ");
+
+                                                try {
+                                                    PreparedStatement ps = null;
+                                                    ResultSet rs = null;
+                                                    String sql_question_comment = "SELECT unique_id,user_id,"
+                                                            + "(SELECT firstname FROM newuser WHERE id = comments.user_id )AS fullname,"
+                                                            + "q_id,comments,time FROM comments WHERE q_id = ? AND user_id IS NOT NULL AND q_id IS NOT NULL";
+                                                    ps = connection.prepareStatement(sql_question_comment);
+                                                    ps.setInt(1, resultSet.getInt("q.q_id"));
+                                                    rs = ps.executeQuery();
+                                                    while (rs.next()) {
+                                                        String question_comments = rs.getString("comments");
+                                                        String userName = rs.getString("fullname");
+                                                        String time = rs.getString("time");
+                                                        int user_id = rs.getInt("user_id");
+
+                                                        out.println(question_comments + ":- ");
+                                            
+      out.write("\r\n");
+      out.write("                                            <a href=\"profile.jsp?user=");
+      out.print(userName.replaceAll(" ", "+"));
+      out.write("&ID=");
+      out.print(user_id);
+      out.write("&sl=");
+      out.print(sl);
+      out.write('"');
+      out.write('>');
+      out.print(convertStringUpperToLower(userName));
+      out.write("</a>\r\n");
+      out.write("                                            ");
+
+                                                        out.println("(" + time + ") <br>_______________________________________<br>");
+                                                    }
+                                                    ps.close();
+                                                    rs.close();
+                                                } catch (Exception msg) {
+                                                    out.println("Error in loading question comment: -" + msg);
+                                                }
+                                            
+      out.write("\r\n");
+      out.write("\r\n");
+      out.write("                                        </div>\r\n");
       out.write("                                    </div>\r\n");
       out.write("\r\n");
       out.write("\r\n");
       out.write("                                    ");
-             
+
                                         }
                                     } catch (Exception e) {
-                                        out.println("<b style=color:red;>No question found related to your selected topic</b>Ex:"+e);
+                                        out.println("<b style=color:red;>No question found related to your selected topic</b>Ex:" + e);
                                         if (session.getAttribute("email") == null) {
                                             email = "Anonuous";
                                         } else {
@@ -754,8 +877,8 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                     
       org.apache.jasper.runtime.JspRuntimeLibrary.include(request, response, "ExceptionCollector.jsp" + "?" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("userName", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(email), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("userID", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(CurrentuserId), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("URLParameter", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(URL), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("ExceptionMessage", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(e), request.getCharacterEncoding()), out, false);
 
+                                            }
                                         }
-                                    } 
                                     
       out.write("\r\n");
       out.write("\r\n");
@@ -774,7 +897,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                         // Connection connection2 = null;
 
                                         int showRows = 10;
-                                        int totalRecords = 1;
+                                        int totalRecords = 5;
                                         int totalRows = nullIntconvert(request.getParameter("totalRows"));
                                         int totalPages = nullIntconvert(request.getParameter("totalPages"));
                                         int iPageNo = nullIntconvert(request.getParameter("iPageNo"));
@@ -793,7 +916,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
 
                                             String query1 = "SELECT SQL_CALC_FOUND_ROWS id,(SELECT firstname FROM newuser "
                                                     + "WHERE id = question.id)AS firstname,q_id,(SELECT COUNT(*) FROM answer WHERE q_id = question.q_id) AS tac,"
-                                                    + "question,vote FROM question LIMIT " + iPageNo + "," + showRows + "";
+                                                    + "question,vote,total_view FROM question LIMIT " + iPageNo + "," + showRows + "";
                                             ps1 = connection.prepareStatement(query1);
                                             rs1 = ps1.executeQuery();
 
@@ -826,11 +949,24 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("\">\r\n");
       out.write("                                        ");
 
+                                            
                                             while (rs1.next()) {
                                                 Username = rs1.getString("firstname");
                                                 userId = rs1.getInt("id");
                                                 Vote = rs1.getInt("vote");
                                                 TotoalAnswerCount = rs1.getInt("tac");
+                                                int total_count = rs1.getInt("total_view")+1;
+                                                PreparedStatement ps4 = null;
+                                                 try {
+                                                    String countView = "UPDATE question SET total_view = total_view + 1 WHERE q_id =? ";
+                                                    ps4 = connection.prepareStatement(countView);
+                                                    ps4.setInt(1, rs1.getInt("q_id"));
+                                                    ps4.executeUpdate();
+
+                                                } catch (Exception msg) {
+                                                    out.println("Error in cound the view" + msg);
+                                                }
+                                                 ps4.close();
                                         
       out.write("\r\n");
       out.write("                                        <div class=\"themeBox\" style=\"height:auto;\">\r\n");
@@ -877,13 +1013,61 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.print(sl);
       out.write("\">Answer(");
       out.print(TotoalAnswerCount);
+      out.write(")</a>&nbsp;&nbsp;\r\n");
+      out.write("                                            <a href=\"javascript:void(0)\">View(");
+      out.print(total_count);
       out.write(")</a>\r\n");
+      out.write("                                            <!-- Fetching the Comment on question -->\r\n");
+      out.write("                                            <div align=\"right\">\r\n");
       out.write("\r\n");
+      out.write("                                                ");
+
+                                                    try {
+                                                        PreparedStatement ps = null;
+                                                        ResultSet rs = null;
+                                                        String sql_question_comment = "SELECT unique_id,user_id,"
+                                                                + "(SELECT firstname FROM newuser WHERE id = comments.user_id )AS fullname,"
+                                                                + "q_id,comments,time FROM comments WHERE q_id = ? AND user_id IS NOT NULL AND q_id IS NOT NULL";
+                                                        ps = connection.prepareStatement(sql_question_comment);
+                                                        ps.setInt(1, rs1.getInt("q_id"));
+                                                        rs = ps.executeQuery();
+                                                        while (rs.next()) {
+                                                            String question_comments = rs.getString("comments");
+                                                            String userName = rs.getString("fullname");
+                                                            String time = rs.getString("time");
+                                                            int user_id = rs.getInt("user_id");
+
+                                                            out.println(question_comments + ":- ");
+                                                
+      out.write("\r\n");
+      out.write("                                                <a href=\"profile.jsp?user=");
+      out.print(userName.replaceAll(" ", "+"));
+      out.write("&ID=");
+      out.print(user_id);
+      out.write("&sl=");
+      out.print(sl);
+      out.write('"');
+      out.write('>');
+      out.print(convertStringUpperToLower(userName));
+      out.write("</a>\r\n");
+      out.write("                                                ");
+
+                                                            out.println("(" + time + ") <br>_______________________________________<br>");
+                                                        }
+                                                        ps.close();
+                                                        rs.close();
+                                                    } catch (Exception msg) {
+                                                        out.println("Error in loading question comment: -" + msg);
+                                                    }
+                                                
+      out.write("\r\n");
+      out.write("\r\n");
+      out.write("                                            </div>\r\n");
       out.write("                                        </div>\r\n");
       out.write("\r\n");
       out.write("                                        ");
 
-                                            }
+                                            }  // ps4.close();
                                         } catch (Exception e) {
                                             out.println(e);
                                             if (session.getAttribute("email") == null) {
@@ -1002,28 +1186,28 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("                                    </form>\r\n");
       out.write("                                    ");
 
-                                            try {
-                                                if (ps1 != null) {
-                                                    ps1.close();
-                                                }
-                                                if (rs1 != null) {
-                                                    rs1.close();
-                                                }
-
-                                                if (ps2 != null) {
-                                                    ps2.close();
-                                                }
-                                                if (rs2 != null) {
-                                                    rs2.close();
-                                                }
-
-                                                //if (connection2 != null) {
-                                                //  connection2.close();
-                                                //}
-                                            } catch (Exception e) {
-                                                e.printStackTrace();
+                                        try {
+                                            if (ps1 != null) {
+                                                ps1.close();
                                             }
-                                        
+                                            if (rs1 != null) {
+                                                rs1.close();
+                                            }
+
+                                            if (ps2 != null) {
+                                                ps2.close();
+                                            }
+                                            if (rs2 != null) {
+                                                rs2.close();
+                                            }
+
+                                            //if (connection2 != null) {
+                                            //  connection2.close();
+                                            //}
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    
       out.write("\r\n");
       out.write("                                    <div class=\"clear-fix\"></div>\r\n");
       out.write("\r\n");
@@ -1041,21 +1225,21 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("                                    ");
       org.apache.jasper.runtime.JspRuntimeLibrary.include(request, response, "funZoneList.jsp", out, false);
       out.write("\r\n");
+      out.write("                                    </div>\r\n");
       out.write("                                </div>\r\n");
-      out.write("                            </div>\r\n");
-      out.write("                            <div class=\"themeBox\" style=\"height:auto;\">\r\n");
-      out.write("                                <div class=\"boxHeading\">\r\n");
-      out.write("                                    Education Zone\r\n");
-      out.write("                                </div>\r\n");
-      out.write("                                <div>\r\n");
-      out.write("                                ");
+      out.write("                                <div class=\"themeBox\" style=\"height:auto;\">\r\n");
+      out.write("                                    <div class=\"boxHeading\">\r\n");
+      out.write("                                        Education Zone\r\n");
+      out.write("                                    </div>\r\n");
+      out.write("                                    <div>\r\n");
+      out.write("                                    ");
       org.apache.jasper.runtime.JspRuntimeLibrary.include(request, response, "eduZoneList.jsp", out, false);
       out.write("\r\n");
+      out.write("                                    </div>\r\n");
       out.write("                                </div>\r\n");
-      out.write("                            </div>\r\n");
       out.write("\r\n");
-      out.write("                            <!--div class=\"themeBox\" style=\"height:auto;\">\r\n");
-      out.write("                                <div class=\"boxHeading\">\r\n");
+      out.write("                                <!--div class=\"themeBox\" style=\"height:auto;\">\r\n");
+      out.write("                                    <div class=\"boxHeading\">\r\n");
       out.write("                            ");
       out.write("\r\n");
       out.write("                        </div>\r\n");

@@ -242,6 +242,7 @@
                                             if (countQ == 0) {
                                                 out.println("<br>No Related Tag Found !!");
                                             }
+out.println("<li style='color:red;'><a href='FollowMoreTopic.jsp' style='color:red;'>Follow More Topic</a></li>");
                                         } catch (Exception e) {
                                             out.println("Unable to retrieve!!" + e);
                                         }

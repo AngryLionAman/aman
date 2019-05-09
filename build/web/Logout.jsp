@@ -4,7 +4,11 @@
         sl = "en";
     }
 %>
-
+<script>
+// FB.logout(function(response) {
+//  FB.Auth.setAuthResponse(null, 'unknown');
+//});
+</script>
 <%
     session.setAttribute("name", null);
     session.setAttribute("email", null);
