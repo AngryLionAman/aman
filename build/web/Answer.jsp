@@ -36,7 +36,7 @@
             <%  }  %>
                 }
         </script>
-     
+
         <%!            String FOLLOWED_TOPIC = "";
             String QUESTION = "";
             String POSTED_BY = "";
@@ -194,22 +194,24 @@
                 preparedStatement = connection.prepareStatement(sql);
                 preparedStatement.setInt(1, Question);
                 resultSet = preparedStatement.executeQuery();
-                PreparedStatement ps4 = null;
+
                 while (resultSet.next()) {
                     StoredQuestion = resultSet.getString("question");
                     StoredQuestionId = resultSet.getInt("q_id");
                     try {
+                        PreparedStatement ps4 = null;
                         String countView = "UPDATE question SET total_view = total_view + 1 WHERE q_id =? ";
                         ps4 = connection.prepareStatement(countView);
                         ps4.setInt(1, StoredQuestionId);
                         ps4.executeUpdate();
+                        ps4.close();
 
                     } catch (Exception msg) {
                         out.println("Error in cound the view" + msg);
                     }
                     StoredAnswer = resultSet.getString("answer");
                 }
-                ps4.close();
+
             } catch (Exception e) {
                 out.println("Unable to retrieve!!" + e);
                 if (session.getAttribute("email") == null) {
@@ -378,7 +380,7 @@
                                                 resultSet = preparedStatement.executeQuery();
                                                 while (resultSet.next()) {
                                                     int user_Id = resultSet.getInt("user.id");
-                                                    TotalView = resultSet.getInt("q.total_view");
+                                                    TotalView = resultSet.getInt("q.total_view") * 99;
                                                     if (!userId.contains(user_Id)) {
                                                         userId.add(user_Id);
                                                     }
@@ -467,20 +469,20 @@
                                             preparedStatement = connection.prepareStatement(sql_p);
                                             resultSet = preparedStatement.executeQuery();
                                             int count = 0;
-                                           
+
                                             while (resultSet.next()) {
                                                 count++;
                                                 String answer = resultSet.getString("answer");
                                                 int who_gave_answer = resultSet.getInt("Answer_by_id");
-                                                int total_view = resultSet.getInt("ans.total_view") + 1;
+                                                int total_view = (resultSet.getInt("ans.total_view") + 1) * 99;
                                                 if (!userId.contains(who_gave_answer)) {
                                                     userId.add(who_gave_answer);
                                                 }
                                                 String firstname = convertStringUpperToLower(resultSet.getString("firstname"));
                                                 int answer_id = resultSet.getInt("ans.a_id");
-                                                
+
                                                 try {
-                                                     PreparedStatement ps1 = null;
+                                                    PreparedStatement ps1 = null;
                                                     String countView = "UPDATE answer SET total_view = total_view + 1 WHERE a_id =? ";
                                                     ps1 = connection.prepareStatement(countView);
                                                     ps1.setInt(1, answer_id);
@@ -565,7 +567,7 @@
                                     </div>
                                     <%
                                         }
-                                        
+
                                         if (count == 0) {
                                     %>
                                     <div class="themeBox" style="height:auto;">
@@ -638,6 +640,17 @@
                                                 while (rs_detail.next()) {
                                                     question_detail = rs_detail.getString("question");
                                                     int questionID = rs_detail.getInt("q_id");
+                                                    try {
+                                                        PreparedStatement ps4 = null;
+                                                        String countView = "UPDATE question SET total_view = total_view + 1 WHERE q_id =? ";
+                                                        ps4 = connection.prepareStatement(countView);
+                                                        ps4.setInt(1, questionID);
+                                                        ps4.executeUpdate();
+                                                        ps4.close();
+
+                                                    } catch (Exception msg) {
+                                                        out.println("Error in cound the view" + msg);
+                                                    }
                                                     if (questionID != q_id) {
                                                         if (question_detail != null) {
                                                             count++;
@@ -699,36 +712,74 @@
                                         }
                                     %>
                                 </div>
-                                <%
-                                        session.setAttribute("AllUserIdList", userId);
-                                    } catch (Exception e) {
-                                        out.println("Error in main try block:-" + e);
-                                    } finally {
 
-                                        if (connection != null || !connection.isClosed()) {
-                                            try {
-                                                connection.close();
-                                            } catch (Exception e) {
-                                                out.println("Exception in closing connection " + e);
+                            </div>
+                            <div class="themeBox" style="height:auto;">
+                                <div class="boxHeading">
+                                    Question you may like
+                                </div>
+                                <div>
+                                    <%
+                                        try {
+                                            ResultSet rs = null;
+                                            PreparedStatement ps = null;
+                                            String sql = "select q_id,question from question order by rand() limit 5";
+                                            ps = connection.prepareStatement(sql);
+                                            rs = ps.executeQuery();
+                                            while (rs.next()) {
+                                                int question_id = rs.getInt("q_id");
+                                                try {
+                                                    PreparedStatement ps4 = null;
+                                                    String countView = "UPDATE question SET total_view = total_view + 1 WHERE q_id =? ";
+                                                    ps4 = connection.prepareStatement(countView);
+                                                    ps4.setInt(1, question_id);
+                                                    ps4.executeUpdate();
+                                                    ps4.close();
+
+                                                } catch (Exception msg) {
+                                                    out.println("Error in cound the view" + msg);
+                                                }
+                                                String question = rs.getString("question");
+                                    %>
+                                    <a href="Answer.jsp?q=<%=question.replaceAll(" ", "-")%>&Id=<%=question_id%>&sl=<%=sl%>" ><%=question%></a><br><br>
+                                    <%
                                             }
+                                        } catch (Exception msg) {
+                                            out.println("Error in 'you may like question' " + msg);
                                         }
-                                        if (resultSet != null || !resultSet.isClosed()) {
-                                            try {
-                                                resultSet.close();
-                                            } catch (Exception e) {
-                                                out.println("Exception in closing resulatset " + e);
-                                            }
-                                        }
-                                        if (preparedStatement != null || !preparedStatement.isClosed()) {
-                                            try {
-                                                preparedStatement.close();
-                                            } catch (Exception e) {
-                                                out.println("Exception in closing preparedStatement " + e);
-                                            }
+                                    %>
+                                </div>
+
+                            </div>
+                            <%
+                                    session.setAttribute("AllUserIdList", userId);
+                                } catch (Exception e) {
+                                    out.println("Error in main try block:-" + e);
+                                } finally {
+
+                                    if (connection != null || !connection.isClosed()) {
+                                        try {
+                                            connection.close();
+                                        } catch (Exception e) {
+                                            out.println("Exception in closing connection " + e);
                                         }
                                     }
-                                %>
-                            </div>
+                                    if (resultSet != null || !resultSet.isClosed()) {
+                                        try {
+                                            resultSet.close();
+                                        } catch (Exception e) {
+                                            out.println("Exception in closing resulatset " + e);
+                                        }
+                                    }
+                                    if (preparedStatement != null || !preparedStatement.isClosed()) {
+                                        try {
+                                            preparedStatement.close();
+                                        } catch (Exception e) {
+                                            out.println("Exception in closing preparedStatement " + e);
+                                        }
+                                    }
+                                }
+                            %>
                             <%
                                 if (session.getAttribute("email") != null) {
                             %>

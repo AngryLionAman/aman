@@ -358,7 +358,7 @@
                                             PreparedStatement ps2 = null;
                                             while (resultSet.next()) {
                                                 String TrendingQuestion_T = resultSet.getString("question");
-                                                int totalView = resultSet.getInt("q.total_view") + 1;
+                                                int totalView = (resultSet.getInt("q.total_view") + 1) * 99;
                                                 int question_id = resultSet.getInt("q.q_id");
                                                 try {
                                                     String countView = "UPDATE question SET total_view = total_view + 1 WHERE q_id =? ";
@@ -393,7 +393,7 @@
                                             </div>
                                             <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=question_id%>', '<%="upvote"%>');" >Upvote(<%=UpVote%>)</a>&nbsp;&nbsp; 
                                             <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=question_id%>', '<%="downvote"%>');" >Downvote</a>&nbsp;&nbsp; 
-                                            <a href="Answer.jsp?q=<%=TrendingQuestion_T.replaceAll(" ", "-")%>&Id=<%=question_id%>&sl=<%=sl%>" >Answer(<%=tac%>)</a>&nbsp;&nbsp;
+                                            <a href="Answer.jsp?q=<%=TrendingQuestion_T.replaceAll(" ", "-")%>&Id=<%=question_id%>&sl=<%=sl%>" >Ans(<%=tac%>)</a>&nbsp;&nbsp;
                                             <a href="javascript:void(0)">View(<%=totalView%>)</a>
                                             <!-- Comment on question -->
                                             <div align="right">
@@ -484,7 +484,7 @@
                                                 question = resultSet.getString("question");
                                                 fname = resultSet.getString("firstname");
                                                 TotalAnswerCount = resultSet.getInt("tac");
-                                                VoteCount = resultSet.getInt("q.vote");
+                                                VoteCount = (resultSet.getInt("q.vote") + 1) * 99;
                                                 
                                                 int question_id = resultSet.getInt("q.q_id");
                                                 try {
@@ -510,7 +510,7 @@
                                         </div>
                                         <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=resultSet.getInt("q.q_id")%>', '<%="upvote"%>');" >Upvote(<%=VoteCount%>)</a>&nbsp;&nbsp; 
                                         <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=resultSet.getInt("q.q_id")%>', '<%="downvote"%>');" >Downvote</a>&nbsp;&nbsp; 
-                                        <a href="Answer.jsp?q=<%=question.replaceAll(" ", "-")%>&Id=<%=resultSet.getInt("q.q_id")%>&sl=<%=sl%>" >Answer(<%=TotalAnswerCount%>)</a>&nbsp;&nbsp;                                         
+                                        <a href="Answer.jsp?q=<%=question.replaceAll(" ", "-")%>&Id=<%=resultSet.getInt("q.q_id")%>&sl=<%=sl%>" >Ans(<%=TotalAnswerCount%>)</a>&nbsp;&nbsp;                                         
                                         <a href="javascript:void(0)">View(<%=ViewCount%>)</a>
                                         <!-- Comment on question -->
                                         <div align="right">
@@ -635,7 +635,7 @@
                                                 userId = rs1.getInt("id");
                                                 Vote = rs1.getInt("vote");
                                                 TotoalAnswerCount = rs1.getInt("tac");
-                                                int total_count = rs1.getInt("total_view")+1;
+                                                int total_count = (rs1.getInt("total_view")+1) * 99;
                                                 PreparedStatement ps4 = null;
                                                  try {
                                                     String countView = "UPDATE question SET total_view = total_view + 1 WHERE q_id =? ";
@@ -660,7 +660,7 @@
                                             </div>
                                             <a href="javascript:void(0)" onclick="return take_value(this, '<%=rs1.getInt("q_id")%>', 'upvote');">Upvote(<%=Vote%>)</a>&nbsp;&nbsp;
                                             <a href="javascript:void(0)" onclick="return take_value(this, '<%=rs1.getInt("q_id")%>', 'upvote');">Downvote</a>&nbsp;&nbsp;
-                                            <a href="Answer.jsp?q=<%=rs1.getString("question").replaceAll(" ", "-")%>&Id=<%=rs1.getInt("q_id")%>&sl=<%=sl%>">Answer(<%=TotoalAnswerCount%>)</a>&nbsp;&nbsp;
+                                            <a href="Answer.jsp?q=<%=rs1.getString("question").replaceAll(" ", "-")%>&Id=<%=rs1.getInt("q_id")%>&sl=<%=sl%>">Ans(<%=TotoalAnswerCount%>)</a>&nbsp;&nbsp;
                                             <a href="javascript:void(0)">View(<%=total_count%>)</a>
                                             <!-- Fetching the Comment on question -->
                                             <div align="right">

@@ -348,7 +348,7 @@
                                 BestAchievement = resultSet.getString("best_achievement");
                                 ImagePath = resultSet.getString("imagepath");
                                 email_status = resultSet.getInt("email_s");
-                                TotalView = resultSet.getInt("total_view") + 1;
+                                TotalView = (resultSet.getInt("total_view") + 1) * 99;
                             }
                         } catch (Exception e) {
                             out.println("Unable to retrieve!!" + e);
@@ -558,7 +558,8 @@
                                                             User having same interest
                                                         </div>
                                                         <div>
-                        <%--
+                        <%--  //User having the same intrest ,
+                                //Actually i am preety inpressed with this sql query, i don't know why but i do
                             String suggestedUser = "select DISTINCT user.id, user.firstname,user.lastname,user.imagepath from newuser user "
                                     + "right join topic_followers_detail tfd  on user.id=tfd.user_or_followers_id where topic_id IN "
                                     + "(select t.unique_id from topic t right join topic_followers_detail de on t.unique_id = de.topic_id "

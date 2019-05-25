@@ -355,6 +355,7 @@
                                                         if (count) {
                                                             out.println("No related topic found");
                                                         }
+                                                        out.println("<br><br><a href=FollowMoreTopic.jsp>For more topic</a>");
                                                     } catch (Exception e) {
                                                         out.println("Error in Topic Search:" + e);
                                                         if (session.getAttribute("email") == null) {
@@ -404,6 +405,7 @@
                                                         if (count) {
                                                             out.println("No related user profile found");
                                                         }
+                                                        out.println("<br><br><a href=UserProfile.jsp>For more user</a>");
                                                     } catch (Exception e) {
                                                         out.println("Error in User profile search:" + e);
                                                         if (session.getAttribute("email") == null) {

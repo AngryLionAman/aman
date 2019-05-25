@@ -240,12 +240,23 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("\n");
       out.write("\n");
       out.write('\n');
+      out.write('\n');
+
+    //We can also define as 
+// String[] NotSearchableString = {"who", "what", "when", "where", "why", "whome", "whose", "which", "how", "is",
+//        "my", "you", "your", "mine"};
+//    int SizeOfNotSearchableString = NotSearchableString.length;
+//Or we can use like this
+//    List<String> notSearchableString = new ArrayList();
+//    notSearchableString.add("is");
+//    notSearchableString.add("am");
+//    notSearchableString.add("are");
+
       out.write("\r\n");
       out.write("        \r\n");
       out.write("        ");
       out.write("\r\n");
       out.write("        ");
-
             String sl = request.getParameter("sl");
             if (sl == null) {
                 sl = "en";
@@ -314,6 +325,147 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("\r\n");
       out.write("            <div class=\"bodydata\">\r\n");
       out.write("                <div class=\"container clear-fix\">\r\n");
+      out.write("                    ");
+
+                        String email = null;
+                        int CurrentuserId = 0;
+                        Connection connection = null;
+                        ResultSet rs2 = null;
+                        ResultSet resultSetQuestion = null;
+                        ResultSet resultSetAnswer = null;
+                        //ResultSet resultSet = null;
+                        ResultSet resultSetTopic = null;
+                        ResultSet resultSetUser = null;
+                        //PreparedStatement preparedStatement = null;
+                        PreparedStatement ps2 = null;
+                        PreparedStatement preparedStatementQuestion = null;
+                        PreparedStatement preparedStatementAnswer = null;
+                        PreparedStatement preparedStatementTopic = null;
+                        PreparedStatement preparedStatementUser = null;
+                        try {
+                            if (connection == null || connection.isClosed()) {
+                                try {
+                                    Class.forName("com.mysql.jdbc.Driver");
+                                } catch (ClassNotFoundException ex) {
+                                    out.println("Exception in loading the class forname Driver" + ex);
+                                    if (session.getAttribute("email") == null) {
+                                        email = "Anonuous";
+                                    } else {
+                                        email = (String) session.getAttribute("email");
+                                    }
+                                    if (session.getAttribute("Session_id_of_user") == null) {
+                                        CurrentuserId = 0;
+                                    } else {
+                                        CurrentuserId = (Integer) session.getAttribute("Session_id_of_user");
+                                    }
+                                    String URL = request.getRequestURL() + "?" + request.getQueryString();
+                    
+      org.apache.jasper.runtime.JspRuntimeLibrary.include(request, response, "ExceptionCollector.jsp" + "?" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("userName", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(email), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("userID", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(CurrentuserId), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("URLParameter", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(URL), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("ExceptionMessage", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(ex), request.getCharacterEncoding()), out, false);
+
+                            }
+                            connection = DriverManager.getConnection(DB_URL_, DB_USERNAME_, DB_PASSWORD_);
+                        }
+                    
+      out.write("\r\n");
+      out.write("                    ");
+
+                        int totalRowsquestion = 0;
+                        int totalRowsAnswer = 0;
+                        int totalRowsTopic = 0;
+                        int totalRowsUser = 0;
+                        List<String> SearchValue = searchWordProcess(convertStringUpperToLower(request.getParameter("search")).toLowerCase());
+
+                        Iterator itr = SearchValue.iterator();
+                        try { //For the question count 
+                            String Q = "SELECT * FROM question WHERE lower(question) LIKE '%" + SearchValue.get(0) + "%'";
+                            while (itr.hasNext()) {
+                                Q += " OR lower(question) LIKE '%" + itr.next() + "%'";
+                            }
+                            Q += ";";
+                            preparedStatementQuestion = connection.prepareStatement(Q);
+                            resultSetQuestion = preparedStatementQuestion.executeQuery();
+                            String query2 = "SELECT FOUND_ROWS() as cnt";
+                            ps2 = connection.prepareStatement(query2);
+                            rs2 = ps2.executeQuery();
+
+                            try {
+                                if (rs2.next()) {
+                                    totalRowsquestion = rs2.getInt("cnt");
+                                }
+                            } catch (Exception msg) {
+                                out.println(msg);
+                            }
+                        } catch (Exception msg) {
+                            out.println(msg);
+                        }
+                        try {//For Answer count and resultset value
+                            String Q_a = "Select q.question,q.q_id, substring(ans.answer,1,500) "
+                                    + "from question q right join answer ans on ans.q_id = q.q_id where lower(answer) LIKE '%" + SearchValue.get(0) + "%'";
+                            while (itr.hasNext()) {
+                                Q_a += " or lower(answer) LIKE '%" + itr.next() + "%'";
+                            }
+                            // Q_a += ";";
+                            preparedStatementAnswer = connection.prepareCall(Q_a);
+                            resultSetAnswer = preparedStatementAnswer.executeQuery();
+                            String query2 = "SELECT FOUND_ROWS() as cnt";
+                            ps2 = connection.prepareStatement(query2);
+                            rs2 = ps2.executeQuery();
+
+                            try {
+                                if (rs2.next()) {
+                                    totalRowsAnswer = rs2.getInt("cnt");
+                                }
+                            } catch (Exception msg) {
+                                out.println(msg);
+                            }
+                        } catch (Exception msg) {
+                            out.println(msg);
+                        }
+                        try {//For Topic count and resultset value
+                            String T = "SELECT * FROM topic WHERE lower(topic_name) LIKE '%" + SearchValue.get(0) + "%'";
+                            while (itr.hasNext()) {
+                                T += " or lower(topic_name) LIKE '%" + itr.next() + "%'";
+                            }
+                            preparedStatementTopic = connection.prepareStatement(T);
+                            resultSetTopic = preparedStatementTopic.executeQuery();
+                            String query2 = "SELECT FOUND_ROWS() as cnt";
+                            ps2 = connection.prepareStatement(query2);
+                            rs2 = ps2.executeQuery();
+
+                            try {
+                                if (rs2.next()) {
+                                    totalRowsTopic = rs2.getInt("cnt");
+                                }
+                            } catch (Exception msg) {
+                                out.println(msg);
+                            }
+                        } catch (Exception msg) {
+                            out.println(msg);
+                        }
+                        try {//For User count and resultset value
+                            String SQL_T = "SELECT * FROM newuser WHERE lower(firstname) LIKE '%" + SearchValue.get(0) + "%' ";
+                            while (itr.hasNext()) {
+                                SQL_T += " OR lower(firstname) LIKE '%" + itr.next() + "%'";
+                            }
+                            preparedStatementUser = connection.prepareStatement(SQL_T);
+                            resultSetUser = preparedStatementUser.executeQuery();
+                            String query2 = "SELECT FOUND_ROWS() as cnt";
+                            ps2 = connection.prepareStatement(query2);
+                            rs2 = ps2.executeQuery();
+
+                            try {
+                                if (rs2.next()) {
+                                    totalRowsUser = rs2.getInt("cnt");
+                                }
+                            } catch (Exception msg) {
+                                out.println(msg);
+                            }
+                        } catch (Exception msg) {
+                            out.println(msg);
+                        }
+
+
+                    
       out.write("\r\n");
       out.write("                    <div class=\"row\">\r\n");
       out.write("                        <div class=\"row\">\r\n");
@@ -331,62 +483,42 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write('"');
       out.write('>');
       out.print(QUESTION);
-      out.write("</a><br>\r\n");
+      out.write(' ');
+      out.write('(');
+      out.print(totalRowsquestion);
+      out.write(")</a><br>\r\n");
       out.write("                                        <a href=\"SearchBar.jsp?value=Answer&search=");
       out.print(request.getParameter("search"));
       out.write('"');
       out.write('>');
       out.print(ANSWER);
-      out.write("</a><br>\r\n");
+      out.write(' ');
+      out.write('(');
+      out.print(totalRowsAnswer);
+      out.write(")</a><br>\r\n");
       out.write("                                        <a href=\"SearchBar.jsp?value=Topic&search=");
       out.print(request.getParameter("search"));
       out.write('"');
       out.write('>');
       out.print(TOPIC);
-      out.write("</a><br>\r\n");
+      out.write(' ');
+      out.write('(');
+      out.print(totalRowsTopic);
+      out.write(")</a><br>\r\n");
       out.write("                                        <a href=\"SearchBar.jsp?value=UserProfile&search=");
       out.print(request.getParameter("search"));
       out.write('"');
       out.write('>');
       out.print(USER_PROFILE);
-      out.write("</a><br>\r\n");
+      out.write(' ');
+      out.write('(');
+      out.print(totalRowsUser);
+      out.write(")</a><br>\r\n");
       out.write("                                    </div>\r\n");
       out.write("\r\n");
       out.write("                                </div>\r\n");
       out.write("\r\n");
       out.write("                            </div>\r\n");
-      out.write("                            ");
-
-                                String email = null;
-                                int CurrentuserId = 0;
-                                Connection connection = null;
-                                ResultSet resultSet = null;
-                                PreparedStatement preparedStatement = null;
-                                try {
-                                    if (connection == null || connection.isClosed()) {
-                                        try {
-                                            Class.forName("com.mysql.jdbc.Driver");
-                                        } catch (ClassNotFoundException ex) {
-                                            out.println("Exception in loading the class forname Driver" + ex);
-                                            if (session.getAttribute("email") == null) {
-                                                email = "Anonuous";
-                                            } else {
-                                                email = (String) session.getAttribute("email");
-                                            }
-                                            if (session.getAttribute("Session_id_of_user") == null) {
-                                                CurrentuserId = 0;
-                                            } else {
-                                                CurrentuserId = (Integer) session.getAttribute("Session_id_of_user");
-                                            }
-                                            String URL = request.getRequestURL() + "?" + request.getQueryString();
-                            
-      org.apache.jasper.runtime.JspRuntimeLibrary.include(request, response, "ExceptionCollector.jsp" + "?" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("userName", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(email), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("userID", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(CurrentuserId), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("URLParameter", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(URL), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("ExceptionMessage", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(ex), request.getCharacterEncoding()), out, false);
-
-                                    }
-                                    connection = DriverManager.getConnection(DB_URL_, DB_USERNAME_, DB_PASSWORD_);
-                                }
-                            
-      out.write("\r\n");
       out.write("\r\n");
       out.write("                            <div class=\"col-lg-6 col-md-6 col-sm-12 col-xs-12\">\r\n");
       out.write("                                <div class=\"row\">\r\n");
@@ -395,9 +527,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("                                            <p id=\"demo\"></p>\r\n");
       out.write("                                            ");
 
-                                                List<String> SearchValue = searchWordProcess(convertStringUpperToLower(request.getParameter("search")).toLowerCase());
                                                 String ParametrVariable = request.getParameter("value");
-                                                Iterator itr = SearchValue.iterator();
                                                 if (ParametrVariable == null) {
                                                     ParametrVariable = "Question";
                                                 }
@@ -407,18 +537,12 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                                         try {
                                                             String Question_asked_by_user;
                                                             //String SearchValue_Case_Converted = SearchValue;
-                                                            String Q = "SELECT * FROM question WHERE lower(question) LIKE '%" + SearchValue.get(0) + "%'";
-                                                            while (itr.hasNext()) {
-                                                                Q += " OR lower(question) LIKE '%" + itr.next() + "%'";
-                                                            }
-                                                            Q += ";";
-                                                            preparedStatement = connection.prepareStatement(Q);
-                                                            resultSet = preparedStatement.executeQuery();
+
                                                             boolean count = true;
-                                                            while (resultSet.next()) {
+                                                            while (resultSetQuestion.next()) {
                                                                 count = false;
-                                                                Question_asked_by_user = resultSet.getString("question");
-                                                                int question_id = resultSet.getInt("q_id");
+                                                                Question_asked_by_user = resultSetQuestion.getString("question");
+                                                                int question_id = resultSetQuestion.getInt("q_id");
                                             
       out.write(" <br>Q. <a href=\"Answer.jsp?Id=");
       out.print(question_id);
@@ -427,6 +551,8 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write(" ?</h6></a>");
 
                                                 }
+                                                resultSetQuestion.close();;
+                                                preparedStatementQuestion.close();
                                                 if (count) {
                                                     out.println("No related question found");
                                                 }
@@ -455,21 +581,13 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                                         String Answer_given_by_user;
                                                         //int Question_id = 0;
                                                         //String SearchValue_Case_Converted = SearchValue.toLowerCase();
-                                                        String Q_a = "Select q.question,q.q_id, substring(ans.answer,1,500) "
-                                                                + "from question q right join answer ans on ans.q_id = q.q_id where lower(answer) LIKE '%" + SearchValue.get(0) + "%'";
-                                                        while (itr.hasNext()) {
-                                                            Q_a += " or lower(answer) LIKE '%" + itr.next() + "%'";
-                                                        }
-                                                        // Q_a += ";";
-                                                        preparedStatement = connection.prepareCall(Q_a);
-                                                        resultSet = preparedStatement.executeQuery();
 
                                                         boolean count = true;
-                                                        while (resultSet.next()) {
+                                                        while (resultSetAnswer.next()) {
                                                             count = false;
-                                                            Answer_given_by_user = resultSet.getString("substring(ans.answer,1,500)");
-                                                            String Question_by_user = resultSet.getString("question");
-                                                            int question_id = resultSet.getInt("q.q_id");
+                                                            Answer_given_by_user = resultSetAnswer.getString("substring(ans.answer,1,500)");
+                                                            String Question_by_user = resultSetAnswer.getString("question");
+                                                            int question_id = resultSetAnswer.getInt("q.q_id");
                                             
       out.write("<br> Q. <a href=\"Answer.jsp?q=");
       out.print(Question_by_user.replaceAll(" ", "-"));
@@ -482,6 +600,8 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                                     out.println("<br>Ans.</b>&nbsp;&nbsp;&nbsp;&nbsp;" + Answer_given_by_user);
 
                                                 }
+                                                resultSetAnswer.close();
+                                                preparedStatementAnswer.close();
                                                 if (count) {
                                                     out.println("No related answer found");
                                                 }
@@ -509,24 +629,22 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                                     out.println("<center><div class=boxHeading>" + TOPIC + "</div></center>");
                                                     try {
                                                         //String SearchValue_Case_Converted = SearchValue.toLowerCase();
-                                                        String T = "SELECT * FROM topic WHERE lower(topic_name) LIKE '%" + SearchValue.get(0) + "%'";
-                                                        while (itr.hasNext()) {
-                                                            T += " or lower(topic_name) LIKE '%" + itr.next() + "%'";
-                                                        }
-                                                        preparedStatement = connection.prepareStatement(T);
-                                                        resultSet = preparedStatement.executeQuery();
+
                                                         int count_ = 1;
                                                         boolean count = true;
-                                                        while (resultSet.next()) {
+                                                        while (resultSetTopic.next()) {
                                                             count = false;
-                                                            String Topic_assgned_by_user = convertStringUpperToLower(resultSet.getString("topic_name"));
-                                                            int selected_topic_id = resultSet.getInt("unique_id");
+                                                            String Topic_assgned_by_user = convertStringUpperToLower(resultSetTopic.getString("topic_name"));
+                                                            int selected_topic_id = resultSetTopic.getInt("unique_id");
                                                             out.print("<br><br>" + count_++ + "<b>&nbsp;&nbsp;<a href=topic.jsp?t=" + Topic_assgned_by_user.replaceAll(" ", "+") + "&id=" + selected_topic_id + ">" + Topic_assgned_by_user + "</a></b>");
 
                                                         }
+                                                        resultSetTopic.close();
+                                                        preparedStatementTopic.close();
                                                         if (count) {
                                                             out.println("No related topic found");
                                                         }
+                                                        out.println("<br><br><a href=FollowMoreTopic.jsp>For more topic</a>");
                                                     } catch (Exception e) {
                                                         out.println("Error in Topic Search:" + e);
                                                         if (session.getAttribute("email") == null) {
@@ -553,24 +671,27 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                                         String StoredUserFirstName;
                                                         int StoredUserID;
                                                         //String SearchValue_Case_Converted = SearchValue.toLowerCase();
-                                                        String SQL_T = "SELECT * FROM newuser WHERE lower(firstname) LIKE '%" + SearchValue.get(0) + "%' ";
-                                                        while(itr.hasNext()){
-                                                        SQL_T += " OR lower(firstname) LIKE '%" + itr.next() + "%'";
-}
-                                                        preparedStatement = connection.prepareStatement(SQL_T);
-                                                        resultSet = preparedStatement.executeQuery();
+//                                                        String SQL_T = "SELECT * FROM newuser WHERE lower(firstname) LIKE '%" + SearchValue.get(0) + "%' ";
+//                                                        while (itr.hasNext()) {
+//                                                            SQL_T += " OR lower(firstname) LIKE '%" + itr.next() + "%'";
+//                                                        }
+//                                                        preparedStatement = connection.prepareStatement(SQL_T);
+//                                                        resultSet = preparedStatement.executeQuery();
                                                         int count_ = 1;
                                                         boolean count = true;
-                                                        while (resultSet.next()) {
+                                                        while (resultSetUser.next()) {
                                                             count = false;
-                                                            StoredUserID = resultSet.getInt("ID");
-                                                            StoredUserFirstName = convertStringUpperToLower(resultSet.getString("firstname"));
+                                                            StoredUserID = resultSetUser.getInt("ID");
+                                                            StoredUserFirstName = convertStringUpperToLower(resultSetUser.getString("firstname"));
                                                             out.print("<br><br>" + count_++ + "<b>&nbsp;&nbsp;<a href=profile.jsp?user=" + StoredUserFirstName.replaceAll(" ", "+") + "&ID=" + StoredUserID + ">" + StoredUserFirstName + " </a></b>");
 
                                                         }
+                                                        resultSetUser.close();
+                                                        preparedStatementUser.close();
                                                         if (count) {
                                                             out.println("No related user profile found");
                                                         }
+                                                        out.println("<br><br><a href=UserProfile.jsp>For more user</a>");
                                                     } catch (Exception e) {
                                                         out.println("Error in User profile search:" + e);
                                                         if (session.getAttribute("email") == null) {
@@ -607,28 +728,28 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                                             out.println("Exception in closing connection " + e);
                                                         }
                                                     }
-                                                    try {
-                                                        if (resultSet != null || !resultSet.isClosed()) {
-                                                            try {
-                                                                resultSet.close();
-                                                            } catch (Exception e) {
-                                                                out.println("Exception in closing resulatset " + e);
-                                                            }
-                                                        }
-                                                    } catch (Exception error) {
-                                                        out.println(error);
-                                                    }
-                                                    try {
-                                                        if (preparedStatement != null || !preparedStatement.isClosed()) {
-                                                            try {
-                                                                preparedStatement.close();
-                                                            } catch (Exception e) {
-                                                                out.println("Exception in closing preparedStatement " + e);
-                                                            }
-                                                        }
-                                                    } catch (Exception error) {
-                                                        out.println(error);
-                                                    }
+//                                                    try {
+//                                                        if (resultSet != null || !resultSet.isClosed()) {
+//                                                            try {
+//                                                                resultSet.close();
+//                                                            } catch (Exception e) {
+//                                                                out.println("Exception in closing resulatset " + e);
+//                                                            }
+//                                                        }
+//                                                    } catch (Exception error) {
+//                                                        out.println(error);
+//                                                    }
+//                                                    try {
+//                                                        if (preparedStatement != null || !preparedStatement.isClosed()) {
+//                                                            try {
+//                                                                preparedStatement.close();
+//                                                            } catch (Exception e) {
+//                                                                out.println("Exception in closing preparedStatement " + e);
+//                                                            }
+//                                                        }
+//                                                    } catch (Exception error) {
+//                                                        out.println(error);
+//                                                    }
                                                 }
                                             
       out.write("\r\n");
