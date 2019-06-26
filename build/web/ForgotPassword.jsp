@@ -144,7 +144,7 @@
                                                         if (UserEmail != null) {
                                                             int i = 0;
                                                             String StoredEmail = null;
-                                                            String FirstName = null;
+                                                            //String FirstName = null;
                                                             String UserPassword = null;
                                                             Connection connection = null;
                                                             ResultSet resultSet = null;
@@ -165,7 +165,7 @@
                                                                     resultSet = preparedStatement.executeQuery();
                                                                     while (resultSet.next()) {
                                                                         StoredEmail = resultSet.getString("email");
-                                                                        FirstName = resultSet.getString("firstname");
+                                                                        //FirstName = resultSet.getString("firstname");
                                                                         UserPassword = resultSet.getString("password");
                                                                         if (StoredEmail.equals(UserEmail)) {
                                                                             i = 1;

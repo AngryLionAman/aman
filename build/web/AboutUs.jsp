@@ -1,5 +1,12 @@
 <html lang="en">
     <head>
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-8778688755733551",
+    enable_page_level_ads: true
+  });
+</script>
         <meta charset="UTF-8">
         <!-- For IE -->
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -58,7 +65,7 @@
         NEED_HELP = "You need help?";
         NEED_HELP_DESCRIPTION = "if you need any type of help related to this website ,please let us know on the help form.we will always there for you.we will happy to help you.";
         AUTHOR = "Author";
-        AUTHOR_DESCRIPTION = "Programmer and writer: Aman Kumar <br> Co-author: Pankaj Kumar Finance By: Lalan Singh, Pankaj Kumar ";
+        AUTHOR_DESCRIPTION = "Programmer and writer: Aman Kumar <br> Co-author: Pankaj Kumar<br> Finance By: Lalan Singh, Pankaj Kumar ";
     }
 %>
 

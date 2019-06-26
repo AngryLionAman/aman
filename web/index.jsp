@@ -1,5 +1,6 @@
 <html lang="en">
     <head>
+       
         <%@page language="java" %>
         <%@page import="java.sql.*" %> 
         <%@include file="site.jsp" %>
@@ -90,14 +91,6 @@
         <!-- For Resposive Device -->
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="content-type" content="text/html" charset="utf-8">
-        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-        <script>
-            (adsbygoogle = window.adsbygoogle || []).push({
-                google_ad_client: "ca-pub-8778688755733551",
-                enable_page_level_ads: true
-            });
-        </script>
-
         <script async src="https://www.googletagmanager.com/gtag/js?id=UA-128307055-1"></script>
         <script>
             window.dataLayer = window.dataLayer || [];
@@ -107,13 +100,13 @@
             gtag('js', new Date());
             gtag('config', 'UA-128307055-1');
         </script> 
-        <title>Home Page</title>
+        <title>INQUIRYHERE.COM | HOME PAGE</title>
         <link rel="icon" href="https://www.inquiryhere.com/images/inquiryhere_Logo.PNG" type="image/png">
 
         <link rel="stylesheet" type="text/css" href="css/style.css">
         <!-- responsive style sheet -->
         <link rel="stylesheet" type="text/css" href="css/responsive.css">
-        <meta property="og:description" content="india first knowledge based social media where experts give 
+        <meta property="og:description" content="india's first question answer based social media where experts give 
               you advise and suggestion related to your query .you can ask and share the 
               information which you want to explore.our motive is to be specific according to your demand" />
         <meta property="og:image" content="https://www.inquiryhere.com/images/logo/inquiryhere_Logo.PNG" />
@@ -122,7 +115,7 @@
         <meta property="og:title" content="india first knowledge based social media platform where experts give
               you advise and suggestion related to your query" />
         <meta property="og:url" content="https://www.inquiryhere.com/">
-        <meta property="og:site_name" content="https://www.inquiryhere.com/" />
+        <meta property="og:site_name" content="inquiryhere.com" />
 
         <link rel="stylesheet" type="text/css" href="css/style.css">
         <!-- responsive style sheet -->
@@ -178,7 +171,9 @@
             <% }%>
             }
         </script>
-
+ <style>
+            a { color: black; } /* CSS link color */
+        </style>
 
     </head>
 
@@ -207,39 +202,6 @@
                         connection = DriverManager.getConnection(DB_URL_, DB_USERNAME_, DB_PASSWORD_);
                     }
             %>
-
-            <%--
-                if (session.getAttribute("email") != null) {
-                    email = (String) session.getAttribute("email");
-                    try {
-                        String sql1 = "SELECT * FROM newuser WHERE email = '" + email + "'";
-                        preparedStatement = connection.prepareStatement(sql1);
-                        resultSet = preparedStatement.executeQuery();
-                        while (resultSet.next()) {
-                            id_of_user = resultSet.getInt("id");
-                            name = resultSet.getString("firstname");
-                        }
-                    } catch (Exception Exceptionmsg) {
-                        if (session.getAttribute("email") == null) {
-                            email = "Anonuous";
-                        } else {
-                            email = (String) session.getAttribute("email");
-                        }
-                        if (session.getAttribute("Session_id_of_user") == null) {
-                            CurrentuserId = 0;
-                        } else {
-                            CurrentuserId = (Integer) session.getAttribute("Session_id_of_user");
-                        }
-                        String URL = request.getRequestURL() + "?" + request.getQueryString();
-            %><jsp:include page="ExceptionCollector.jsp">
-                <jsp:param name="userName" value="<%=email%>"></jsp:param>
-                <jsp:param name="userID" value="<%=CurrentuserId%>"></jsp:param>
-                <jsp:param name="URLParameter" value="<%=URL%>"></jsp:param>
-                <jsp:param name="ExceptionMessage" value="<%=Exceptionmsg%>"></jsp:param>
-            </jsp:include><%
-                    }
-                }
-            --%>
             <div class="clear-fix"></div>
             <div class="bodydata">
                 <div class="container clear-fix">
@@ -295,24 +257,7 @@
                                                 }
                                             } catch (Exception Exceptionmsg) {
                                                 out.println("Unable to retrieve!!" + Exceptionmsg);
-                                                if (session.getAttribute("email") == null) {
-                                                    email = "Anonuous";
-                                                } else {
-                                                    email = (String) session.getAttribute("email");
-                                                }
-                                                if (session.getAttribute("Session_id_of_user") == null) {
-                                                    CurrentuserId = 0;
-                                                } else {
-                                                    CurrentuserId = (Integer) session.getAttribute("Session_id_of_user");
-                                                }
-                                                String URL = request.getRequestURL() + "?" + request.getQueryString();
-                                            %><jsp:include page="ExceptionCollector.jsp">
-                                                <jsp:param name="userName" value="<%=email%>"></jsp:param>
-                                                <jsp:param name="userID" value="<%=CurrentuserId%>"></jsp:param>
-                                                <jsp:param name="URLParameter" value="<%=URL%>"></jsp:param>
-                                                <jsp:param name="ExceptionMessage" value="<%=Exceptionmsg%>"></jsp:param>
-                                            </jsp:include><%
-                                                }
+                                                      }
                                             %>
                                         <a href="FollowMoreTopic.jsp?sl=<%=sl%>"><%=CLICK_HERE_TO_MORE_TOPIC%></a>
                                     </ul>
@@ -348,18 +293,22 @@
 
                                     <h4><%=RECENT_POSTED_QUESTION%></h4>
                                     <%
-                                        String sql3 = "SELECT q.total_view,q.q_id,(select count(*) from answer where q_id = q.q_id) as tac,"
-                                                + "q.question,q.vote,user.firstname,user.ID FROM question q RIGHT JOIN newuser user ON user.id = q.id "
+                                        String sql3 = "SELECT q.total_view,date(q.posted_time) as date,q.q_id,(select count(*) from answer where q_id = q.q_id) as tac,"
+                                                + "q.question,q.vote,user.firstname,user.higher_edu,user.ID FROM question q RIGHT JOIN newuser user ON user.id = q.id "
                                                 + "WHERE q.q_id IS NOT NULL AND q.question IS NOT NULL ORDER BY q_id DESC LIMIT 10";
                                         String UserName_for_trending_question_T = null;
+                                        String date = "";
+                                        String higher_edu = "";
                                         try {
                                             preparedStatement = connection.prepareStatement(sql3);
                                             resultSet = preparedStatement.executeQuery();
                                             PreparedStatement ps2 = null;
                                             while (resultSet.next()) {
                                                 String TrendingQuestion_T = resultSet.getString("question");
-                                                int totalView = (resultSet.getInt("q.total_view") + 1) * 99;
+                                                int totalView = (resultSet.getInt("q.total_view") + 1);
                                                 int question_id = resultSet.getInt("q.q_id");
+                                                higher_edu = resultSet.getString("user.higher_edu");
+                                                date = resultSet.getString("date");
                                                 try {
                                                     String countView = "UPDATE question SET total_view = total_view + 1 WHERE q_id =? ";
                                                     ps2 = connection.prepareStatement(countView);
@@ -375,22 +324,28 @@
                                                 UserName_for_trending_question_T = resultSet.getString("firstname").substring(0, 1).toUpperCase() + resultSet.getString("firstname").substring(1).toLowerCase();
                                     %>
                                     <div class="themeBox" style="height:auto;">
-
-                                        <div class="boxHeading marginbot10">
-                                            <a href="Answer.jsp?q=<%=TrendingQuestion_T.replaceAll(" ", "-")%>&Id=<%=question_id%>&sl=<%=sl%>" ><%=TrendingQuestion_T%> ?</a>
-
+                                         <div align="left" style="font-size: 20px;font-family: serif;">
+                                          Posted by <a href="profile.jsp?user=<%=UserName_for_trending_question_T.replaceAll(" ", "+")%>&ID=<%=userID%>&sl=<%=sl%>"> <%=firstName(UserName_for_trending_question_T)%></a>
+                                            <%
+                                                if(higher_edu != null && !higher_edu.isEmpty()){
+                                                    out.println("("+higher_edu+")");
+                                                }
+                                            %>,
+                                            <%=date%>
                                         </div>
-                                        <div class="questionArea">
-
-                                            <div class="postedBy"><%=POSTED_BY%> :<a href="profile.jsp?user=<%=UserName_for_trending_question_T.replaceAll(" ", "+")%>&ID=<%=userID%>&sl=<%=sl%>"> <%=firstName(UserName_for_trending_question_T)%></a>
-                                                &nbsp;&nbsp;&nbsp;&nbsp; 
-                                                <%  if (session.getAttribute("Session_id_of_user") != null) {
+                                        <div class="boxHeading marginbot10" style="border-radius: 5px;padding-top: 10px;padding-bottom: 10px;padding-left: 10px; background: #d5d5fd;" >
+                                            <a href="Answer.jsp?q=<%=TrendingQuestion_T.replaceAll(" ", "-")%>&Id=<%=question_id%>&sl=<%=sl%>" ><%=TrendingQuestion_T%> ?</a>
+                                            <%  if (session.getAttribute("Session_id_of_user") != null) {
                                                         int Session_id_of_user = (Integer) session.getAttribute("Session_id_of_user");
                                                         if (userID == Session_id_of_user) {%>
                                                 <a href="edit_q.jsp?Id=<%=question_id%>&sl=<%=sl%>">edit</a>
                                                 <% }
                                                     }%>
-                                            </div>
+
+                                        </div>
+                                        <div class="questionArea">
+
+                                            
                                             <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=question_id%>', '<%="upvote"%>');" >Upvote(<%=UpVote%>)</a>&nbsp;&nbsp; 
                                             <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=question_id%>', '<%="downvote"%>');" >Downvote</a>&nbsp;&nbsp; 
                                             <a href="Answer.jsp?q=<%=TrendingQuestion_T.replaceAll(" ", "-")%>&Id=<%=question_id%>&sl=<%=sl%>" >Ans(<%=tac%>)</a>&nbsp;&nbsp;
@@ -435,23 +390,7 @@
                                         ps2.close();
                                     } catch (Exception Exceptionmsg) {
                                         out.println("Error " + Exceptionmsg);
-                                        if (session.getAttribute("email") == null) {
-                                            email = "Anonuous";
-                                        } else {
-                                            email = (String) session.getAttribute("email");
-                                        }
-                                        if (session.getAttribute("Session_id_of_user") == null) {
-                                            CurrentuserId = 0;
-                                        } else {
-                                            CurrentuserId = (Integer) session.getAttribute("Session_id_of_user");
-                                        }
-                                        String URL = request.getRequestURL() + "?" + request.getQueryString();
-                                    %><jsp:include page="ExceptionCollector.jsp">
-                                        <jsp:param name="userName" value="<%=email%>"></jsp:param>
-                                        <jsp:param name="userID" value="<%=CurrentuserId%>"></jsp:param>
-                                        <jsp:param name="URLParameter" value="<%=URL%>"></jsp:param>
-                                        <jsp:param name="ExceptionMessage" value="<%=Exceptionmsg%>"></jsp:param>
-                                    </jsp:include><%
+                                    
                                             }
                                         }
                                     %> 
@@ -479,13 +418,13 @@
                                             preparedStatement = connection.prepareStatement(sql4);
                                             preparedStatement.setInt(1, id_of_user);
                                             resultSet = preparedStatement.executeQuery();
-                                            
+
                                             while (resultSet.next()) {
                                                 question = resultSet.getString("question");
                                                 fname = resultSet.getString("firstname");
                                                 TotalAnswerCount = resultSet.getInt("tac");
-                                                VoteCount = (resultSet.getInt("q.vote") + 1) * 99;
-                                                
+                                                VoteCount = (resultSet.getInt("q.vote") + 1);
+
                                                 int question_id = resultSet.getInt("q.q_id");
                                                 try {
                                                     PreparedStatement ps3 = null;
@@ -552,23 +491,7 @@
                                         }
                                     } catch (Exception e) {
                                         out.println("<b style=color:red;>No question found related to your selected topic</b>Ex:" + e);
-                                        if (session.getAttribute("email") == null) {
-                                            email = "Anonuous";
-                                        } else {
-                                            email = (String) session.getAttribute("email");
-                                        }
-                                        if (session.getAttribute("Session_id_of_user") == null) {
-                                            CurrentuserId = 0;
-                                        } else {
-                                            CurrentuserId = (Integer) session.getAttribute("Session_id_of_user");
-                                        }
-                                        String URL = request.getRequestURL() + "?" + request.getQueryString();
-                                    %><jsp:include page="ExceptionCollector.jsp">
-                                        <jsp:param name="userName" value="<%=email%>"></jsp:param>
-                                        <jsp:param name="userID" value="<%=CurrentuserId%>"></jsp:param>
-                                        <jsp:param name="URLParameter" value="<%=URL%>"></jsp:param>
-                                        <jsp:param name="ExceptionMessage" value="<%=e%>"></jsp:param>
-                                    </jsp:include><%
+                                      
                                             }
                                         }
                                     %>
@@ -629,15 +552,15 @@
                                         <input type="hidden" name="cPageNo" value="<%=cPageNo%>">
                                         <input type="hidden" name="showRows" value="<%=showRows%>">
                                         <%
-                                            
+
                                             while (rs1.next()) {
                                                 Username = rs1.getString("firstname");
                                                 userId = rs1.getInt("id");
                                                 Vote = rs1.getInt("vote");
                                                 TotoalAnswerCount = rs1.getInt("tac");
-                                                int total_count = (rs1.getInt("total_view")+1) * 99;
+                                                int total_count = (rs1.getInt("total_view") + 1);
                                                 PreparedStatement ps4 = null;
-                                                 try {
+                                                try {
                                                     String countView = "UPDATE question SET total_view = total_view + 1 WHERE q_id =? ";
                                                     ps4 = connection.prepareStatement(countView);
                                                     ps4.setInt(1, rs1.getInt("q_id"));
@@ -646,7 +569,7 @@
                                                 } catch (Exception msg) {
                                                     out.println("Error in cound the view" + msg);
                                                 }
-                                                 ps4.close();
+                                                ps4.close();
                                         %>
                                         <div class="themeBox" style="height:auto;">
 
@@ -701,24 +624,7 @@
                                             }  // ps4.close();
                                         } catch (Exception e) {
                                             out.println(e);
-                                            if (session.getAttribute("email") == null) {
-                                                email = "Anonuous";
-                                            } else {
-                                                email = (String) session.getAttribute("email");
-                                            }
-                                            if (session.getAttribute("Session_id_of_user") == null) {
-                                                CurrentuserId = 0;
-                                            } else {
-                                                CurrentuserId = (Integer) session.getAttribute("Session_id_of_user");
-                                            }
-                                            String URL = request.getRequestURL() + "?" + request.getQueryString();
-                                        %><jsp:include page="ExceptionCollector.jsp">
-                                            <jsp:param name="userName" value="<%=email%>"></jsp:param>
-                                            <jsp:param name="userID" value="<%=CurrentuserId%>"></jsp:param>
-                                            <jsp:param name="URLParameter" value="<%=URL%>"></jsp:param>
-                                            <jsp:param name="ExceptionMessage" value="<%=e%>"></jsp:param>
-                                        </jsp:include><%
-
+                                          
                                             }
                                         %>
 
@@ -958,6 +864,10 @@
             <!-- Bootstrap Select JS -->
             <script type="text/javascript" src="vendor/bootstrap-select/dist/js/bootstrap-select.js"></script>
         </div> <!-- /.main-page-wrapper -->
-
+<script type="text/javascript">
+var infolinks_pid = 3191741;
+var infolinks_wsid = 0;
+</script>
+<script type="text/javascript" src="http://resources.infolinks.com/js/infolinks_main.js"></script>
     </body>
 </html>

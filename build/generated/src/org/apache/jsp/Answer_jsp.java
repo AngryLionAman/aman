@@ -219,18 +219,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
   }  
       out.write("\r\n");
       out.write("                }\r\n");
-      out.write("\r\n");
-      out.write("\r\n");
-      out.write("\r\n");
-      out.write("\r\n");
       out.write("        </script>\r\n");
-      out.write("        <!--        <script type=\"text/javascript\">\r\n");
-      out.write("                    function showAnsCommentBox() {\r\n");
-      out.write("                        var div = document.getElementById('Anscomment');\r\n");
-      out.write("                        div.className = 'visible';\r\n");
-      out.write("                    }\r\n");
-      out.write("                </script>-->\r\n");
-      out.write("\r\n");
       out.write("\r\n");
       out.write("        ");
       out.write("\r\n");
@@ -310,7 +299,6 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("                    enable_page_level_ads: true\r\n");
       out.write("                });\r\n");
       out.write("        </script>\r\n");
-      out.write("\r\n");
       out.write("        <script async src=\"https://www.googletagmanager.com/gtag/js?id=UA-128307055-1\"></script>\r\n");
       out.write("        <script>\r\n");
       out.write("                window.dataLayer = window.dataLayer || [];\r\n");
@@ -320,6 +308,8 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("                gtag('js', new Date());\r\n");
       out.write("                gtag('config', 'UA-128307055-1');\r\n");
       out.write("        </script> \r\n");
+      out.write("\r\n");
+      out.write("\r\n");
       out.write("        <meta charset=\"UTF-8\">\r\n");
       out.write("        <!-- For IE -->\r\n");
       out.write("        <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\r\n");
@@ -398,11 +388,24 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                 preparedStatement = connection.prepareStatement(sql);
                 preparedStatement.setInt(1, Question);
                 resultSet = preparedStatement.executeQuery();
+
                 while (resultSet.next()) {
                     StoredQuestion = resultSet.getString("question");
                     StoredQuestionId = resultSet.getInt("q_id");
+                    try {
+                        PreparedStatement ps4 = null;
+                        String countView = "UPDATE question SET total_view = total_view + 1 WHERE q_id =? ";
+                        ps4 = connection.prepareStatement(countView);
+                        ps4.setInt(1, StoredQuestionId);
+                        ps4.executeUpdate();
+                        ps4.close();
+
+                    } catch (Exception msg) {
+                        out.println("Error in cound the view" + msg);
+                    }
                     StoredAnswer = resultSet.getString("answer");
                 }
+
             } catch (Exception e) {
                 out.println("Unable to retrieve!!" + e);
                 if (session.getAttribute("email") == null) {
@@ -424,7 +427,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("\r\n");
       out.write("        <title>");
       out.print(StoredQuestion);
-      out.write("</title>\r\n");
+      out.write("- inquiryhere.com</title>\r\n");
       out.write("        <link rel=\"icon\" href=\"https://www.inquiryhere.com/images/inquiryhere_Logo.PNG\" type=\"image/png\">\r\n");
       out.write("        <meta property=\"og:title\" content=\"");
       out.print(StoredQuestion);
@@ -435,27 +438,57 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
         
       out.write("<meta property=\"og:description\" content=\"");
       out.print(StoredAnswer);
+      out.write("\"/>\r\n");
+      out.write("        <meta property=\"description\" content=\"");
+      out.print(StoredAnswer);
       out.write("\"/>");
 
         } else {
         
       out.write("<meta property=\"og:description\" content=\"");
       out.print(StoredQuestion);
-      out.write("\"/>");
+      out.write("\"/>\r\n");
+      out.write("        <meta property=\"description\" content=\"");
+      out.print(StoredQuestion);
+      out.write("\"/> ");
 
             }
       out.write("\r\n");
       out.write("\r\n");
-      out.write("        <meta property=\"og:url\" content=\"https://www.inquiryhere.com/\">\r\n");
-      out.write("        <meta property=\"og:site_name\" content=\"https://www.inquiryhere.com/\" />\r\n");
+      out.write("        <meta property=\"og:url\" content=\"https://www.inquiryhere.com/Answer.jsp\">\r\n");
+      out.write("        <meta property=\"og:site_name\" content=\"inquiryhere.com\" />\r\n");
       out.write("        <meta property=\"og:image\" content=\"https://www.inquiryhere.com/images/logo/inquiryhere_Logo.PNG\" />\r\n");
       out.write("        <meta property=\"og:type\" content=\"website\">\r\n");
       out.write("        <meta property=\"og:locale\" content=\"en_US\">\r\n");
+      out.write("        ");
+
+            try {
+                String p_fetch_topic_sql = "select tag_id as unique_id,"
+                        + "(select topic_name from topic where unique_id = question_topic_tag.tag_id)"
+                        + " topic_name from question_topic_tag  where question_id ='" + StoredQuestionId + "'";
+                preparedStatement = connection.prepareStatement(p_fetch_topic_sql);
+                resultSet = preparedStatement.executeQuery();
+                while (resultSet.next()) {
+                    String topic_name_for_seo = resultSet.getString("topic_name").toLowerCase();
+        
+      out.write("\r\n");
+      out.write("        <meta property=\"article:tag\" content=\"");
+      out.print(topic_name_for_seo);
+      out.write("\" />              \r\n");
+      out.write("        ");
+
+                }
+            } catch (Exception e) {
+                out.println("Unable to retrieve!!" + e);
+            }
+        
+      out.write("\r\n");
       out.write("\r\n");
       out.write("\r\n");
       out.write("    </head>\r\n");
       out.write("\r\n");
       out.write("    <body>\r\n");
+      out.write("\r\n");
       out.write("        <div class=\"main-page-wrapper\">\r\n");
       out.write("            <!-- Header _________________________________ -->\r\n");
       out.write("            ");
@@ -474,20 +507,6 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                 if (session.getAttribute("Session_id_of_user") != null) {
                     id_of_user = (Integer) session.getAttribute("Session_id_of_user");
                 }
-//                if (session.getAttribute("email") != null) {
-//                    email = (String) session.getAttribute("email");
-//                    try {
-//                        String sql = "SELECT * FROM newuser WHERE email = '" + email + "'";
-//                        preparedStatement = connection.prepareCall(sql);
-//                        resultSet = preparedStatement.executeQuery();
-//                        while (resultSet.next()) {
-//                            id_of_user = resultSet.getInt("id");
-//                            name = resultSet.getString("firstname");
-//                        }
-//                    } catch (Exception e) {
-//                        out.println("Unable to retrieve!!" + e);
-//                    }
-//                }
             
       out.write("\r\n");
       out.write("            <div class=\"clear-fix\"></div>\r\n");
@@ -510,14 +529,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                             String topic_name;
                                             try {
                                                 String p_fetch_topic;
-                                                /*if (session.getAttribute("email") != null) {
-                                                    p_fetch_topic = "select t.unique_id,t.topic_name from topic t "
-                                                            + "right join topic_followers_detail de "
-                                                            + "on t.unique_id = de.topic_id "
-                                                            + "where user_or_followers_id= '" + id_of_user + "'";
-                                                } else {
-                                                    p_fetch_topic = "select * from topic LIMIT 50,20";
-                                                }*/
+
                                                 p_fetch_topic = "select tag_id as unique_id,"
                                                         + "(select topic_name from topic where unique_id = question_topic_tag.tag_id)"
                                                         + " topic_name from question_topic_tag  where question_id ='" + StoredQuestionId + "'";
@@ -540,23 +552,9 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("</a></li>\r\n");
       out.write("                                            ");
  }
-                                                }
-                                            } catch (Exception e) {
-                                                out.println("Unable to retrieve!!" + e);
-                                                if (session.getAttribute("email") == null) {
-                                                    email = "Anonuous";
-                                                } else {
-                                                    email = (String) session.getAttribute("email");
-                                                }
-                                                if (session.getAttribute("Session_id_of_user") == null) {
-                                                    CurrentuserId = 0;
-                                                } else {
-                                                    CurrentuserId = (Integer) session.getAttribute("Session_id_of_user");
-                                                }
-                                                String URL = request.getRequestURL() + "?" + request.getQueryString();
-                                            
-      org.apache.jasper.runtime.JspRuntimeLibrary.include(request, response, "ExceptionCollector.jsp" + "?" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("userName", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(email), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("userID", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(CurrentuserId), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("URLParameter", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(URL), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("ExceptionMessage", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(e), request.getCharacterEncoding()), out, false);
-
+                                                    }
+                                                } catch (Exception e) {
+                                                    out.println("Unable to retrieve!!" + e);
                                                 }
                                             
       out.write("\r\n");
@@ -587,23 +585,26 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("\r\n");
       out.write("                                        <div class=\"boxHeading marginbot10\">\r\n");
       out.write("\r\n");
-      out.write("                                            ");
+      out.write("                                             <h1 style=\"font-size: 20px; \">");
       out.print(QUESTION);
-      out.write(" : ");
+      out.write(' ');
+      out.write(':');
       out.print(StoredQuestion);
-      out.write(" ?\r\n");
+      out.write(" ?</h1> \r\n");
       out.write("                                        </div>\r\n");
       out.write("\r\n");
       out.write("                                        ");
 
                                             String fullName_of_user_who_asked_the_question = null;
+                                            int TotalView = 0;
                                             try {
-                                                String sql_p = "SELECT user.id,user.firstname,q.q_id,q.id FROM newuser user RIGHT JOIN question q on user.id=q.id where q_id= (?)";
+                                                String sql_p = "SELECT user.id,user.firstname,q.q_id,q.id,q.total_view FROM newuser user RIGHT JOIN question q on user.id=q.id where q_id= (?)";
                                                 preparedStatement = connection.prepareStatement(sql_p);
                                                 preparedStatement.setInt(1, Question);
                                                 resultSet = preparedStatement.executeQuery();
                                                 while (resultSet.next()) {
                                                     int user_Id = resultSet.getInt("user.id");
+                                                    TotalView = resultSet.getInt("q.total_view");
                                                     if (!userId.contains(user_Id)) {
                                                         userId.add(user_Id);
                                                     }
@@ -652,7 +653,10 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("                                        <a href=\"javascript:void(0)\" onclick=\"this.style.color = 'red';return take_value(this, '");
       out.print(q_id);
       out.write("', 'downvote', 'question');\" >Downvote</a> &nbsp;&nbsp;\r\n");
-      out.write("                                        <a href=\"javascript:void(0)\" value=\"Comment\" onclick=\"showCommentBox()\">Comment</a>\r\n");
+      out.write("                                        <a href=\"javascript:void(0)\" value=\"Comment\" onclick=\"showCommentBox()\">Comment</a>&nbsp;&nbsp;\r\n");
+      out.write("                                        <a href=\"javascript:void(0)\">View(");
+      out.print(TotalView);
+      out.write(")</a>\r\n");
       out.write("                                        <form action=\"SubmitQuestionComment.jsp\" method=\"get\">\r\n");
       out.write("                                            <div class=\"hidden\" id=\"comment\">\r\n");
       out.write("                                                <input type=\"hidden\" name=\"question_id\" value=\"");
@@ -719,8 +723,8 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("                                    ");
 
                                         try {
-                                            String sql_p = "SELECT user.firstname,ans.answer,ans.a_id,ans.Answer_by_id FROM newuser user "
-                                                    + "RIGHT JOIN answer ans on user.id = ans.Answer_by_id where q_id = '" + q_id + "' order by vote desc";
+                                            String sql_p = "SELECT user.firstname,ans.answer,ans.a_id,ans.Answer_by_id,ans.total_view FROM newuser user "
+                                                    + "RIGHT JOIN answer ans on user.id = ans.Answer_by_id where q_id = '" + q_id + "' and a_id is not null order by vote desc";
                                             preparedStatement = connection.prepareStatement(sql_p);
                                             resultSet = preparedStatement.executeQuery();
                                             int count = 0;
@@ -729,11 +733,24 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                                 count++;
                                                 String answer = resultSet.getString("answer");
                                                 int who_gave_answer = resultSet.getInt("Answer_by_id");
+                                                int total_view = (resultSet.getInt("ans.total_view") + 1);
                                                 if (!userId.contains(who_gave_answer)) {
                                                     userId.add(who_gave_answer);
                                                 }
                                                 String firstname = convertStringUpperToLower(resultSet.getString("firstname"));
                                                 int answer_id = resultSet.getInt("ans.a_id");
+
+                                                try {
+                                                    PreparedStatement ps1 = null;
+                                                    String countView = "UPDATE answer SET total_view = total_view + 1 WHERE a_id =? ";
+                                                    ps1 = connection.prepareStatement(countView);
+                                                    ps1.setInt(1, answer_id);
+                                                    ps1.executeUpdate();
+                                                    ps1.close();
+
+                                                } catch (Exception msg) {
+                                                    out.println("Error in cound the view" + msg);
+                                                }
                                     
       out.write("\r\n");
       out.write("                                    <div class=\"themeBox\" style=\"height:auto;\">\r\n");
@@ -771,7 +788,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("\">Edit</a>\r\n");
       out.write("                                                ");
  }
-                                                    }
+                                                }
       out.write(" </div>\r\n");
       out.write("                                        </div>\r\n");
       out.write("                                        <a href=\"javascript:void(0)\" onclick=\"this.style.color = 'red'; return take_value(this, '");
@@ -779,10 +796,13 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("', 'upvote', 'answer');\" >Upvote</a>&nbsp;&nbsp; \r\n");
       out.write("                                        <a href=\"javascript:void(0)\" onclick=\"this.style.color = 'red';return take_value(this, '");
       out.print(answer_id);
-      out.write("', 'downvote', 'answer');\" >Downvote</a>\r\n");
+      out.write("', 'downvote', 'answer');\" >Downvote</a>&nbsp;&nbsp;\r\n");
       out.write("                                        <a href=\"javascript:void(0)\" value=\"Comment\" onclick=\"showAns");
       out.print(answer_id);
-      out.write("CommentBox()\">Comment</a>\r\n");
+      out.write("CommentBox()\">Comment</a>&nbsp;&nbsp;\r\n");
+      out.write("                                        <a href=\"javascript:void(0)\">View(");
+      out.print(total_view);
+      out.write(")</a>\r\n");
       out.write("                                        <form action=\"SubmitAnswerComment.jsp\" method=\"get\">\r\n");
       out.write("                                            <div class=\"hidden\" id=\"Anscomment");
       out.print(answer_id);
@@ -802,24 +822,24 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("                                        </form>\r\n");
       out.write("\r\n");
       out.write("                                        <script type=\"text/javascript\">\r\n");
-      out.write("                                            function showAns");
+      out.write("                                        function showAns");
       out.print(answer_id);
       out.write("CommentBox() {\r\n");
       out.write("                                            ");
  if (session.getAttribute("Session_id_of_user") != null) {
       out.write("\r\n");
-      out.write("                                                var div = document.getElementById('Anscomment");
+      out.write("                                            var div = document.getElementById('Anscomment");
       out.print(answer_id);
       out.write("');\r\n");
-      out.write("                                                div.className = 'visible';\r\n");
+      out.write("                                            div.className = 'visible';\r\n");
       out.write("                                            ");
  } else { 
       out.write("\r\n");
-      out.write("                                                alert(\"Please Login First to comment!!!\");\r\n");
+      out.write("                                            alert(\"Please Login First to comment!!!\");\r\n");
       out.write("                                            ");
  } 
       out.write("\r\n");
-      out.write("                                            }\r\n");
+      out.write("                                        }\r\n");
       out.write("                                        </script>\r\n");
       out.write("                                    </div>\r\n");
       out.write("                                    <!-- Comment on Answer -->\r\n");
@@ -839,7 +859,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                                     String userName = result.getString("fullname");
                                                     String time = result.getString("time");
                                                     int user_id = result.getInt("user_id");
-                                                    if(!userId.contains(user_id)){
+                                                    if (!userId.contains(user_id)) {
                                                         userId.add(user_id);
                                                     }
                                                     out.println("(" + time + ") " + question_comments + ":- ");
@@ -870,6 +890,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("                                    ");
 
                                         }
+
                                         if (count == 0) {
                                     
       out.write("\r\n");
@@ -963,6 +984,17 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                                 while (rs_detail.next()) {
                                                     question_detail = rs_detail.getString("question");
                                                     int questionID = rs_detail.getInt("q_id");
+                                                    try {
+                                                        PreparedStatement ps4 = null;
+                                                        String countView = "UPDATE question SET total_view = total_view + 1 WHERE q_id =? ";
+                                                        ps4 = connection.prepareStatement(countView);
+                                                        ps4.setInt(1, questionID);
+                                                        ps4.executeUpdate();
+                                                        ps4.close();
+
+                                                    } catch (Exception msg) {
+                                                        out.println("Error in cound the view" + msg);
+                                                    }
                                                     if (questionID != q_id) {
                                                         if (question_detail != null) {
                                                             count++;
@@ -1029,38 +1061,88 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                     
       out.write("\r\n");
       out.write("                                </div>\r\n");
-      out.write("                                ");
-
-                                    session.setAttribute("AllUserIdList", userId);
-                                    } catch (Exception e) {
-                                        out.println("Error in main try block:-" + e);
-                                    } finally {
-
-                                        if (connection != null || !connection.isClosed()) {
-                                            try {
-                                                connection.close();
-                                            } catch (Exception e) {
-                                                out.println("Exception in closing connection " + e);
-                                            }
-                                        }
-                                        if (resultSet != null || !resultSet.isClosed()) {
-                                            try {
-                                                resultSet.close();
-                                            } catch (Exception e) {
-                                                out.println("Exception in closing resulatset " + e);
-                                            }
-                                        }
-                                        if (preparedStatement != null || !preparedStatement.isClosed()) {
-                                            try {
-                                                preparedStatement.close();
-                                            } catch (Exception e) {
-                                                out.println("Exception in closing preparedStatement " + e);
-                                            }
-                                        }
-                                    }
-                                
       out.write("\r\n");
       out.write("                            </div>\r\n");
+      out.write("                            <div class=\"themeBox\" style=\"height:auto;\">\r\n");
+      out.write("                                <div class=\"boxHeading\">\r\n");
+      out.write("                                    Question you may like\r\n");
+      out.write("                                </div>\r\n");
+      out.write("                                <div>\r\n");
+      out.write("                                    ");
+
+                                        try {
+                                            ResultSet rs = null;
+                                            PreparedStatement ps = null;
+                                            String sql = "select q_id,question from question order by rand() limit 5";
+                                            ps = connection.prepareStatement(sql);
+                                            rs = ps.executeQuery();
+                                            while (rs.next()) {
+                                                int question_id = rs.getInt("q_id");
+                                                try {
+                                                    PreparedStatement ps4 = null;
+                                                    String countView = "UPDATE question SET total_view = total_view + 1 WHERE q_id =? ";
+                                                    ps4 = connection.prepareStatement(countView);
+                                                    ps4.setInt(1, question_id);
+                                                    ps4.executeUpdate();
+                                                    ps4.close();
+
+                                                } catch (Exception msg) {
+                                                    out.println("Error in cound the view" + msg);
+                                                }
+                                                String question = rs.getString("question");
+                                    
+      out.write("\r\n");
+      out.write("                                    <a href=\"Answer.jsp?q=");
+      out.print(question.replaceAll(" ", "-"));
+      out.write("&Id=");
+      out.print(question_id);
+      out.write("&sl=");
+      out.print(sl);
+      out.write("\" >");
+      out.print(question);
+      out.write("</a><br><br>\r\n");
+      out.write("                                    ");
+
+                                            }
+                                        } catch (Exception msg) {
+                                            out.println("Error in 'you may like question' " + msg);
+                                        }
+                                    
+      out.write("\r\n");
+      out.write("                                </div>\r\n");
+      out.write("\r\n");
+      out.write("                            </div>\r\n");
+      out.write("                            ");
+
+                                    session.setAttribute("AllUserIdList", userId);
+                                } catch (Exception e) {
+                                    out.println("Error in main try block:-" + e);
+                                } finally {
+
+                                    if (connection != null || !connection.isClosed()) {
+                                        try {
+                                            connection.close();
+                                        } catch (Exception e) {
+                                            out.println("Exception in closing connection " + e);
+                                        }
+                                    }
+                                    if (resultSet != null || !resultSet.isClosed()) {
+                                        try {
+                                            resultSet.close();
+                                        } catch (Exception e) {
+                                            out.println("Exception in closing resulatset " + e);
+                                        }
+                                    }
+                                    if (preparedStatement != null || !preparedStatement.isClosed()) {
+                                        try {
+                                            preparedStatement.close();
+                                        } catch (Exception e) {
+                                            out.println("Exception in closing preparedStatement " + e);
+                                        }
+                                    }
+                                }
+                            
+      out.write("\r\n");
       out.write("                            ");
 
                                 if (session.getAttribute("email") != null) {
@@ -1134,7 +1216,8 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("            <script type=\"text/javascript\" src=\"vendor/bootstrap-select/dist/js/bootstrap-select.js\"></script>\r\n");
       out.write("        </div> <!-- /.main-page-wrapper -->\r\n");
       out.write("\r\n");
-      out.write("    </body></html>");
+      out.write("    </body>\r\n");
+      out.write("</html>");
     } catch (Throwable t) {
       if (!(t instanceof SkipPageException)){
         out = _jspx_out;

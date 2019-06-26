@@ -162,7 +162,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("    <head> \r\n");
       out.write("        \r\n");
       out.write("        <link rel=\"icon\" href=\"https://www.inquiryhere.com/images/inquiryhere_Logo.PNG\" type=\"image/png\">\r\n");
-      out.write("\r\n");
+      out.write("       \r\n");
       out.write("        <meta charset=\"UTF-8\">\r\n");
       out.write("        \r\n");
       out.write("         \r\n");
@@ -511,6 +511,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                         int id_of_user = 0;
                         int topic_id = 0;
                         int email_status = 0;
+                        int TotalView = 0;
                         boolean userNotFound = true;
                         String p = null;
                         try {
@@ -525,6 +526,17 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                             while (resultSet.next()) {
                                 userNotFound = false;
                                 id_of_user = resultSet.getInt("id");
+                                try {
+                                    PreparedStatement ps1 = null;
+                                    String countView = "UPDATE newuser SET total_view = total_view + 1 WHERE ID =? ";
+                                    ps1 = connection.prepareStatement(countView);
+                                    ps1.setInt(1, id_of_user);
+                                    ps1.executeUpdate();
+                                    ps1.close();
+
+                                } catch (Exception msg) {
+                                    out.println("Error in cound the view" + msg);
+                                }
                                 ID = resultSet.getString("id");
                                 fullName = resultSet.getString("firstname");
                                 userName = resultSet.getString("username");
@@ -534,6 +546,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                 BestAchievement = resultSet.getString("best_achievement");
                                 ImagePath = resultSet.getString("imagepath");
                                 email_status = resultSet.getInt("email_s");
+                                TotalView = (resultSet.getInt("total_view") + 1) ;
                             }
                         } catch (Exception e) {
                             out.println("Unable to retrieve!!" + e);
@@ -550,7 +563,9 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("                                <div class=\"boxHeading\">\r\n");
       out.write("                                    ");
       out.print(PROFILE_DETAILS);
-      out.write("\r\n");
+      out.write("[ View(");
+      out.print(TotalView);
+      out.write(") ]\r\n");
       out.write("                                </div>\r\n");
       out.write("                                <div class=\"col-lg-4 col-md-4 col-sm-12 col-xs-12\">\r\n");
       out.write("                                    <img src=\"images/");
@@ -737,13 +752,13 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                                 out.println("What the hell is going on" + ex);
                                             }
       out.write("\r\n");
-      out.write("                                             <tr>                                                   \r\n");
+      out.write("                                        <tr>                                                   \r\n");
       out.write("                                            <td>Appreciation ..</td>  \r\n");
       out.write("\r\n");
       out.write("                                        </tr>\r\n");
-      out.write("                                        \r\n");
+      out.write("\r\n");
       out.write("                                    </table>\r\n");
-      out.write("                                                    \r\n");
+      out.write("\r\n");
       out.write("                                    <div align=\"right\">\r\n");
       out.write("\r\n");
       out.write("                                        ");
@@ -787,18 +802,24 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                             }
                                         
       out.write("\r\n");
-      out.write("                                         ");
+      out.write("                                        ");
  try {
-                                                         if (session.getAttribute("email") != null) {
-                                                             if (!mail.equals(session.getAttribute("email"))) {
+                                                if (session.getAttribute("email") != null) {
+                                                    if (!mail.equals(session.getAttribute("email"))) {
       out.write("     \r\n");
-      out.write("                                                <a href=\"javascript:void(0)\" value=\"Comment\" onclick=\"showCommentBox()\">Write Good Thing About Him</a>\r\n");
-      out.write("                                                ");
+      out.write("                                        <a href=\"javascript:void(0)\" value=\"Comment\" onclick=\"showCommentBox()\">Write Good Thing About Him</a>\r\n");
+      out.write("                                        ");
  }
-                                                        }
-                                                    } catch (Exception msg) {
-                                                        out.println(msg);
-                                                    } 
+                                        } else {
+                                        
+      out.write("     \r\n");
+      out.write("                                        <a href=\"javascript:void(0)\" value=\"Comment\" onclick=\"alert('Please Login To Comment');\">Write Good Thing About Him</a>\r\n");
+      out.write("                                        ");
+
+                                                }
+                                            } catch (Exception msg) {
+                                                out.println(msg);
+                                            }
       out.write("\r\n");
       out.write("                                    </div>\r\n");
       out.write("                                    <form action=\"SubmitUserProfileComment.jsp\" method=\"get\">\r\n");

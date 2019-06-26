@@ -121,7 +121,6 @@
                     enable_page_level_ads: true
                 });
         </script>
-
         <script async src="https://www.googletagmanager.com/gtag/js?id=UA-128307055-1"></script>
         <script>
                 window.dataLayer = window.dataLayer || [];
@@ -131,6 +130,8 @@
                 gtag('js', new Date());
                 gtag('config', 'UA-128307055-1');
         </script> 
+
+
         <meta charset="UTF-8">
         <!-- For IE -->
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -233,26 +234,46 @@
         </jsp:include><%
             }
         %>
-        <title><%=StoredQuestion%></title>
+        <title><%=StoredQuestion%>- inquiryhere.com</title>
         <link rel="icon" href="https://www.inquiryhere.com/images/inquiryhere_Logo.PNG" type="image/png">
         <meta property="og:title" content="<%=StoredQuestion%>" />
         <%
             if (StoredAnswer != null) {
-        %><meta property="og:description" content="<%=StoredAnswer%>"/><%
+        %><meta property="og:description" content="<%=StoredAnswer%>"/>
+        <meta property="description" content="<%=StoredAnswer%>"/><%
         } else {
-        %><meta property="og:description" content="<%=StoredQuestion%>"/><%
+        %><meta property="og:description" content="<%=StoredQuestion%>"/>
+        <meta property="description" content="<%=StoredQuestion%>"/> <%
             }%>
 
         <meta property="og:url" content="https://www.inquiryhere.com/Answer.jsp">
-        <meta property="og:site_name" content="https://www.inquiryhere.com/" />
+        <meta property="og:site_name" content="inquiryhere.com" />
         <meta property="og:image" content="https://www.inquiryhere.com/images/logo/inquiryhere_Logo.PNG" />
         <meta property="og:type" content="website">
         <meta property="og:locale" content="en_US">
+        <%
+            try {
+                String p_fetch_topic_sql = "select tag_id as unique_id,"
+                        + "(select topic_name from topic where unique_id = question_topic_tag.tag_id)"
+                        + " topic_name from question_topic_tag  where question_id ='" + StoredQuestionId + "'";
+                preparedStatement = connection.prepareStatement(p_fetch_topic_sql);
+                resultSet = preparedStatement.executeQuery();
+                while (resultSet.next()) {
+                    String topic_name_for_seo = resultSet.getString("topic_name").toLowerCase();
+        %>
+        <meta property="article:tag" content="<%=topic_name_for_seo%>" />              
+        <%
+                }
+            } catch (Exception e) {
+                out.println("Unable to retrieve!!" + e);
+            }
+        %>
 
 
     </head>
 
     <body>
+
         <div class="main-page-wrapper">
             <!-- Header _________________________________ -->
             <%--@include file="header.jsp" --%>
@@ -269,20 +290,6 @@
                 if (session.getAttribute("Session_id_of_user") != null) {
                     id_of_user = (Integer) session.getAttribute("Session_id_of_user");
                 }
-//                if (session.getAttribute("email") != null) {
-//                    email = (String) session.getAttribute("email");
-//                    try {
-//                        String sql = "SELECT * FROM newuser WHERE email = '" + email + "'";
-//                        preparedStatement = connection.prepareCall(sql);
-//                        resultSet = preparedStatement.executeQuery();
-//                        while (resultSet.next()) {
-//                            id_of_user = resultSet.getInt("id");
-//                            name = resultSet.getString("firstname");
-//                        }
-//                    } catch (Exception e) {
-//                        out.println("Unable to retrieve!!" + e);
-//                    }
-//                }
             %>
             <div class="clear-fix"></div>
             <div class="bodydata">
@@ -306,14 +313,7 @@
                                             String topic_name;
                                             try {
                                                 String p_fetch_topic;
-                                                /*if (session.getAttribute("email") != null) {
-                                                    p_fetch_topic = "select t.unique_id,t.topic_name from topic t "
-                                                            + "right join topic_followers_detail de "
-                                                            + "on t.unique_id = de.topic_id "
-                                                            + "where user_or_followers_id= '" + id_of_user + "'";
-                                                } else {
-                                                    p_fetch_topic = "select * from topic LIMIT 50,20";
-                                                }*/
+
                                                 p_fetch_topic = "select tag_id as unique_id,"
                                                         + "(select topic_name from topic where unique_id = question_topic_tag.tag_id)"
                                                         + " topic_name from question_topic_tag  where question_id ='" + StoredQuestionId + "'";
@@ -325,26 +325,9 @@
                                                     if (topic_id != 0) {%>
                                         <li><a href="topic.jsp?t=<%=topic_name.replaceAll(" ", "+")%>&id=<%=topic_id%>&sl=<%=sl%>"><%=topic_name%></a></li>
                                             <% }
-                                                }
-                                            } catch (Exception e) {
-                                                out.println("Unable to retrieve!!" + e);
-                                                if (session.getAttribute("email") == null) {
-                                                    email = "Anonuous";
-                                                } else {
-                                                    email = (String) session.getAttribute("email");
-                                                }
-                                                if (session.getAttribute("Session_id_of_user") == null) {
-                                                    CurrentuserId = 0;
-                                                } else {
-                                                    CurrentuserId = (Integer) session.getAttribute("Session_id_of_user");
-                                                }
-                                                String URL = request.getRequestURL() + "?" + request.getQueryString();
-                                            %><jsp:include page="ExceptionCollector.jsp">
-                                                <jsp:param name="userName" value="<%=email%>"></jsp:param>
-                                                <jsp:param name="userID" value="<%=CurrentuserId%>"></jsp:param>
-                                                <jsp:param name="URLParameter" value="<%=URL%>"></jsp:param>
-                                                <jsp:param name="ExceptionMessage" value="<%=e%>"></jsp:param>
-                                            </jsp:include><%
+                                                    }
+                                                } catch (Exception e) {
+                                                    out.println("Unable to retrieve!!" + e);
                                                 }
                                             %>
                                         <a href="FollowMoreTopic.jsp?sl=<%=sl%>"><%=CLICK_HERE_TO_MORE_TOPIC%></a>
@@ -360,27 +343,21 @@
                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 
                             <div class="row">
-
-                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-
-                                    <div class="themeBox" style="height:auto;">
-
-                                        <div class="boxHeading marginbot10">
-
-                                            <%=QUESTION%> : <%=StoredQuestion%> ?
-                                        </div>
-
-                                        <%
+  <%
                                             String fullName_of_user_who_asked_the_question = null;
                                             int TotalView = 0;
+                                            String date = " ";
+                                            String higher_edu = " ";
                                             try {
-                                                String sql_p = "SELECT user.id,user.firstname,q.q_id,q.id,q.total_view FROM newuser user RIGHT JOIN question q on user.id=q.id where q_id= (?)";
+                                                String sql_p = "SELECT user.id,user.higher_edu,user.firstname,q.q_id,q.id,q.total_view,date(q.posted_time) as date FROM newuser user RIGHT JOIN question q on user.id=q.id where q_id= (?)";
                                                 preparedStatement = connection.prepareStatement(sql_p);
                                                 preparedStatement.setInt(1, Question);
                                                 resultSet = preparedStatement.executeQuery();
                                                 while (resultSet.next()) {
                                                     int user_Id = resultSet.getInt("user.id");
-                                                    TotalView = resultSet.getInt("q.total_view") * 99;
+                                                    date = resultSet.getString("date");
+                                                    higher_edu = resultSet.getString("user.higher_edu");
+                                                    TotalView = resultSet.getInt("q.total_view");
                                                     if (!userId.contains(user_Id)) {
                                                         userId.add(user_Id);
                                                     }
@@ -390,34 +367,36 @@
                                                 }
                                             } catch (Exception e) {
                                                 out.println("Unable to retrieve!!" + e);
-                                                if (session.getAttribute("email") == null) {
-                                                    email = "Anonuous";
-                                                } else {
-                                                    email = (String) session.getAttribute("email");
-                                                }
-                                                if (session.getAttribute("Session_id_of_user") == null) {
-                                                    CurrentuserId = 0;
-                                                } else {
-                                                    CurrentuserId = (Integer) session.getAttribute("Session_id_of_user");
-                                                }
-                                                String URL = request.getRequestURL() + "?" + request.getQueryString();
-                                        %><jsp:include page="ExceptionCollector.jsp">
-                                            <jsp:param name="userName" value="<%=email%>"></jsp:param>
-                                            <jsp:param name="userID" value="<%=CurrentuserId%>"></jsp:param>
-                                            <jsp:param name="URLParameter" value="<%=URL%>"></jsp:param>
-                                            <jsp:param name="ExceptionMessage" value="<%=e%>"></jsp:param>
-                                        </jsp:include><%
-                                            }
+                                                   }
                                         %>
-                                        <div class="questionArea">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 
-                                            <div class="postedBy"><%=POSTED_BY%> :<a href="profile.jsp?user=<%=fullName_of_user_who_asked_the_question.replaceAll(" ", "+")%>&ID=<%=q_asked_by_user%>&sl=<%=sl%>"><%=firstName(fullName_of_user_who_asked_the_question)%></a> </div>
-
+                                    <div class="themeBox" style="height:auto;">
+                                        <div align="left" style="font-size: 20px;font-family: serif;">
+                                            <a href="profile.jsp?user=<%=fullName_of_user_who_asked_the_question.replaceAll(" ", "+")%>&ID=<%=q_asked_by_user%>&sl=<%=sl%>"><%=firstName(fullName_of_user_who_asked_the_question)%></a>
+                                            <%
+                                                if(higher_edu != null && !higher_edu.isEmpty()){
+                                                    out.println("("+higher_edu+")");
+                                                }
+                                            %>,
+                                            <%=date%>
                                         </div>
+                                        <div class="boxHeading marginbot10" style="border-radius: 5px;padding-top: 10px;padding-bottom: 10px;padding-left: 10px; background: #d5d5fd;">
+
+                                             <h1 style="font-size: 20px; "><%=QUESTION%> :<%=StoredQuestion%> ?</h1> 
+                                        </div>
+
+                                      
+                                        <!--div class="questionArea">
+
+                                            <div class="postedBy"><!%=POSTED_BY%> :<a href="profile.jsp?user=<!%=fullName_of_user_who_asked_the_question.replaceAll(" ", "+")%>&ID=<!%=q_asked_by_user%>&sl=<!%=sl%>"><!%=firstName(fullName_of_user_who_asked_the_question)%></a> </div>
+
+                                        </div-->
                                         <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=q_id%>', 'upvote', 'question');" >Upvote</a> &nbsp;&nbsp; 
                                         <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=q_id%>', 'downvote', 'question');" >Downvote</a> &nbsp;&nbsp;
                                         <a href="javascript:void(0)" value="Comment" onclick="showCommentBox()">Comment</a>&nbsp;&nbsp;
-                                        <a href="javascript:void(0)">View(<%=TotalView%>)</a>
+<!--                                        <a href="javascript:void(0)"></a>-->
+                                        View(<%=TotalView%>)
                                         <form action="SubmitQuestionComment.jsp" method="get">
                                             <div class="hidden" id="comment">
                                                 <input type="hidden" name="question_id" value="<%=q_id%>">
@@ -474,7 +453,7 @@
                                                 count++;
                                                 String answer = resultSet.getString("answer");
                                                 int who_gave_answer = resultSet.getInt("Answer_by_id");
-                                                int total_view = (resultSet.getInt("ans.total_view") + 1) * 99;
+                                                int total_view = (resultSet.getInt("ans.total_view") + 1);
                                                 if (!userId.contains(who_gave_answer)) {
                                                     userId.add(who_gave_answer);
                                                 }
@@ -506,7 +485,7 @@
 
                                                 <a href="edit_a.jsp?q_id=<%=Question%>&ans_id=<%=answer_id%>&ans_by_id=<%=who_gave_answer%>">Edit</a>
                                                 <% }
-                                                    }%> </div>
+                                                }%> </div>
                                         </div>
                                         <a href="javascript:void(0)" onclick="this.style.color = 'red'; return take_value(this, '<%=answer_id%>', 'upvote', 'answer');" >Upvote</a>&nbsp;&nbsp; 
                                         <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=answer_id%>', 'downvote', 'answer');" >Downvote</a>&nbsp;&nbsp;
@@ -523,14 +502,14 @@
                                         </form>
 
                                         <script type="text/javascript">
-                                            function showAns<%=answer_id%>CommentBox() {
+                                        function showAns<%=answer_id%>CommentBox() {
                                             <% if (session.getAttribute("Session_id_of_user") != null) {%>
-                                                var div = document.getElementById('Anscomment<%=answer_id%>');
-                                                div.className = 'visible';
+                                            var div = document.getElementById('Anscomment<%=answer_id%>');
+                                            div.className = 'visible';
                                             <% } else { %>
-                                                alert("Please Login First to comment!!!");
+                                            alert("Please Login First to comment!!!");
                                             <% } %>
-                                            }
+                                        }
                                         </script>
                                     </div>
                                     <!-- Comment on Answer -->
@@ -833,4 +812,5 @@
             <script type="text/javascript" src="vendor/bootstrap-select/dist/js/bootstrap-select.js"></script>
         </div> <!-- /.main-page-wrapper -->
 
-    </body></html>
+    </body>
+</html>

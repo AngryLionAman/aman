@@ -27,9 +27,15 @@
                     connection = DriverManager.getConnection(DB_URL_, DB_USERNAME_, DB_PASSWORD_);
                 }
                 try {
-                    String UpdateQuiry = "update newuser set higher_edu = '" + HigherQualification + "',best_achievement = '" + BestAchievement + "' ,bio = '" + bio + "' where email = '" + UserEmail + "'";
+                    String UpdateQuiry = "update newuser set higher_edu = ?,best_achievement = ? ,bio = ? where email = ?";
+                    //String UpdateQuiry = "update newuser set higher_edu = '" + HigherQualification + "',best_achievement = '" + BestAchievement + "' ,bio = '" + bio + "' where email = '" + UserEmail + "'";
                     preparedStatement = connection.prepareStatement(UpdateQuiry);
+                    preparedStatement.setString(1, HigherQualification);
+                    preparedStatement.setString(2, BestAchievement);
+                    preparedStatement.setString(3, bio);
+                    preparedStatement.setString(4, UserEmail);
                     preparedStatement.executeUpdate();
+                    
 
 %>
 <script>window.alert("Profile has been successfull updated");

@@ -71,6 +71,13 @@
                     {
                         //alert("Please Fill All Required Field");
                         return false;
+                    } else {
+                        var a = document.forms["Form"]["search"].value;
+                        var http = new XMLHttpRequest();
+                        http.open("POST", "<%=DB_AJAX_PATH%>/submit_searched_queary.jsp?searched_queary=" + a, true);
+                        http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                        http.send();
+                        return true;
                     }
                 }
             </script>
@@ -128,7 +135,7 @@
                         id_of_user = rs.getInt("id");
                         fullName = rs.getString("firstname");
                         userName = rs.getString("username");
-                         
+
                     }
                     stmt.close();
                     con.close();
@@ -140,7 +147,7 @@
             <a href="Logout.jsp?sl=<%=sl%>" class="helpicon" style="color: white;padding-left: 10px;padding-right: 30px;">Logout</a>
             <a href="profile.jsp?user=<%=userName%>&ID=<%=id_of_user%>&sl=<%=sl%>" class="helpicon" style="color: white;padding-left: 10px;padding-right: 30px;"><b><%=firstName(fullName)%></b></a>
                     <%
-                }%>            
+                        }%>            
 
         </div>
 

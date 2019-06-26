@@ -3,7 +3,7 @@
     <head> 
         <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
         <link rel="icon" href="https://www.inquiryhere.com/images/inquiryhere_Logo.PNG" type="image/png">
-
+       
         <meta charset="UTF-8">
         <%@page language="java" %>
         <%@page import="java.sql.*" %> 
@@ -348,7 +348,7 @@
                                 BestAchievement = resultSet.getString("best_achievement");
                                 ImagePath = resultSet.getString("imagepath");
                                 email_status = resultSet.getInt("email_s");
-                                TotalView = (resultSet.getInt("total_view") + 1) * 99;
+                                TotalView = (resultSet.getInt("total_view") + 1) ;
                             }
                         } catch (Exception e) {
                             out.println("Unable to retrieve!!" + e);

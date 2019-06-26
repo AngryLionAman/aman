@@ -184,6 +184,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
 
       out.write("<html lang=\"en\">\r\n");
       out.write("    <head>\r\n");
+      out.write("       \r\n");
       out.write("        \r\n");
       out.write("         \r\n");
       out.write("        ");
@@ -257,14 +258,6 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("        <!-- For Resposive Device -->\r\n");
       out.write("        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\r\n");
       out.write("        <meta http-equiv=\"content-type\" content=\"text/html\" charset=\"utf-8\">\r\n");
-      out.write("        <script async src=\"//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js\"></script>\r\n");
-      out.write("        <script>\r\n");
-      out.write("            (adsbygoogle = window.adsbygoogle || []).push({\r\n");
-      out.write("                google_ad_client: \"ca-pub-8778688755733551\",\r\n");
-      out.write("                enable_page_level_ads: true\r\n");
-      out.write("            });\r\n");
-      out.write("        </script>\r\n");
-      out.write("\r\n");
       out.write("        <script async src=\"https://www.googletagmanager.com/gtag/js?id=UA-128307055-1\"></script>\r\n");
       out.write("        <script>\r\n");
       out.write("            window.dataLayer = window.dataLayer || [];\r\n");
@@ -355,7 +348,9 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("\r\n");
       out.write("            }\r\n");
       out.write("        </script>\r\n");
-      out.write("\r\n");
+      out.write(" <style>\r\n");
+      out.write("            a { color: black; } /* CSS link color */\r\n");
+      out.write("        </style>\r\n");
       out.write("\r\n");
       out.write("    </head>\r\n");
       out.write("\r\n");
@@ -385,9 +380,6 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                         connection = DriverManager.getConnection(DB_URL_, DB_USERNAME_, DB_PASSWORD_);
                     }
             
-      out.write("\r\n");
-      out.write("\r\n");
-      out.write("            ");
       out.write("\r\n");
       out.write("            <div class=\"clear-fix\"></div>\r\n");
       out.write("            <div class=\"bodydata\">\r\n");
@@ -438,7 +430,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                                     sql = "SELECT t.unique_id AS unique_id,t.topic_name AS topic_name,"
                                                             + "(SELECT COUNT(user_or_followers_id) FROM topic_followers_detail "
                                                             + "WHERE topic_id = t.unique_id) AS count FROM topic t "
-                                                            + "where t.unique_id IS NOT NULL AND t.topic_name IS NOT NULL LIMIT 5";
+                                                            + "where t.unique_id IS NOT NULL AND t.topic_name IS NOT NULL ORDER BY RAND() LIMIT 5";
                                                 }
                                                 preparedStatement = connection.prepareStatement(sql);
                                                 resultSet = preparedStatement.executeQuery();
@@ -474,21 +466,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                                 }
                                             } catch (Exception Exceptionmsg) {
                                                 out.println("Unable to retrieve!!" + Exceptionmsg);
-                                                if (session.getAttribute("email") == null) {
-                                                    email = "Anonuous";
-                                                } else {
-                                                    email = (String) session.getAttribute("email");
-                                                }
-                                                if (session.getAttribute("Session_id_of_user") == null) {
-                                                    CurrentuserId = 0;
-                                                } else {
-                                                    CurrentuserId = (Integer) session.getAttribute("Session_id_of_user");
-                                                }
-                                                String URL = request.getRequestURL() + "?" + request.getQueryString();
-                                            
-      org.apache.jasper.runtime.JspRuntimeLibrary.include(request, response, "ExceptionCollector.jsp" + "?" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("userName", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(email), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("userID", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(CurrentuserId), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("URLParameter", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(URL), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("ExceptionMessage", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(Exceptionmsg), request.getCharacterEncoding()), out, false);
-
-                                                }
+                                                      }
                                             
       out.write("\r\n");
       out.write("                                        <a href=\"FollowMoreTopic.jsp?sl=");
@@ -551,7 +529,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                             PreparedStatement ps2 = null;
                                             while (resultSet.next()) {
                                                 String TrendingQuestion_T = resultSet.getString("question");
-                                                int totalView = resultSet.getInt("q.total_view") + 1;
+                                                int totalView = (resultSet.getInt("q.total_view") + 1);
                                                 int question_id = resultSet.getInt("q.q_id");
                                                 try {
                                                     String countView = "UPDATE question SET total_view = total_view + 1 WHERE q_id =? ";
@@ -571,7 +549,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("                                    <div class=\"themeBox\" style=\"height:auto;\">\r\n");
       out.write("\r\n");
       out.write("                                        <div class=\"boxHeading marginbot10\">\r\n");
-      out.write("                                            <a href=\"Answer.jsp?q=");
+      out.write("                                            <a  href=\"Answer.jsp?q=");
       out.print(TrendingQuestion_T.replaceAll(" ", "-"));
       out.write("&Id=");
       out.print(question_id);
@@ -629,7 +607,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.print(question_id);
       out.write("&sl=");
       out.print(sl);
-      out.write("\" >Answer(");
+      out.write("\" >Ans(");
       out.print(tac);
       out.write(")</a>&nbsp;&nbsp;\r\n");
       out.write("                                            <a href=\"javascript:void(0)\">View(");
@@ -689,20 +667,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                         ps2.close();
                                     } catch (Exception Exceptionmsg) {
                                         out.println("Error " + Exceptionmsg);
-                                        if (session.getAttribute("email") == null) {
-                                            email = "Anonuous";
-                                        } else {
-                                            email = (String) session.getAttribute("email");
-                                        }
-                                        if (session.getAttribute("Session_id_of_user") == null) {
-                                            CurrentuserId = 0;
-                                        } else {
-                                            CurrentuserId = (Integer) session.getAttribute("Session_id_of_user");
-                                        }
-                                        String URL = request.getRequestURL() + "?" + request.getQueryString();
                                     
-      org.apache.jasper.runtime.JspRuntimeLibrary.include(request, response, "ExceptionCollector.jsp" + "?" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("userName", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(email), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("userID", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(CurrentuserId), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("URLParameter", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(URL), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("ExceptionMessage", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(Exceptionmsg), request.getCharacterEncoding()), out, false);
-
                                             }
                                         }
                                     
@@ -736,13 +701,13 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                             preparedStatement = connection.prepareStatement(sql4);
                                             preparedStatement.setInt(1, id_of_user);
                                             resultSet = preparedStatement.executeQuery();
-                                            
+
                                             while (resultSet.next()) {
                                                 question = resultSet.getString("question");
                                                 fname = resultSet.getString("firstname");
                                                 TotalAnswerCount = resultSet.getInt("tac");
-                                                VoteCount = resultSet.getInt("q.vote");
-                                                
+                                                VoteCount = (resultSet.getInt("q.vote") + 1);
+
                                                 int question_id = resultSet.getInt("q.q_id");
                                                 try {
                                                     PreparedStatement ps3 = null;
@@ -803,7 +768,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.print(resultSet.getInt("q.q_id"));
       out.write("&sl=");
       out.print(sl);
-      out.write("\" >Answer(");
+      out.write("\" >Ans(");
       out.print(TotalAnswerCount);
       out.write(")</a>&nbsp;&nbsp;                                         \r\n");
       out.write("                                        <a href=\"javascript:void(0)\">View(");
@@ -863,20 +828,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                         }
                                     } catch (Exception e) {
                                         out.println("<b style=color:red;>No question found related to your selected topic</b>Ex:" + e);
-                                        if (session.getAttribute("email") == null) {
-                                            email = "Anonuous";
-                                        } else {
-                                            email = (String) session.getAttribute("email");
-                                        }
-                                        if (session.getAttribute("Session_id_of_user") == null) {
-                                            CurrentuserId = 0;
-                                        } else {
-                                            CurrentuserId = (Integer) session.getAttribute("Session_id_of_user");
-                                        }
-                                        String URL = request.getRequestURL() + "?" + request.getQueryString();
-                                    
-      org.apache.jasper.runtime.JspRuntimeLibrary.include(request, response, "ExceptionCollector.jsp" + "?" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("userName", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(email), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("userID", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(CurrentuserId), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("URLParameter", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(URL), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("ExceptionMessage", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(e), request.getCharacterEncoding()), out, false);
-
+                                      
                                             }
                                         }
                                     
@@ -916,7 +868,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
 
                                             String query1 = "SELECT SQL_CALC_FOUND_ROWS id,(SELECT firstname FROM newuser "
                                                     + "WHERE id = question.id)AS firstname,q_id,(SELECT COUNT(*) FROM answer WHERE q_id = question.q_id) AS tac,"
-                                                    + "question,vote,total_view FROM question LIMIT " + iPageNo + "," + showRows + "";
+                                                    + "question,vote,total_view FROM question ORDER BY RAND() LIMIT " + iPageNo + "," + showRows + "";
                                             ps1 = connection.prepareStatement(query1);
                                             rs1 = ps1.executeQuery();
 
@@ -949,15 +901,15 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("\">\r\n");
       out.write("                                        ");
 
-                                            
+
                                             while (rs1.next()) {
                                                 Username = rs1.getString("firstname");
                                                 userId = rs1.getInt("id");
                                                 Vote = rs1.getInt("vote");
                                                 TotoalAnswerCount = rs1.getInt("tac");
-                                                int total_count = rs1.getInt("total_view")+1;
+                                                int total_count = (rs1.getInt("total_view") + 1);
                                                 PreparedStatement ps4 = null;
-                                                 try {
+                                                try {
                                                     String countView = "UPDATE question SET total_view = total_view + 1 WHERE q_id =? ";
                                                     ps4 = connection.prepareStatement(countView);
                                                     ps4.setInt(1, rs1.getInt("q_id"));
@@ -966,7 +918,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                                 } catch (Exception msg) {
                                                     out.println("Error in cound the view" + msg);
                                                 }
-                                                 ps4.close();
+                                                ps4.close();
                                         
       out.write("\r\n");
       out.write("                                        <div class=\"themeBox\" style=\"height:auto;\">\r\n");
@@ -1011,7 +963,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.print(rs1.getInt("q_id"));
       out.write("&sl=");
       out.print(sl);
-      out.write("\">Answer(");
+      out.write("\">Ans(");
       out.print(TotoalAnswerCount);
       out.write(")</a>&nbsp;&nbsp;\r\n");
       out.write("                                            <a href=\"javascript:void(0)\">View(");
@@ -1070,21 +1022,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                             }  // ps4.close();
                                         } catch (Exception e) {
                                             out.println(e);
-                                            if (session.getAttribute("email") == null) {
-                                                email = "Anonuous";
-                                            } else {
-                                                email = (String) session.getAttribute("email");
-                                            }
-                                            if (session.getAttribute("Session_id_of_user") == null) {
-                                                CurrentuserId = 0;
-                                            } else {
-                                                CurrentuserId = (Integer) session.getAttribute("Session_id_of_user");
-                                            }
-                                            String URL = request.getRequestURL() + "?" + request.getQueryString();
-                                        
-      org.apache.jasper.runtime.JspRuntimeLibrary.include(request, response, "ExceptionCollector.jsp" + "?" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("userName", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(email), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("userID", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(CurrentuserId), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("URLParameter", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(URL), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("ExceptionMessage", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(e), request.getCharacterEncoding()), out, false);
-
-
+                                          
                                             }
                                         
       out.write("\r\n");
@@ -1442,7 +1380,11 @@ if (sl.equalsIgnoreCase("hi")) {
       out.write("            <!-- Bootstrap Select JS -->\r\n");
       out.write("            <script type=\"text/javascript\" src=\"vendor/bootstrap-select/dist/js/bootstrap-select.js\"></script>\r\n");
       out.write("        </div> <!-- /.main-page-wrapper -->\r\n");
-      out.write("\r\n");
+      out.write("<script type=\"text/javascript\">\r\n");
+      out.write("var infolinks_pid = 3191741;\r\n");
+      out.write("var infolinks_wsid = 0;\r\n");
+      out.write("</script>\r\n");
+      out.write("<script type=\"text/javascript\" src=\"http://resources.infolinks.com/js/infolinks_main.js\"></script>\r\n");
       out.write("    </body>\r\n");
       out.write("</html>");
     } catch (Throwable t) {

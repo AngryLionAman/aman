@@ -8,6 +8,12 @@ public final class signup_jsp extends org.apache.jasper.runtime.HttpJspBase
     implements org.apache.jasper.runtime.JspSourceDependent {
 
 
+String DB_URL_ = "jdbc:mysql://localhost/bharat?useUnicode=true&characterEncoding=utf-8";
+String DB_USERNAME_ = "root";
+String DB_PASSWORD_ = null;
+String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
+
+
             String LOGIN = "";
             String SEARCH = "";
             String HOME = "";
@@ -22,6 +28,11 @@ public final class signup_jsp extends org.apache.jasper.runtime.HttpJspBase
   private static final JspFactory _jspxFactory = JspFactory.getDefaultFactory();
 
   private static java.util.List<String> _jspx_dependants;
+
+  static {
+    _jspx_dependants = new java.util.ArrayList<String>(1);
+    _jspx_dependants.add("/site.jsp");
+  }
 
   private org.glassfish.jsp.api.ResourceInjector _jspx_resourceInjector;
 
@@ -59,6 +70,8 @@ public final class signup_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("        ");
       out.write("\r\n");
       out.write("        ");
+      out.write("\r\n");
+      out.write("        ");
 
             String sl = request.getParameter("sl");
             if (sl == null) {
@@ -68,7 +81,7 @@ public final class signup_jsp extends org.apache.jasper.runtime.HttpJspBase
                 LOGIN = "लॉग इन करें";
                 SEARCH = "खोजे";
                 HOME = "होम";
-                FIRST_NAME = "पहला नाम";
+                FIRST_NAME = "पूरा नाम";
                 LAST_NAME = "उपनाम";
                 EMAIL = "ईमेल";
                 PASSWORD = "नया पासवर्ड";
@@ -79,7 +92,7 @@ public final class signup_jsp extends org.apache.jasper.runtime.HttpJspBase
                 LOGIN = "Login";
                 SEARCH = "Search";
                 HOME = "Home";
-                FIRST_NAME = "First Name";
+                FIRST_NAME = "Full Name";
                 LAST_NAME = "Last Name";
                 EMAIL = "Email";
                 PASSWORD = "New Password";
@@ -141,7 +154,24 @@ public final class signup_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("                    } else {\r\n");
       out.write("                        return true;\r\n");
       out.write("                    }\r\n");
-      out.write("                    if ((charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123))\r\n");
+      out.write("                    if ((charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123) || (charCode === 32))\r\n");
+      out.write("                        return true;\r\n");
+      out.write("                    else\r\n");
+      out.write("                        return false;\r\n");
+      out.write("                } catch (err) {\r\n");
+      out.write("                    alert(err.Description);\r\n");
+      out.write("                }\r\n");
+      out.write("            }\r\n");
+      out.write("            function userNameValidation(e, t) {\r\n");
+      out.write("                try {\r\n");
+      out.write("                    if (window.event) {\r\n");
+      out.write("                        var charCode = window.event.keyCode;\r\n");
+      out.write("                    } else if (e) {\r\n");
+      out.write("                        var charCode = e.which;\r\n");
+      out.write("                    } else {\r\n");
+      out.write("                        return true;\r\n");
+      out.write("                    }\r\n");
+      out.write("                    if ((charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123) || (charCode > 47 && charCode < 58))\r\n");
       out.write("                        return true;\r\n");
       out.write("                    else\r\n");
       out.write("                        return false;\r\n");
@@ -150,6 +180,21 @@ public final class signup_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("                }\r\n");
       out.write("            }\r\n");
       out.write("\r\n");
+      out.write("        </script>\r\n");
+      out.write("            <script type=\"text/javascript\">\r\n");
+      out.write("            function take_value(email) {\r\n");
+      out.write("                //alert(email.value);\r\n");
+      out.write("                var http = new XMLHttpRequest();\r\n");
+      out.write("                http.open(\"post\", \"");
+      out.print(DB_AJAX_PATH);
+      out.write("/validateUserName.jsp?userName=\" + email.value, true);\r\n");
+      out.write("                http.setRequestHeader(\"Content-type\", \"application/x-www-form-urlencoded\");\r\n");
+      out.write("                http.send();\r\n");
+      out.write("                http.onload = function () {\r\n");
+      out.write("                    http.responseText;\r\n");
+      out.write("                    document.getElementById(\"demo\").innerHTML = http.responseText;\r\n");
+      out.write("                };\r\n");
+      out.write("            }\r\n");
       out.write("        </script>\r\n");
       out.write("    </head>\r\n");
       out.write("    <body>\r\n");
@@ -227,18 +272,18 @@ public final class signup_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("                                                                    <input type=\"hidden\" name=\"sl\" value=\"");
       out.print(sl);
       out.write("\">\r\n");
+      out.write("\r\n");
       out.write("                                                                    <label for=\"fname\">");
       out.print(FIRST_NAME);
       out.write("</label>\r\n");
       out.write("                                                                    <div class=\"boxHeading\">\r\n");
       out.write("                                                                        <input type=\"text\" id=\"fname\" name=\"firstname\" onkeypress=\"return onlyAlphabets(event, this);\" required=\"\">\r\n");
-      out.write("                                                                    </div>\r\n");
-      out.write("                                                                    <label for=\"lname\">");
-      out.print(LAST_NAME);
-      out.write("</label>\r\n");
+      out.write("                                                                        \r\n");
+      out.write("                                                                    <!--/div><p id=\"demo\"></p>\r\n");
+      out.write("                                                                    <label for=\"userName\">UserName</label>\r\n");
       out.write("                                                                    <div class=\"boxHeading\">\r\n");
-      out.write("                                                                        <input type=\"text\" id=\"lname\" name=\"lastname\" onkeypress=\"return onlyAlphabets(event, this);\" required=\"\">\r\n");
-      out.write("                                                                    </div>\r\n");
+      out.write("                                                                        <input type=\"text\" id=\"fname\" name=\"userName\" onkeypress=\"return userNameValidation(event, this);\" onkeyup=\"return take_value(this);\" required=\"\">\r\n");
+      out.write("                                                                    </div-->\r\n");
       out.write("                                                                    <label for=\"fname\">");
       out.print(EMAIL);
       out.write("</label>\r\n");
@@ -256,7 +301,7 @@ public final class signup_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.print(CREATE_ACCOUNT);
       out.write("</button>\r\n");
       out.write("                                                                </form>\r\n");
-      out.write("                                                                    <form action=\"ForgotPassword.jsp?sl=");
+      out.write("                                                                <form action=\"ForgotPassword.jsp?sl=");
       out.print(sl);
       out.write("\" method=\"post\" name=\"forgetPassword\">\r\n");
       out.write("                                                                    <button class=\"button button1\" style=\"background-color: red;\">");

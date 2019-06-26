@@ -198,11 +198,11 @@
                                                                     <div class="boxHeading">
                                                                         <input type="text" id="fname" name="firstname" onkeypress="return onlyAlphabets(event, this);" required="">
                                                                         
-                                                                    </div><p id="demo"></p>
+                                                                    <!--/div><p id="demo"></p>
                                                                     <label for="userName">UserName</label>
                                                                     <div class="boxHeading">
                                                                         <input type="text" id="fname" name="userName" onkeypress="return userNameValidation(event, this);" onkeyup="return take_value(this);" required="">
-                                                                    </div>
+                                                                    </div-->
                                                                     <label for="fname"><%=EMAIL%></label>
                                                                     <div class="boxHeading">
                                                                         <input type="email"  name="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required="">

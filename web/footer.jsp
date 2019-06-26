@@ -14,19 +14,19 @@
                         © 2019 
                     </div>
                     <div class="float-right reserved">
-                        <a href="AboutUs.jsp?sl=<%=sl%>">About Us</a>   &nbsp;&nbsp; 
+                        <a href="AboutUs.jsp?sl=<%=sl%>" style="color: white;">About Us</a>   &nbsp;&nbsp; 
                     </div>
                     <div class="float-right reserved">
-                        <a href="ContactUs.jsp?sl=<%=sl%>">Contact Us</a> &nbsp;&nbsp;
+                        <a href="ContactUs.jsp?sl=<%=sl%>" style="color: white;">Contact Us</a> &nbsp;&nbsp;
                     </div>
                     <div class="float-right reserved">
-                        <a href="privacy.jsp?sl=<%=sl%>">Privacy Policy</a> &nbsp;&nbsp;
+                        <a href="privacy.jsp?sl=<%=sl%>" style="color: white;">Privacy Policy</a> &nbsp;&nbsp;
                     </div>
                     <div class="float-right reserved">
-                        <a href="terms.jsp?sl=<%=sl%>">Terms</a> &nbsp;&nbsp;
+                        <a href="terms.jsp?sl=<%=sl%>" style="color: white;">Terms</a> &nbsp;&nbsp;
                     </div>
                     <div class="float-right reserved">
-                        <a href="index.jsp?sl=<%=sl%>">Home</a> &nbsp;&nbsp;
+                        <a href="index.jsp?sl=<%=sl%>" style="color: white;">Home</a> &nbsp;&nbsp;
                     </div>
                 </div>
             </div>

@@ -1,4 +1,5 @@
 
+<%@page import="java.util.Random"%>
 <%@page import="java.util.regex.Matcher"%>
 <%@page import="java.util.regex.Pattern"%>
 <%@page import="java.util.Calendar"%>
@@ -7,18 +8,48 @@
 <%@page language="java"%>
 <%@page import="java.sql.*"%>
 <%@include file="site.jsp" %>
+<%!    public String CreateUsername(String username) {
+        String finalUsername = "";
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection connection = DriverManager.getConnection(DB_URL_, DB_USERNAME_, DB_PASSWORD_);
+            String sql = "select username from newuser where username = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, username);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            boolean usernameFound = false;
+            while (resultSet.next()) {
+                usernameFound = true;
+            }
+            connection.close();
+            preparedStatement.close();
+            resultSet.close();
+            if (usernameFound) {
+                Random rand = new Random();
+                int number = rand.nextInt(100);
+                finalUsername = username + number;
+                CreateUsername(finalUsername);
+            } else {
+                finalUsername = username;
+            }
+        } catch (Exception msg) {
+            finalUsername = msg.toString();
+        }
+        return finalUsername;
+    }
+%>
 <%
     String sl = request.getParameter("sl");
     if (sl == null) {
         sl = "eng";
     }
-    String firstname,password, email,userName;
+    String firstname,password, email;
     firstname = request.getParameter("firstname");
     email = request.getParameter("email");
     password = request.getParameter("password");
-    userName = request.getParameter("userName");
+    //userName = request.getParameter("userName");
 
-    if (firstname == null || email == null || password == null || userName == null) {
+    if (firstname == null || email == null || password == null) {
         out.println("you can't access this page direcitly");
     } else {
         //Form validation
@@ -27,12 +58,12 @@
         //boolean validLastName = false;
         boolean validPassword = false;
         boolean emailValid = false;
-        boolean userNameValid = false;
+        //boolean userNameValid = false;
         //UserName validation
-        int userNameLength = userName.length();
-        if(userNameLength > 5){
-            userNameValid = true;
-        }
+//        int userNameLength = userName.length();
+//        if(userNameLength > 5){
+//            userNameValid = true;
+//        }
         
         //Regular expression for validating email from server side
         String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
@@ -82,7 +113,7 @@
         /**
          * *****************
          */
-        if (validFirstName &&  validPassword && emailValid && userNameValid ) {
+        if (validFirstName &&  validPassword && emailValid ) {
             String Email = request.getParameter("email");
             Connection connection = null;
             ResultSet resultSet = null;
@@ -111,7 +142,7 @@
                     response.sendRedirect("signup.jsp?sl=" + sl + "&Error=This email is already registered with this site, please choose another one");
                 } else {
                     try {
-
+                        String userName = CreateUsername(firstname.trim().replaceAll(" ", ""));
                         //Statement statement = connection.createStatement();
                         String insert_user = "insert into newuser(firstname,username,email,email_s,password,imagepath) values(?,?,?,?,?,?)";
                         
@@ -175,8 +206,8 @@
             }
         } else {
             out.println("Its seem like you are doing effort to break the site rule"
-                    + "<br>Plese follow the procedure ,don't try to be over smart other wise your activity "
-                    + "will be recorede for the monitoring purpose");
+                    + "<br>Plese follow the procedure ,don't try to break the rule other wise your activity "
+                    + "will be recorded for the monitoring purpose");
         }
     }
 %>
