@@ -79,17 +79,36 @@
             if (i == 1) {
                 session.setAttribute("email", email);
                 session.setAttribute("Session_id_of_user", Session_id_of_user);
+                session.setMaxInactiveInterval(60);
+                try {
+                    Cookie usernameCookie = new Cookie("username-cookie", email);
+                    Cookie passwordCookie = new Cookie("password-cookie", password);
+                    usernameCookie.setMaxAge(24 * 60 * 60 * 100);
+                    passwordCookie.setMaxAge(24 * 60 * 60 * 100);
+                    response.addCookie(usernameCookie);
+                    response.addCookie(passwordCookie);
+                } catch (Exception msg) {
+                    out.println("Please Store password without any space" + msg);
+                }
+
                 if (request.getParameter("URL") != null) {
                     String URL = request.getParameter("URL");
-                    String ans = request.getParameter("ans");
-                    response.sendRedirect(URL + "&sl=" + sl + "&ans=" + ans);
+                   String Id = request.getParameter("Id");
+                    String ans = "";
+                    if (request.getParameter("ans") != null && !request.getParameter("ans").equalsIgnoreCase("null")) {
+                        ans = request.getParameter("ans");
+                        response.sendRedirect(URL + "&Id=" + Id + "&sl=" + sl + "&ans=" + ans);
+                    }
+                   else if(request.getParameter("ID") != null){
+                      response.sendRedirect(URL + "&ID=" + request.getParameter("ID"));  
+                    }
+                    response.sendRedirect(URL);
                 } else {
-                    response.sendRedirect("index.jsp?sl=" + sl);
+                     response.sendRedirect("index.jsp?sl=" + sl);
                 }
             } else {
                 response.sendRedirect("Login.jsp?sl=" + sl + "&msg=valid");
             }
-            //response.sendRedirect("unvalid.html"); 
         } catch (Exception e) {
             out.println(e.getMessage());
         }

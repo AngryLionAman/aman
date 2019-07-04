@@ -43,7 +43,7 @@
     if (sl == null) {
         sl = "eng";
     }
-    String firstname,password, email;
+    String firstname, password, email;
     firstname = request.getParameter("firstname");
     email = request.getParameter("email");
     password = request.getParameter("password");
@@ -58,13 +58,19 @@
         //boolean validLastName = false;
         boolean validPassword = false;
         boolean emailValid = false;
+        boolean MobileValid = false;
         //boolean userNameValid = false;
         //UserName validation
 //        int userNameLength = userName.length();
 //        if(userNameLength > 5){
 //            userNameValid = true;
 //        }
-        
+
+    String pattern = "\\d{10}|(?:\\d{3}-){2}\\d{4}|\\(\\d{3}\\)\\d{3}-?\\d{4}";
+    if(email.matches(pattern)){
+      MobileValid = true;  
+    }
+
         //Regular expression for validating email from server side
         String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
         if (email.matches(ePattern)) {
@@ -90,7 +96,7 @@
          * *****************
          */
         /*LastName validation*/
- //       length = lastname.length();
+        //       length = lastname.length(); 
 //        if (length < 25) {
 //            Pattern p = Pattern.compile("[^A-Za-z0-9]");
 //            Matcher m = p.matcher(lastname);
@@ -100,7 +106,6 @@
 //                validLastName = true;
 //            }
 //        }
-
         /**
          * *****************
          */
@@ -113,7 +118,7 @@
         /**
          * *****************
          */
-        if (validFirstName &&  validPassword && emailValid ) {
+        if (validFirstName && validPassword && (emailValid || MobileValid)) {
             String Email = request.getParameter("email");
             Connection connection = null;
             ResultSet resultSet = null;
@@ -139,26 +144,35 @@
                     }
                 }
                 if (i == 1) {
-                    response.sendRedirect("signup.jsp?sl=" + sl + "&Error=This email is already registered with this site, please choose another one");
+                    response.sendRedirect("signup.jsp?sl=" + sl + "&Error=This email/Phone is already registered with this site, please choose another one");
                 } else {
                     try {
                         String userName = CreateUsername(firstname.trim().replaceAll(" ", ""));
                         //Statement statement = connection.createStatement();
                         String insert_user = "insert into newuser(firstname,username,email,email_s,password,imagepath) values(?,?,?,?,?,?)";
-                        
+
                         //'" + firstname + "','" + lastname + "','" + email + "','0','" + password + "','inquiryhere_Logo.PNG'
                         //Email_s represent the security of gmail
                         // i can make this value as default but when i thought about this, i did't know about how to set default value in database
                         // and when i got to know that time i feel lazy thats why i leave it as it was
-                        
-                         preparedStatement = connection.prepareStatement(insert_user);
-                         preparedStatement.setString(1, firstname);
-                         preparedStatement.setString(2, userName);
-                         preparedStatement.setString(3, email);
-                         preparedStatement.setInt(4, 0);
-                         preparedStatement.setString(5, password);
-                         preparedStatement.setString(6, "inquiryhere_Logo.PNG");
-                         preparedStatement.execute();
+                        preparedStatement = connection.prepareStatement(insert_user);
+                        preparedStatement.setString(1, firstname);
+                        preparedStatement.setString(2, userName);
+                        preparedStatement.setString(3, email);
+                        preparedStatement.setInt(4, 1);
+                        preparedStatement.setString(5, password);
+                        preparedStatement.setString(6, "inquiryhere_Logo.PNG");
+                        preparedStatement.execute();
+                        try {
+                            Cookie usernameCookie = new Cookie("username-cookie", email);
+                            Cookie passwordCookie = new Cookie("password-cookie", password);
+                            usernameCookie.setMaxAge(24 * 60 * 60 * 100);
+                            passwordCookie.setMaxAge(24 * 60 * 60 * 100);
+                            response.addCookie(usernameCookie);
+                            response.addCookie(passwordCookie);
+                        } catch (Exception msg) {
+                            out.println("Please use password without space");
+                        }
                         
 //                        statement.execute(p);
 //                        if (statement != null) {

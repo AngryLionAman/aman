@@ -25,7 +25,7 @@
                 HOME = "होम";
                 FIRST_NAME = "पूरा नाम";
                 LAST_NAME = "उपनाम";
-                EMAIL = "ईमेल";
+                EMAIL = "ईमेल/Phone";
                 PASSWORD = "नया पासवर्ड";
                 CREATE_ACCOUNT = "खाता बनाएं";
                 FORGET_PASSWORD = "पासवर्ड भूल गए";
@@ -36,7 +36,7 @@
                 HOME = "Home";
                 FIRST_NAME = "Full Name";
                 LAST_NAME = "Last Name";
-                EMAIL = "Email";
+                EMAIL = "Email/Phone";
                 PASSWORD = "New Password";
                 CREATE_ACCOUNT = "Create Account";
                 FORGET_PASSWORD = "Forgot Password";
@@ -205,7 +205,7 @@
                                                                     </div-->
                                                                     <label for="fname"><%=EMAIL%></label>
                                                                     <div class="boxHeading">
-                                                                        <input type="email"  name="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required="">
+                                                                        <input type="text"  name="email" required="">
                                                                     </div>
                                                                     <label for="lname"><%=PASSWORD%></label>
                                                                     <div class="boxHeading">

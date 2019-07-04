@@ -64,6 +64,7 @@
             ResultSet resultSet5 = null;
             ResultSet resultSet6 = null;
             ResultSet resultSet7 = null;
+            ResultSet resultSet8 = null;
             PreparedStatement preparedStatement = null;
             PreparedStatement preparedStatement1 = null;
             PreparedStatement preparedStatement2 = null;
@@ -72,6 +73,7 @@
             PreparedStatement preparedStatement5 = null;
             PreparedStatement preparedStatement6 = null;
             PreparedStatement preparedStatement7 = null;
+            PreparedStatement preparedStatement8 = null;
             try {
                 if (connection == null || connection.isClosed()) {
                     try {
@@ -101,6 +103,7 @@
             String sql_most_viewed_question = "select q_id,question,total_view from question order by total_view desc limit 1";
             String sql_most_viewed_Profile = "select firstname,total_view from newuser order by total_view desc limit 1";
             String sql_recent_searched_queary = "select * from searched_queary order by primary_key desc limit 20";
+            String unanswred_question = "select q_id,question,(select count(a_id) from answer where q_id = question.q_id)t_ans from question where (select count(a_id) from answer where q_id = question.q_id) = 0";
             try {
                 preparedStatement = connection.prepareStatement(sql_quesion);
                 preparedStatement1 = connection.prepareStatement(sql_answer);
@@ -110,6 +113,7 @@
                 preparedStatement5 = connection.prepareStatement(sql_most_viewed_question);
                 preparedStatement6 = connection.prepareStatement(sql_most_viewed_Profile);
                 preparedStatement7 = connection.prepareStatement(sql_recent_searched_queary);
+                preparedStatement8 = connection.prepareStatement(unanswred_question);
                 resultSet = preparedStatement.executeQuery();
                 resultSet1 = preparedStatement1.executeQuery();
                 resultSet2 = preparedStatement2.executeQuery();
@@ -118,6 +122,7 @@
                 resultSet5 = preparedStatement5.executeQuery();
                 resultSet6 = preparedStatement6.executeQuery();
                 resultSet7 = preparedStatement7.executeQuery();
+                resultSet8 = preparedStatement8.executeQuery();
                 while (resultSet.next()) {
                     TotalQuestion = resultSet.getInt("totalquestion");
                 }
@@ -196,6 +201,17 @@
                 
             </div>
         </div>
+                <div>
+                    <% int i = 0;
+                    while (resultSet8.next()) {
+                    
+                        int unswred_question_id = resultSet8.getInt("q_id");
+                        int total_answer = resultSet8.getInt("t_ans");
+                        String unswred_question = resultSet8.getString("question");
+                        out.println("("+ ++i +") "+unswred_question_id+" ->"+unswred_question+" ->"+total_answer+"<br>");
+                }
+                    %>
+                </div>
         <%
             } catch (Exception e) {
                 out.println("Error in main try block:-" + e);

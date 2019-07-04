@@ -27,7 +27,7 @@
                         + "question_id,"
                         + "(SELECT question FROM question WHERE q_id = notification.question_id)AS QUESTION,ans_id,"
                         + "(SELECT answer FROM answer WHERE a_id = notification.ans_id)AS answer,blog_id,time FROM notification "
-                        + "WHERE user_id = ? OR user_id IS NULL ORDER BY unique_id DESC";
+                        + "WHERE user_id = ? OR user_id IS NULL ORDER BY unique_id DESC LIMIT 10";
                 preparedStatement = connection.prepareStatement(sql);
                 preparedStatement.setInt(1, CurrentUserId);
                 resultSet = preparedStatement.executeQuery();

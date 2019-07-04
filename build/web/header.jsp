@@ -95,9 +95,9 @@
 
         <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12 float-right textalign-right">
             <%  if (sl.equalsIgnoreCase("hi")) {    %>
-            <a href="index.jsp?sl=en" class="helpicon"  style="color: white;padding-left: 10px;padding-right: 40px;">English</a>
+            <a href="?sl=en" class="helpicon"  style="color: white;padding-left: 10px;padding-right: 40px;">English</a>
             <% } else { %>
-            <a href="index.jsp?sl=hi" class="helpicon"  style="color: white;padding-left: 10px;padding-right: 30px;">हिन्दी</a>
+            <a href="?sl=hi" class="helpicon"  style="color: white;padding-left: 10px;padding-right: 30px;">हिन्दी</a>
             <% } %>
             <% if (session.getAttribute("email") != null) {%> 
             <a href="#" data-toggle="modal" class="helpicon" data-target="#myModalN" style="color: white;padding-left: 10px;padding-right: 10px;">
@@ -109,8 +109,10 @@
             <a href="help.jsp?sl=<%=sl%>" class="helpicon"  style="color: white;padding-left: 10px;padding-right: 10px;">Help</a>
             <a href="index.jsp?sl=<%=sl%>" class="helpicon" style="color: white;padding-left: 10px;padding-right: 30px;"><%=HOME%></a>
 
-            <%if (session.getAttribute("email") == null) {%>
-            <a href="Login.jsp?sl=<%=sl%>" class="helpicon" style="color: white;padding-left: 10px;padding-right: 30px;"><%=LOGIN%></a>
+            <%if (session.getAttribute("email") == null) {
+            String URL = request.getRequestURL() + "?" + request.getQueryString();
+            %>
+            <a href="Login.jsp?sl=<%=sl%>&URL=<%=URL%>" class="helpicon" style="color: white;padding-left: 10px;padding-right: 30px;"><%=LOGIN%></a>
             <a href="signup.jsp?sl=<%=sl%>" class="helpicon"  style="color: white;padding-left: 10px;padding-right: 30px;">SIgnUp</a>
             <% } else {
                 // String DB_URL = "jdbc:mysql://localhost/bharat";

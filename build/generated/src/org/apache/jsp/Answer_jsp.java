@@ -117,6 +117,46 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
         return cat;
     }
 
+            public boolean validateUser(String username, String password) {
+                boolean found = false;
+                try {
+                    String cookiesMail = username;
+                    String cookiesPassword = password;
+
+                    Connection connection = null;
+                    ResultSet resultSet = null;
+                    PreparedStatement preparedStatement = null;
+
+                    Class.forName("com.mysql.jdbc.Driver");
+
+                    connection = DriverManager.getConnection(DB_URL_, DB_USERNAME_, DB_PASSWORD_);
+
+                    String password1;
+                    //int Session_id_of_user = 0;
+                    // boolean found = false;
+                    try {
+
+                        String v = "SELECT ID,email,password FROM newuser WHERE email = ?";
+
+                        preparedStatement = connection.prepareStatement(v);
+                        preparedStatement.setString(1, cookiesMail);
+                        resultSet = preparedStatement.executeQuery();
+                        while (resultSet.next()) {
+                            password1 = resultSet.getString("password");
+                            //Session_id_of_user = resultSet.getInt("ID");
+                            if (cookiesPassword.equals(password1)) {
+                                found = true;
+                            }
+                        }
+                    } catch (Exception e) {
+                        //  out.println("Error in main try block:-" + e);
+                    }
+                } catch (Exception msg) {
+
+                }
+                return found;
+            }
+        
             String FOLLOWED_TOPIC = "";
             String QUESTION = "";
             String POSTED_BY = "";
@@ -186,6 +226,45 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("        \r\n");
       out.write("        <meta charset=\"UTF-8\">\r\n");
       out.write("        <meta http-equiv=\"content-type\" content=\"text/html\" charset=\"utf-8\">\r\n");
+      out.write("      \r\n");
+      out.write("        ");
+      out.write("\r\n");
+      out.write("\r\n");
+      out.write("        ");
+              if (session.getAttribute("email") == null) {
+                Cookie[] cookies = request.getCookies();
+                String username = "";
+                String password = "";
+                if (cookies != null) {
+                    for (int i = 0; i < cookies.length; i++) {
+                        Cookie cookie = cookies[i];
+                        if (cookie.getName().equals("username-cookie")) {
+                            username = cookie.getValue();
+                        } else if (cookie.getName().equals("password-cookie")) {
+                            password = cookie.getValue();
+                        }
+                    }
+                }
+                if (username != "" && password != "") {
+                    boolean found = validateUser(username, password);
+                    //out.println(found);
+                    if (found) {
+                        String URL = request.getRequestURL() + "?" + request.getQueryString();
+        
+      out.write("\r\n");
+      out.write("        ");
+      if (true) {
+        _jspx_page_context.forward("validate.jsp" + "?" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("email", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(username), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("password", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(password), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("URL", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(URL), request.getCharacterEncoding()));
+        return;
+      }
+      out.write(">\r\n");
+      out.write("        ");
+
+                    }
+                }
+            }
+        
+      out.write("\r\n");
       out.write("        <style type=\"text/css\">\r\n");
       out.write("            div.hidden{\r\n");
       out.write("                display: none;\r\n");
@@ -270,7 +349,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                 Question = Integer.valueOf(request.getParameter("Id"));
                 //out.println(Question);
             } else {
-                response.sendRedirect("index.jsp");
+                response.sendRedirect("index.jsp?ref=idnotfound");
             }
 
 
@@ -292,13 +371,6 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
         
       out.write("\r\n");
       out.write("        <script src=\"ckeditor/ckeditor.js\"></script>\r\n");
-      out.write("        <script async src=\"//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js\"></script>\r\n");
-      out.write("        <script>\r\n");
-      out.write("                (adsbygoogle = window.adsbygoogle || []).push({\r\n");
-      out.write("                    google_ad_client: \"ca-pub-8778688755733551\",\r\n");
-      out.write("                    enable_page_level_ads: true\r\n");
-      out.write("                });\r\n");
-      out.write("        </script>\r\n");
       out.write("        <script async src=\"https://www.googletagmanager.com/gtag/js?id=UA-128307055-1\"></script>\r\n");
       out.write("        <script>\r\n");
       out.write("                window.dataLayer = window.dataLayer || [];\r\n");
@@ -408,20 +480,6 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
 
             } catch (Exception e) {
                 out.println("Unable to retrieve!!" + e);
-                if (session.getAttribute("email") == null) {
-                    email = "Anonuous";
-                } else {
-                    email = (String) session.getAttribute("email");
-                }
-                if (session.getAttribute("Session_id_of_user") == null) {
-                    CurrentuserId = 0;
-                } else {
-                    CurrentuserId = (Integer) session.getAttribute("Session_id_of_user");
-                }
-                String URL = request.getRequestURL() + "?" + request.getQueryString();
-        
-      org.apache.jasper.runtime.JspRuntimeLibrary.include(request, response, "ExceptionCollector.jsp" + "?" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("userName", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(email), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("userID", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(CurrentuserId), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("URLParameter", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(URL), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("ExceptionMessage", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(e), request.getCharacterEncoding()), out, false);
-
             }
         
       out.write("\r\n");
@@ -564,6 +622,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write('>');
       out.print(CLICK_HERE_TO_MORE_TOPIC);
       out.write("</a>\r\n");
+      out.write("                                        <a href=\"http://deloplen.com/afu.php?zoneid=2701297\">For advatise</a>\r\n");
       out.write("                                    </ul>\r\n");
       out.write("                                </div>\r\n");
       out.write("                            </div> \r\n");
@@ -578,64 +637,39 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("                        <div class=\"col-lg-6 col-md-6 col-sm-12 col-xs-12\">\r\n");
       out.write("\r\n");
       out.write("                            <div class=\"row\">\r\n");
+      out.write("                                ");
+
+                                    String fullName_of_user_who_asked_the_question = null;
+                                    int TotalView = 0;
+                                    String date = " ";
+                                    String higher_edu = " ";
+                                    try {
+                                        String sql_p = "SELECT user.id,user.higher_edu,user.firstname,q.q_id,q.id,q.total_view,date(q.posted_time) as date FROM newuser user RIGHT JOIN question q on user.id=q.id where q_id= (?)";
+                                        preparedStatement = connection.prepareStatement(sql_p);
+                                        preparedStatement.setInt(1, Question);
+                                        resultSet = preparedStatement.executeQuery();
+                                        while (resultSet.next()) {
+                                            int user_Id = resultSet.getInt("user.id");
+                                            date = resultSet.getString("date");
+                                            higher_edu = resultSet.getString("user.higher_edu");
+                                            TotalView = resultSet.getInt("q.total_view");
+                                            if (!userId.contains(user_Id)) {
+                                                userId.add(user_Id);
+                                            }
+                                            q_id = resultSet.getInt("q_id");
+                                            q_asked_by_user = resultSet.getInt("id");
+                                            fullName_of_user_who_asked_the_question = convertStringUpperToLower(resultSet.getString("firstname"));
+                                        }
+                                    } catch (Exception e) {
+                                        out.println("Unable to retrieve!!" + e);
+                                    }
+                                
       out.write("\r\n");
       out.write("                                <div class=\"col-lg-12 col-md-12 col-sm-12 col-xs-12\">\r\n");
       out.write("\r\n");
       out.write("                                    <div class=\"themeBox\" style=\"height:auto;\">\r\n");
-      out.write("\r\n");
-      out.write("                                        <div class=\"boxHeading marginbot10\">\r\n");
-      out.write("\r\n");
-      out.write("                                             <h1 style=\"font-size: 20px; \">");
-      out.print(QUESTION);
-      out.write(' ');
-      out.write(':');
-      out.print(StoredQuestion);
-      out.write(" ?</h1> \r\n");
-      out.write("                                        </div>\r\n");
-      out.write("\r\n");
-      out.write("                                        ");
-
-                                            String fullName_of_user_who_asked_the_question = null;
-                                            int TotalView = 0;
-                                            try {
-                                                String sql_p = "SELECT user.id,user.firstname,q.q_id,q.id,q.total_view FROM newuser user RIGHT JOIN question q on user.id=q.id where q_id= (?)";
-                                                preparedStatement = connection.prepareStatement(sql_p);
-                                                preparedStatement.setInt(1, Question);
-                                                resultSet = preparedStatement.executeQuery();
-                                                while (resultSet.next()) {
-                                                    int user_Id = resultSet.getInt("user.id");
-                                                    TotalView = resultSet.getInt("q.total_view");
-                                                    if (!userId.contains(user_Id)) {
-                                                        userId.add(user_Id);
-                                                    }
-                                                    q_id = resultSet.getInt("q_id");
-                                                    q_asked_by_user = resultSet.getInt("id");
-                                                    fullName_of_user_who_asked_the_question = convertStringUpperToLower(resultSet.getString("firstname"));
-                                                }
-                                            } catch (Exception e) {
-                                                out.println("Unable to retrieve!!" + e);
-                                                if (session.getAttribute("email") == null) {
-                                                    email = "Anonuous";
-                                                } else {
-                                                    email = (String) session.getAttribute("email");
-                                                }
-                                                if (session.getAttribute("Session_id_of_user") == null) {
-                                                    CurrentuserId = 0;
-                                                } else {
-                                                    CurrentuserId = (Integer) session.getAttribute("Session_id_of_user");
-                                                }
-                                                String URL = request.getRequestURL() + "?" + request.getQueryString();
-                                        
-      org.apache.jasper.runtime.JspRuntimeLibrary.include(request, response, "ExceptionCollector.jsp" + "?" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("userName", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(email), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("userID", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(CurrentuserId), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("URLParameter", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(URL), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("ExceptionMessage", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(e), request.getCharacterEncoding()), out, false);
-
-                                            }
-                                        
-      out.write("\r\n");
-      out.write("                                        <div class=\"questionArea\">\r\n");
-      out.write("\r\n");
-      out.write("                                            <div class=\"postedBy\">");
-      out.print(POSTED_BY);
-      out.write(" :<a href=\"profile.jsp?user=");
+      out.write("                                        <div align=\"left\" style=\"font-size: 20px;font-family: serif;\">\r\n");
+      out.write("                                            <a href=\"profile.jsp?user=");
       out.print(fullName_of_user_who_asked_the_question.replaceAll(" ", "+"));
       out.write("&ID=");
       out.print(q_asked_by_user);
@@ -644,9 +678,34 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write('"');
       out.write('>');
       out.print(firstName(fullName_of_user_who_asked_the_question));
-      out.write("</a> </div>\r\n");
+      out.write("</a>\r\n");
+      out.write("                                            ");
+
+                                                if (higher_edu != null && !higher_edu.isEmpty()) {
+                                                    out.println("(" + higher_edu + ")");
+                                                }
+                                            
+      out.write(",\r\n");
+      out.write("                                            ");
+      out.print(date);
       out.write("\r\n");
       out.write("                                        </div>\r\n");
+      out.write("                                        <div class=\"boxHeading marginbot10\" style=\"border-radius: 5px;padding-top: 10px;padding-bottom: 10px;padding-left: 10px; background: #7aab87;\">\r\n");
+      out.write("\r\n");
+      out.write("                                            <h1 style=\"font-size: 20px; \">");
+      out.print(QUESTION);
+      out.write(' ');
+      out.write(':');
+      out.print(StoredQuestion);
+      out.write(" ?</h1> \r\n");
+      out.write("                                        </div>\r\n");
+      out.write("\r\n");
+      out.write("\r\n");
+      out.write("                                        <!--div class=\"questionArea\">\r\n");
+      out.write("\r\n");
+      out.write("                                            <div class=\"postedBy\"><!%=POSTED_BY%> :<a href=\"profile.jsp?user=<!%=fullName_of_user_who_asked_the_question.replaceAll(\" \", \"+\")%>&ID=<!%=q_asked_by_user%>&sl=<!%=sl%>\"><!%=firstName(fullName_of_user_who_asked_the_question)%></a> </div>\r\n");
+      out.write("\r\n");
+      out.write("                                        </div-->\r\n");
       out.write("                                        <a href=\"javascript:void(0)\" onclick=\"this.style.color = 'red';return take_value(this, '");
       out.print(q_id);
       out.write("', 'upvote', 'question');\" >Upvote</a> &nbsp;&nbsp; \r\n");
@@ -654,9 +713,10 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.print(q_id);
       out.write("', 'downvote', 'question');\" >Downvote</a> &nbsp;&nbsp;\r\n");
       out.write("                                        <a href=\"javascript:void(0)\" value=\"Comment\" onclick=\"showCommentBox()\">Comment</a>&nbsp;&nbsp;\r\n");
-      out.write("                                        <a href=\"javascript:void(0)\">View(");
+      out.write("                                        <!--                                        <a href=\"javascript:void(0)\"></a>-->\r\n");
+      out.write("                                        View(");
       out.print(TotalView);
-      out.write(")</a>\r\n");
+      out.write(")\r\n");
       out.write("                                        <form action=\"SubmitQuestionComment.jsp\" method=\"get\">\r\n");
       out.write("                                            <div class=\"hidden\" id=\"comment\">\r\n");
       out.write("                                                <input type=\"hidden\" name=\"question_id\" value=\"");
@@ -779,7 +839,9 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                                         if (who_gave_answer == Session_id_of_user) {
       out.write("\r\n");
       out.write("\r\n");
-      out.write("                                                <a href=\"edit_a.jsp?q_id=");
+      out.write("                                                        <a href=\"edit_a.jsp?question=");
+      out.print(StoredQuestion);
+      out.write("&q_id=");
       out.print(Question);
       out.write("&ans_id=");
       out.print(answer_id);
@@ -788,7 +850,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("\">Edit</a>\r\n");
       out.write("                                                ");
  }
-                                                }
+                                                    }
       out.write(" </div>\r\n");
       out.write("                                        </div>\r\n");
       out.write("                                        <a href=\"javascript:void(0)\" onclick=\"this.style.color = 'red'; return take_value(this, '");
@@ -822,24 +884,24 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("                                        </form>\r\n");
       out.write("\r\n");
       out.write("                                        <script type=\"text/javascript\">\r\n");
-      out.write("                                        function showAns");
+      out.write("                                            function showAns");
       out.print(answer_id);
       out.write("CommentBox() {\r\n");
       out.write("                                            ");
  if (session.getAttribute("Session_id_of_user") != null) {
       out.write("\r\n");
-      out.write("                                            var div = document.getElementById('Anscomment");
+      out.write("                                                var div = document.getElementById('Anscomment");
       out.print(answer_id);
       out.write("');\r\n");
-      out.write("                                            div.className = 'visible';\r\n");
+      out.write("                                                div.className = 'visible';\r\n");
       out.write("                                            ");
  } else { 
       out.write("\r\n");
-      out.write("                                            alert(\"Please Login First to comment!!!\");\r\n");
+      out.write("                                                alert(\"Please Login First to comment!!!\");\r\n");
       out.write("                                            ");
  } 
       out.write("\r\n");
-      out.write("                                        }\r\n");
+      out.write("                                            }\r\n");
       out.write("                                        </script>\r\n");
       out.write("                                    </div>\r\n");
       out.write("                                    <!-- Comment on Answer -->\r\n");
@@ -903,39 +965,32 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("                                    </div>\r\n");
       out.write("                                    ");
 
-                                        }
-                                    } catch (Exception e) {
-                                        out.println("Unable to retrieve!!" + e);
-                                        if (session.getAttribute("email") == null) {
-                                            email = "Anonuous";
-                                        } else {
-                                            email = (String) session.getAttribute("email");
-                                        }
-                                        if (session.getAttribute("Session_id_of_user") == null) {
-                                            CurrentuserId = 0;
-                                        } else {
-                                            CurrentuserId = (Integer) session.getAttribute("Session_id_of_user");
-                                        }
-                                        String URL = request.getRequestURL() + "?" + request.getQueryString();
-                                    
-      org.apache.jasper.runtime.JspRuntimeLibrary.include(request, response, "ExceptionCollector.jsp" + "?" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("userName", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(email), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("userID", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(CurrentuserId), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("URLParameter", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(URL), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("ExceptionMessage", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(e), request.getCharacterEncoding()), out, false);
-
+                                            }
+                                        } catch (Exception e) {
+                                            out.println("Unable to retrieve!!" + e);
                                         }
                                     
       out.write("\r\n");
-      out.write("                                    <form name=\"submitAnswer\" method=\"post\" action=\"SubmitAnswer.jsp?_id_of_user=");
-      out.print(id_of_user);
-      out.write("&q_id=");
-      out.print(q_id);
-      out.write("&URL=");
-      out.print(request.getRequestURL());
-      out.write("?Id=");
-      out.print(q_id);
-      out.write("&sl=");
-      out.print(sl);
-      out.write("\">\r\n");
+      out.write("                                    <form name=\"submitAnswer\" method=\"post\" action=\"SubmitAnswer.jsp\">\r\n");
+      out.write("                                       ");
+
+                                           String URL = request.getRequestURL() + "?" + request.getQueryString();
+                                       
+      out.write(" \r\n");
       out.write("                                        <input type=\"hidden\" name=\"question\" value=\"");
       out.print(StoredQuestion);
+      out.write("\">\r\n");
+      out.write("                                        <input type=\"hidden\" name=\"_id_of_user\" value=\"");
+      out.print(id_of_user);
+      out.write("\">\r\n");
+      out.write("                                        <input type=\"hidden\" name=\"q_id\" value=\"");
+      out.print(q_id);
+      out.write("\">                                        \r\n");
+      out.write("                                        <input type=\"hidden\" name=\"URL\" value=\"");
+      out.print(URL);
+      out.write("\">\r\n");
+      out.write("                                        <input type=\"hidden\" name=\"sl\" value=\"");
+      out.print(sl);
       out.write("\">\r\n");
       out.write("                                        <textarea class=\"ckeditor\" name=\"answer\" required=\"\">\r\n");
       out.write("                                            ");
@@ -1017,45 +1072,19 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                                         }
                                     } catch (Exception error) {
                                         out.println("Error in inside blok" + error);
-                                        if (session.getAttribute("email") == null) {
-                                            email = "Anonuous";
-                                        } else {
-                                            email = (String) session.getAttribute("email");
-                                        }
-                                        if (session.getAttribute("Session_id_of_user") == null) {
-                                            CurrentuserId = 0;
-                                        } else {
-                                            CurrentuserId = (Integer) session.getAttribute("Session_id_of_user");
-                                        }
-                                        String URL = request.getRequestURL() + "?" + request.getQueryString();
-                                    
-      org.apache.jasper.runtime.JspRuntimeLibrary.include(request, response, "ExceptionCollector.jsp" + "?" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("userName", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(email), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("userID", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(CurrentuserId), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("URLParameter", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(URL), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("ExceptionMessage", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(error), request.getCharacterEncoding()), out, false);
-
-                                        }
-                                        if (count == 0) {
-                                            if (request.getParameter("lang") != "hindi") {
-                                                out.println(NO_RELATED_QUESTION_FOUND + " !!!");
-                                            } else {
-                                                out.println(NO_RELATED_QUESTION_FOUND + "!!!");
+                                       
                                             }
-                                        }
-                                        rs_detail.close();
-                                        stmt_detail.close();
-                                    } catch (Exception e) {
-                                        out.println("Exception in Related question :" + e);
-                                        if (session.getAttribute("email") == null) {
-                                            email = "Anonuous";
-                                        } else {
-                                            email = (String) session.getAttribute("email");
-                                        }
-                                        if (session.getAttribute("Session_id_of_user") == null) {
-                                            CurrentuserId = 0;
-                                        } else {
-                                            CurrentuserId = (Integer) session.getAttribute("Session_id_of_user");
-                                        }
-                                        String URL = request.getRequestURL() + "?" + request.getQueryString();
-                                    
-      org.apache.jasper.runtime.JspRuntimeLibrary.include(request, response, "ExceptionCollector.jsp" + "?" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("userName", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(email), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("userID", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(CurrentuserId), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("URLParameter", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(URL), request.getCharacterEncoding()) + "&" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("ExceptionMessage", request.getCharacterEncoding())+ "=" + org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(e), request.getCharacterEncoding()), out, false);
+                                            if (count == 0) {
+                                                if (request.getParameter("lang") != "hindi") {
+                                                    out.println(NO_RELATED_QUESTION_FOUND + " !!!");
+                                                } else {
+                                                    out.println(NO_RELATED_QUESTION_FOUND + "!!!");
+                                                }
+                                            }
+                                            rs_detail.close();
+                                            stmt_detail.close();
+                                        } catch (Exception e) {
+                                            out.println("Exception in Related question :" + e);
 
                                         }
                                     

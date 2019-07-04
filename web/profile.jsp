@@ -1,9 +1,49 @@
+<%!            public boolean validateUser(String username, String password) {
+        boolean found = false;
+        try {
+            String cookiesMail = username;
+            String cookiesPassword = password;
+
+            Connection connection = null;
+            ResultSet resultSet = null;
+            PreparedStatement preparedStatement = null;
+
+            Class.forName("com.mysql.jdbc.Driver");
+
+            connection = DriverManager.getConnection(DB_URL_, DB_USERNAME_, DB_PASSWORD_);
+
+            String password1;
+            //int Session_id_of_user = 0;
+            // boolean found = false;
+            try {
+
+                String v = "SELECT ID,email,password FROM newuser WHERE email = ?";
+
+                preparedStatement = connection.prepareStatement(v);
+                preparedStatement.setString(1, cookiesMail);
+                resultSet = preparedStatement.executeQuery();
+                while (resultSet.next()) {
+                    password1 = resultSet.getString("password");
+                    //Session_id_of_user = resultSet.getInt("ID");
+                    if (cookiesPassword.equals(password1)) {
+                        found = true;
+                    }
+                }
+            } catch (Exception e) {
+                //  out.println("Error in main try block:-" + e);
+            }
+        } catch (Exception msg) {
+
+        }
+        return found;
+    }
+%>
 <!DOCTYPE html>
 <html lang="en">
     <head> 
         <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
         <link rel="icon" href="https://www.inquiryhere.com/images/inquiryhere_Logo.PNG" type="image/png">
-       
+
         <meta charset="UTF-8">
         <%@page language="java" %>
         <%@page import="java.sql.*" %> 
@@ -67,7 +107,7 @@
 
             }
             if (sl.equalsIgnoreCase("hi")) {
-                EMAIL = "ईमेल";
+                EMAIL = "ईमेल/Phone";
                 PASSWORD = "पासवर्ड";
                 HOME = "होम";
                 LOGIN = "लॉग इन करें";
@@ -81,7 +121,7 @@
                 PROFILE_DETAILS = "प्रोफ़ाइल का विवरण";
                 UPDATE_YOUR_PROFILE_IMAGE = "अपनी प्रोफ़ाइल छवि को अपडेट करें";
                 NAME = "नाम";
-                MAIL_ID = "ईमेल आईडी";
+                MAIL_ID = "ईमेल आईडी/Phone";
                 HIGHER_QUALIFICATION = "उच्च योग्यता";
                 BEST_ACHIEVEMENT = "सबसे अच्छी उपलब्धि";
                 BIO = "आपके बारे में";
@@ -116,7 +156,7 @@
                 POST = "post";
 
             } else {
-                EMAIL = "Email";
+                EMAIL = "Email/Phone";
                 PASSWORD = "Password";
                 HOME = "Home";
                 LOGIN = "Login";
@@ -130,7 +170,7 @@
                 PROFILE_DETAILS = "Profile Details ";
                 UPDATE_YOUR_PROFILE_IMAGE = "Update your profile image";
                 NAME = "Name ";
-                MAIL_ID = "Mail Id ";
+                MAIL_ID = "Mail Id/Phone";
                 HIGHER_QUALIFICATION = "Higher Qualification ";
                 BEST_ACHIEVEMENT = "Best Achievement";
                 BIO = "Bio ";
@@ -163,6 +203,36 @@
                 TAG_SUGGESTION_DESCRIPTION = "Provide at least two tag related to your question. separate tag using Coma(,)";
                 TAG_EXMAPLE = "Ex:Java,Database,c language";
                 POST = "post";
+            }
+        %>
+        <%              if (session.getAttribute("email") == null) {
+                Cookie[] cookies = request.getCookies();
+                String username = "";
+                String password = "";
+                if (cookies != null) {
+                    for (int i = 0; i < cookies.length; i++) {
+                        Cookie cookie = cookies[i];
+                        if (cookie.getName().equals("username-cookie")) {
+                            username = cookie.getValue();
+                        } else if (cookie.getName().equals("password-cookie")) {
+                            password = cookie.getValue();
+                        }
+                    }
+                }
+                if (username != "" && password != "") {
+                    boolean found = validateUser(username, password);
+                    //out.println(found);
+                    if (found) {
+                        String URL = request.getRequestURL() + "?" + request.getQueryString();
+        %>
+        <jsp:forward page="validate.jsp">
+            <jsp:param name="email" value="<%=username%>"/>
+            <jsp:param name="password" value="<%=password%>"/>
+            <jsp:param name="URL" value="<%=URL%>"/>
+        </jsp:forward>>
+        <%
+                    }
+                }
             }
         %>
 
@@ -348,7 +418,7 @@
                                 BestAchievement = resultSet.getString("best_achievement");
                                 ImagePath = resultSet.getString("imagepath");
                                 email_status = resultSet.getInt("email_s");
-                                TotalView = (resultSet.getInt("total_view") + 1) ;
+                                TotalView = (resultSet.getInt("total_view") + 1);
                             }
                         } catch (Exception e) {
                             out.println("Unable to retrieve!!" + e);

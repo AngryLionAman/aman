@@ -1,12 +1,82 @@
 <html lang="en">
     <head>
-       
         <%@page language="java" %>
         <%@page import="java.sql.*" %> 
         <%@include file="site.jsp" %>
         <%@include file="validator.jsp" %>
+
         <meta charset="UTF-8">
         <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
+        <%!            public boolean validateUser(String username, String password) {
+                boolean found = false;
+                try {
+                    String cookiesMail = username;
+                    String cookiesPassword = password;
+
+                    Connection connection = null;
+                    ResultSet resultSet = null;
+                    PreparedStatement preparedStatement = null;
+
+                    Class.forName("com.mysql.jdbc.Driver");
+
+                    connection = DriverManager.getConnection(DB_URL_, DB_USERNAME_, DB_PASSWORD_);
+
+                    String password1;
+                    //int Session_id_of_user = 0;
+                    // boolean found = false;
+                    try {
+
+                        String v = "SELECT ID,email,password FROM newuser WHERE email = ?";
+
+                        preparedStatement = connection.prepareStatement(v);
+                        preparedStatement.setString(1, cookiesMail);
+                        resultSet = preparedStatement.executeQuery();
+                        while (resultSet.next()) {
+                            password1 = resultSet.getString("password");
+                            //Session_id_of_user = resultSet.getInt("ID");
+                            if (cookiesPassword.equals(password1)) {
+                                found = true;
+                            }
+                        }
+                    } catch (Exception e) {
+                        //  out.println("Error in main try block:-" + e);
+                    }
+                } catch (Exception msg) {
+
+                }
+                return found;
+            }
+        %>
+
+        <%              if (session.getAttribute("email") == null) {
+                Cookie[] cookies = request.getCookies();
+                String username = "";
+                String password = "";
+                if (cookies != null) {
+                    for (int i = 0; i < cookies.length; i++) {
+                        Cookie cookie = cookies[i];
+                        if (cookie.getName().equals("username-cookie")) {
+                            username = cookie.getValue();
+                        } else if (cookie.getName().equals("password-cookie")) {
+                            password = cookie.getValue();
+                        }
+                    }
+                }
+                if (username != "" && password != "") {
+                    boolean found = validateUser(username, password);
+                    //out.println(found);
+                    if (found) {
+        %>
+        <jsp:forward page="validate.jsp">
+            <jsp:param name="email" value="<%=username%>"/>
+            <jsp:param name="password" value="<%=password%>"/>
+        </jsp:forward>>
+        <%
+                    }
+                }
+            }
+        %>
         <%!            String name = null;
             int id_of_user = 0;
             int topic_id = 0;
@@ -171,7 +241,7 @@
             <% }%>
             }
         </script>
- <style>
+        <style>
             a { color: black; } /* CSS link color */
         </style>
 
@@ -251,13 +321,13 @@
                                                         status = false;%>
                                         <li><span title="Totoal followers of <%=topic_name%> is <%=count%>"><a href="topic.jsp?t=<%=topic_name.replaceAll(" ", "+")%>&id=<%=topic_id%>&sl=<%=sl%>"><%=topic_name%></a> (<%=count%>)</span></li>
                                             <% }
+                                                    }
+                                                    if (status) {
+                                                        out.println("Something went wrong<br>or you may not followed any topic");
+                                                    }
+                                                } catch (Exception Exceptionmsg) {
+                                                    out.println("Unable to retrieve!!" + Exceptionmsg);
                                                 }
-                                                if (status) {
-                                                    out.println("Something went wrong<br>or you may not followed any topic");
-                                                }
-                                            } catch (Exception Exceptionmsg) {
-                                                out.println("Unable to retrieve!!" + Exceptionmsg);
-                                                      }
                                             %>
                                         <a href="FollowMoreTopic.jsp?sl=<%=sl%>"><%=CLICK_HERE_TO_MORE_TOPIC%></a>
                                     </ul>
@@ -324,28 +394,28 @@
                                                 UserName_for_trending_question_T = resultSet.getString("firstname").substring(0, 1).toUpperCase() + resultSet.getString("firstname").substring(1).toLowerCase();
                                     %>
                                     <div class="themeBox" style="height:auto;">
-                                         <div align="left" style="font-size: 20px;font-family: serif;">
-                                          Posted by <a href="profile.jsp?user=<%=UserName_for_trending_question_T.replaceAll(" ", "+")%>&ID=<%=userID%>&sl=<%=sl%>"> <%=firstName(UserName_for_trending_question_T)%></a>
+                                        <div align="left" style="font-size: 20px;font-family: serif;">
+                                            Posted by <a href="profile.jsp?user=<%=UserName_for_trending_question_T.replaceAll(" ", "+")%>&ID=<%=userID%>&sl=<%=sl%>"> <%=firstName(UserName_for_trending_question_T)%></a>
                                             <%
-                                                if(higher_edu != null && !higher_edu.isEmpty()){
-                                                    out.println("("+higher_edu+")");
+                                                if (higher_edu != null && !higher_edu.isEmpty()) {
+                                                    out.println("(" + higher_edu + ")");
                                                 }
                                             %>,
                                             <%=date%>
                                         </div>
-                                        <div class="boxHeading marginbot10" style="border-radius: 5px;padding-top: 10px;padding-bottom: 10px;padding-left: 10px; background: #d5d5fd;" >
+                                        <div class="boxHeading marginbot10" style="border-radius: 5px;padding-top: 10px;padding-bottom: 10px;padding-left: 10px; background: #7aab87; " >
                                             <a href="Answer.jsp?q=<%=TrendingQuestion_T.replaceAll(" ", "-")%>&Id=<%=question_id%>&sl=<%=sl%>" ><%=TrendingQuestion_T%> ?</a>
                                             <%  if (session.getAttribute("Session_id_of_user") != null) {
-                                                        int Session_id_of_user = (Integer) session.getAttribute("Session_id_of_user");
-                                                        if (userID == Session_id_of_user) {%>
-                                                <a href="edit_q.jsp?Id=<%=question_id%>&sl=<%=sl%>">edit</a>
-                                                <% }
-                                                    }%>
+                                                    int Session_id_of_user = (Integer) session.getAttribute("Session_id_of_user");
+                                                    if (userID == Session_id_of_user) {%>
+                                            <a href="edit_q.jsp?Id=<%=question_id%>&sl=<%=sl%>">edit</a>
+                                            <% }
+                                                }%>
 
                                         </div>
                                         <div class="questionArea">
 
-                                            
+
                                             <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=question_id%>', '<%="upvote"%>');" >Upvote(<%=UpVote%>)</a>&nbsp;&nbsp; 
                                             <a href="javascript:void(0)" onclick="this.style.color = 'red';return take_value(this, '<%=question_id%>', '<%="downvote"%>');" >Downvote</a>&nbsp;&nbsp; 
                                             <a href="Answer.jsp?q=<%=TrendingQuestion_T.replaceAll(" ", "-")%>&Id=<%=question_id%>&sl=<%=sl%>" >Ans(<%=tac%>)</a>&nbsp;&nbsp;
@@ -386,11 +456,11 @@
                                         </div>
                                     </div>
                                     <%
-                                        }
-                                        ps2.close();
-                                    } catch (Exception Exceptionmsg) {
-                                        out.println("Error " + Exceptionmsg);
-                                    
+                                                }
+                                                ps2.close();
+                                            } catch (Exception Exceptionmsg) {
+                                                out.println("Error " + Exceptionmsg);
+
                                             }
                                         }
                                     %> 
@@ -424,7 +494,7 @@
                                                 fname = resultSet.getString("firstname");
                                                 TotalAnswerCount = resultSet.getInt("tac");
                                                 VoteCount = (resultSet.getInt("q.vote") + 1);
-
+                                                ide = resultSet.getInt("q.id");
                                                 int question_id = resultSet.getInt("q.q_id");
                                                 try {
                                                     PreparedStatement ps3 = null;
@@ -441,7 +511,7 @@
                                     %>
                                     <div class="themeBox" style="height:auto;">
 
-                                        <div class="boxHeading marginbot10">
+                                        <div class="boxHeading marginbot10" style="border-radius: 5px;padding-top: 10px;padding-bottom: 10px;padding-left: 10px; background: #7aab87;">
                                             <a href="Answer.jsp?q=<%=question.replaceAll(" ", "-")%>&Id=<%=resultSet.getInt("q.q_id")%>&sl=<%=sl%>" ><%=question%> ?</a>
                                         </div>
                                         <div class="questionArea">
@@ -488,10 +558,10 @@
 
 
                                     <%
-                                        }
-                                    } catch (Exception e) {
-                                        out.println("<b style=color:red;>No question found related to your selected topic</b>Ex:" + e);
-                                      
+                                                }
+                                            } catch (Exception e) {
+                                                out.println("<b style=color:red;>No question found related to your selected topic</b>Ex:" + e);
+
                                             }
                                         }
                                     %>
@@ -573,7 +643,7 @@
                                         %>
                                         <div class="themeBox" style="height:auto;">
 
-                                            <div class="boxHeading marginbot10">
+                                            <div class="boxHeading marginbot10" style="border-radius: 5px;padding-top: 10px;padding-bottom: 10px;padding-left: 10px; background: #7aab87;">
                                                 <a href="Answer.jsp?q=<%=rs1.getString("question").replaceAll(" ", "-")%>&Id=<%=rs1.getInt("q_id")%>&sl=<%=sl%>" ><%=rs1.getString("question")%> ?</a>
                                             </div>
                                             <div class="questionArea">
@@ -621,10 +691,10 @@
                                         </div>
 
                                         <%
-                                            }  // ps4.close();
-                                        } catch (Exception e) {
-                                            out.println(e);
-                                          
+                                                }  // ps4.close();
+                                            } catch (Exception e) {
+                                                out.println(e);
+
                                             }
                                         %>
 
@@ -864,10 +934,10 @@
             <!-- Bootstrap Select JS -->
             <script type="text/javascript" src="vendor/bootstrap-select/dist/js/bootstrap-select.js"></script>
         </div> <!-- /.main-page-wrapper -->
-<script type="text/javascript">
-var infolinks_pid = 3191741;
-var infolinks_wsid = 0;
-</script>
-<script type="text/javascript" src="http://resources.infolinks.com/js/infolinks_main.js"></script>
+        <script type="text/javascript">
+                                                var infolinks_pid = 3191741;
+                                                var infolinks_wsid = 0;
+        </script>
+        <script type="text/javascript" src="http://resources.infolinks.com/js/infolinks_main.js"></script>
     </body>
 </html>

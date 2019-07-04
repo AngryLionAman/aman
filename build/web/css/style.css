@@ -196,7 +196,7 @@ img {max-width: 100%; display: block;}
 
 
 
-button { font-family:"TradeGothicLTCom"; background-color:#da291c; font-size:16px;border-radius:4px;padding:3px 17px;color:#fff;border:none;outline: none;box-shadow: none;display: block; }
+button { font-family:"TradeGothicLTCom"; background-color:#7aab87; font-size:16px;border-radius:4px;padding:3px 17px;color:#fff;border:none;outline: none;box-shadow: none;display: block; }
 input,textarea {outline: none; box-shadow: none;-webkit-transition: all 0.3s ease-in-out;-o-transition: all 0.3s ease-in-out;transition: all 0.3s ease-in-out;}
 
 input, textarea{ width:100%;}
@@ -900,7 +900,7 @@ header.fixed .get-quote {
 
 .modal-header
 {
-    background-color:#da291c;
+    background-color:green;
     color:#fff;
     border-radius:6px 6px 0px 0px;
 }

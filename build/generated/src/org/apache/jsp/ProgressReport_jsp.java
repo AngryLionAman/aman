@@ -119,6 +119,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
             ResultSet resultSet5 = null;
             ResultSet resultSet6 = null;
             ResultSet resultSet7 = null;
+            ResultSet resultSet8 = null;
             PreparedStatement preparedStatement = null;
             PreparedStatement preparedStatement1 = null;
             PreparedStatement preparedStatement2 = null;
@@ -127,6 +128,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
             PreparedStatement preparedStatement5 = null;
             PreparedStatement preparedStatement6 = null;
             PreparedStatement preparedStatement7 = null;
+            PreparedStatement preparedStatement8 = null;
             try {
                 if (connection == null || connection.isClosed()) {
                     try {
@@ -157,7 +159,8 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
             String sql_last_user_created = "select * from newuser order by id desc limit 1";
             String sql_most_viewed_question = "select q_id,question,total_view from question order by total_view desc limit 1";
             String sql_most_viewed_Profile = "select firstname,total_view from newuser order by total_view desc limit 1";
-            String sql_recent_searched_queary = "select * from searched_queary order by primary_key desc limit 5";
+            String sql_recent_searched_queary = "select * from searched_queary order by primary_key desc limit 20";
+            String unanswred_question = "select q_id,question,(select count(a_id) from answer where q_id = question.q_id)t_ans from question";
             try {
                 preparedStatement = connection.prepareStatement(sql_quesion);
                 preparedStatement1 = connection.prepareStatement(sql_answer);
@@ -167,6 +170,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                 preparedStatement5 = connection.prepareStatement(sql_most_viewed_question);
                 preparedStatement6 = connection.prepareStatement(sql_most_viewed_Profile);
                 preparedStatement7 = connection.prepareStatement(sql_recent_searched_queary);
+                preparedStatement8 = connection.prepareStatement(sql_recent_searched_queary);
                 resultSet = preparedStatement.executeQuery();
                 resultSet1 = preparedStatement1.executeQuery();
                 resultSet2 = preparedStatement2.executeQuery();
@@ -175,6 +179,7 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
                 resultSet5 = preparedStatement5.executeQuery();
                 resultSet6 = preparedStatement6.executeQuery();
                 resultSet7 = preparedStatement7.executeQuery();
+                resultSet8 = preparedStatement8.executeQuery();
                 while (resultSet.next()) {
                     TotalQuestion = resultSet.getInt("totalquestion");
                 }
@@ -266,16 +271,15 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write(")</p>\n");
       out.write("            </div>\n");
       out.write("            <div class=\"column\" style=\"background-color:#ddd;\">\n");
-      out.write("                <h2>Most view Profile</h2>\n");
+      out.write("                <h2>Searched query</h2>\n");
       out.write("                ");
 
                  while (resultSet7.next()) {
                     String searched_queary = resultSet7.getString("searched_queary");
+                    out.println(searched_queary+",");
                     
       out.write("\n");
-      out.write("                <p style=\"font-size: 25px;\">");
-      out.print(searched_queary);
-      out.write("</p>\n");
+      out.write("               \n");
       out.write("                ");
 
                 }
@@ -284,6 +288,19 @@ String DB_AJAX_PATH = "http://localhost:8084/inquiryhere";
       out.write("                \n");
       out.write("            </div>\n");
       out.write("        </div>\n");
+      out.write("                <div>\n");
+      out.write("                    ");
+
+                    while (resultSet8.next()) {
+                    
+                        int unswred_question_id = resultSet8.getInt("q_id");
+                        int total_answer = resultSet8.getInt("t_ans");
+                        String unswred_question = resultSet8.getString("question");
+                        out.println(unswred_question_id+" ->"+unswred_question+" ->"+total_answer+"<br>");
+                }
+                    
+      out.write("\n");
+      out.write("                </div>\n");
       out.write("        ");
 
             } catch (Exception e) {
